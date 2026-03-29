@@ -106,7 +106,7 @@ export default function MovieCard({ movie, simple = false }) {
           {topWord && (
             <span
               className="font-bold uppercase leading-none break-words w-full text-center"
-              style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85, opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
+              style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85, opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
             >
               {topWord.toUpperCase()}
             </span>
