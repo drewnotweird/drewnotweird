@@ -28,4 +28,4 @@ jobs:
       - name: Deploy to Fasthosts via FTP
         run: |
           sudo apt-get install -y lftp
-          lftp -c "set ftp:passive-mode yes; set ssl:verify-certificate no; open -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASS }} ${{ secrets.FTP_HOST }}; mirror -R frontend/dist/ wunwurd/ --delete --verbose"
+          lftp -c "set ftp:passive-mode yes; set ssl:verify-certificate no; set ftp:use-size no; set ftp:use-mdtm no; open -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASS }} ${{ secrets.FTP_HOST }}; mirror -R frontend/dist/ wunwurd/ --delete --verbose"
