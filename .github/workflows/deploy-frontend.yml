@@ -32,4 +32,5 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: frontend/dist/
-          server-dir: /wunwurd/
+          server-dir: wunwurd/
+          protocol: ftps
