@@ -95,8 +95,8 @@ export default function Navbar() {
   // Scroll progress: 0 = at top of home page, 1 = scrolled / not home page
   const progress = isHome ? Math.min(1, scrollY / SCROLL_THRESHOLD) : 1
 
-  // Icon size interpolates from 36px → 22px
-  const iconSize = Math.round(36 - progress * 14)
+  // Icon size interpolates from 42px → 28px
+  const iconSize = Math.round(42 - progress * 14)
 
   // Navbar height interpolates from 64px → 52px
   const navHeight = Math.round(64 - progress * 12)
