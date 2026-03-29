@@ -17,10 +17,11 @@ const wunwurdLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// GET /api/movies/trending
+// GET /api/movies/trending?page=1
 router.get('/trending', async (req, res) => {
+  const page = Math.max(1, parseInt(req.query.page) || 1);
   try {
-    const movies = await getTrending();
+    const movies = await getTrending(page);
     res.json(movies);
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch trending movies' });

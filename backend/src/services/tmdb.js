@@ -40,8 +40,8 @@ async function searchMovies(query) {
   return data.results || [];
 }
 
-async function getTrending() {
-  const data = await tmdbFetch('/trending/movie/week?page=1');
+async function getTrending(page = 1) {
+  const data = await tmdbFetch(`/trending/movie/week?page=${page}`);
   return data.results || [];
 }
 

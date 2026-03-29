@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import MovieCard from '../components/MovieCard'
 import SkeletonCard from '../components/SkeletonCard'
 import { apiFetch } from '../api'
@@ -7,9 +7,13 @@ const SCROLL_THRESHOLD = 140
 
 export default function Home() {
   const [movies, setMovies] = useState([])
+  const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const [error, setError] = useState(null)
   const [scrollY, setScrollY] = useState(0)
+  const sentinelRef = useRef(null)
 
   useEffect(() => {
     const h = () => setScrollY(window.scrollY)
@@ -17,22 +21,55 @@ export default function Home() {
     return () => window.removeEventListener('scroll', h)
   }, [])
 
-  useEffect(() => {
-    apiFetch('/api/movies/trending', { credentials: 'include' })
-      .then(r => { if (!r.ok) throw new Error('Failed to load'); return r.json() })
-      .then(data => { setMovies(Array.isArray(data) ? data : []); setLoading(false) })
-      .catch(e => { setError(e.message); setLoading(false) })
+  // Load a page of movies
+  const loadPage = useCallback(async (pageNum) => {
+    if (pageNum === 1) setLoading(true)
+    else setLoadingMore(true)
+
+    try {
+      const r = await apiFetch(`/api/movies/trending?page=${pageNum}`, { credentials: 'include' })
+      if (!r.ok) throw new Error('Failed to load')
+      const data = await r.json()
+      const results = Array.isArray(data) ? data : []
+      setMovies(prev => pageNum === 1 ? results : [...prev, ...results])
+      setHasMore(results.length > 0)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+      setLoadingMore(false)
+    }
   }, [])
 
-  // Banner content fades out as user scrolls — matches navbar logo fade-in
+  useEffect(() => { loadPage(1) }, [loadPage])
+
+  // IntersectionObserver — triggers when sentinel comes into view
+  useEffect(() => {
+    if (!sentinelRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loadingMore && !loading) {
+          setPage(prev => prev + 1)
+        }
+      },
+      { rootMargin: '200px' }
+    )
+    observer.observe(sentinelRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, loadingMore, loading])
+
+  useEffect(() => {
+    if (page > 1) loadPage(page)
+  }, [page, loadPage])
+
   const bannerProgress = Math.min(1, scrollY / SCROLL_THRESHOLD)
   const bannerOpacity = 1 - bannerProgress
   const bannerScale = 1 - bannerProgress * 0.08
 
   return (
     <div>
-      {/* Hero — pink block, seamless with navbar */}
-      <div className="bg-[#FF1493] px-6 pb-10 pt-4 text-center">
+      {/* Hero */}
+      <div className="bg-[#FF1493] px-6 pb-10 text-center">
         <div
           style={{
             opacity: bannerOpacity,
@@ -60,6 +97,15 @@ export default function Home() {
           {loading
             ? Array.from({ length: 20 }).map((_, i) => <SkeletonCard key={i} />)
             : movies.map(movie => <MovieCard key={movie.id} movie={movie} />)}
+        </div>
+
+        {/* Sentinel + loading indicator */}
+        <div ref={sentinelRef} className="py-6 flex justify-center">
+          {loadingMore && (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 w-full">
+              {Array.from({ length: 20 }).map((_, i) => <SkeletonCard key={i} />)}
+            </div>
+          )}
         </div>
       </div>
     </div>
