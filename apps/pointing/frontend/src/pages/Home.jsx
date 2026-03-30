@@ -1,7 +1,7 @@
 export default function Home() {
   return (
-    <div>
-      <h1>Pointing</h1>
-    </div>
+    <main>
+      <img src="/points.gif" alt="" style={{ width: '100%', display: 'block' }} />
+    </main>
   )
 }
