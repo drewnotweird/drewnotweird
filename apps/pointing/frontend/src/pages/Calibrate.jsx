@@ -1,60 +1,239 @@
 import { useState, useRef } from 'react'
+import { images as savedImages } from '../data/images.js'
 
-// Drop your photo filenames here to calibrate them
-const PHOTOS_TO_CALIBRATE = [
-  // 'photos/point01.jpg',
-  // 'photos/point02.jpg',
+const ALL_PHOTOS = [
+  'photos/1011554_10151506464292377_761226816_n_10151506464292377.jpg',
+  'photos/1011973_10151482181757377_462555673_n_10151482181757377.jpg',
+  'photos/1012811_10151485359297377_575526598_n_10151485359297377.jpg',
+  'photos/10246458_10152019573907377_9084298473069616931_n_10152019573907377.jpg',
+  'photos/10269262_10152004331807377_7279878612309164020_o_10152004331807377.jpg',
+  'photos/10277437_10152027283842377_5104133549160522647_n_10152027283842377.jpg',
+  'photos/10314642_10152019579407377_2969418405797439698_n_10152019579407377.jpg',
+  'photos/10320593_10152667888122377_3141975753007447562_n_10152667888122377.jpg',
+  'photos/10358127_10152031061602377_3432087743562594253_n_10152031061602377.jpg',
+  'photos/10389591_10152116984952377_7219924276711741749_n_10152116984952377.jpg',
+  'photos/10404318_10152115168627377_5002395415760334753_n_10152115168627377.jpg',
+  'photos/10419608_10152258637647377_829930654851731671_n_10152258637647377.jpg',
+  'photos/10426144_10152258652052377_3741125343523563572_n_10152258652052377.jpg',
+  'photos/10426646_10152120185707377_8381297522308012526_n_10152120185707377.jpg',
+  'photos/10565179_10152202270117377_8581171116480982283_n_10152202270117377.jpg',
+  'photos/10565248_10152225606867377_3886585150044648029_n_10152225606867377.jpg',
+  'photos/10615489_10152327025712377_5292698295926298177_n_10152327025712377.jpg',
+  'photos/10659191_10152265893217377_366808381639692837_n_10152265893217377.jpg',
+  'photos/10694243_10152270637907377_7680974038566490026_o_10152270637907377.jpg',
+  'photos/1072391_10151497369257377_1756519264_o_10151497369257377.jpg',
+  'photos/1073341_10151484115492377_1566679619_o_10151484115492377.jpg',
+  'photos/1074161_10151502918052377_2107034165_o_10151502918052377.jpg',
+  'photos/1074945_10151502998152377_327845474_o_10151502998152377.jpg',
+  'photos/1078640_10151502947077377_1412946904_o_10151502947077377.jpg',
+  'photos/1085087_10151508519252377_1579665123_o_10151508519252377.jpg',
+  'photos/1090979_10151758338027377_1067512615_o_10151758338027377.jpg',
+  'photos/1097736_10151527407542377_1080167812_o_10151527407542377.jpg',
+  'photos/1098208_10151502952127377_1387963005_n_10151502952127377.jpg',
+  'photos/1098493_10151530273472377_1883975963_n_10151530273472377.jpg',
+  'photos/1102734_10151518445872377_924805098_o_10151518445872377.jpg',
+  'photos/11205032_10152950887342377_3823437792779057334_n_10152950887342377.jpg',
+  'photos/1146219_10151520188162377_446673349_o_10151520188162377.jpg',
+  'photos/1149508_10151515020532377_218318991_o_10151515020532377.jpg',
+  'photos/1149628_10151551743427377_875026585_o_10151551743427377.jpg',
+  'photos/1150446_10151515564167377_1512005799_o_10151515564167377.jpg',
+  'photos/1151018_10151548121147377_245246026_n_10151548121147377.jpg',
+  'photos/1157713_10151537552992377_700620852_n_10151537552992377.jpg',
+  'photos/11700783_10152913051507377_3972322994773386187_o_10152913051507377.jpg',
+  'photos/1172820_10151543373217377_627204422_o_10151543373217377.jpg',
+  'photos/12032892_10153063369437377_3757876741908439114_o_10153063369437377.jpg',
+  'photos/1240330_10151548107732377_594796848_n_10151548107732377.jpg',
+  'photos/1243922_10151561419007377_1318296282_o_10151561419007377.jpg',
+  'photos/1262531_10151564241272377_1822499887_o_10151564241272377.jpg',
+  'photos/12642568_10153279690572377_6476402508392356813_n_10153279690572377.jpg',
+  'photos/12801166_10153336483827377_8750609129521549758_n_10153336483827377.jpg',
+  'photos/12821416_10153355713752377_2386589941945799016_n_10153355713752377.jpg',
+  'photos/132842_485862982376_4638577_o_485862982376.jpg',
+  'photos/13495029_10153598696972377_7044121907303390257_n_10153598696972377.jpg',
+  'photos/13502789_10153598765367377_5433965173837676098_o_10153598765367377.jpg',
+  'photos/13533241_10153595381977377_6099858506178791915_n_10153595381977377.jpg',
+  'photos/13615316_10153609680827377_6620617173918141387_n_10153609680827377.jpg',
+  'photos/13615381_10153609655962377_5300777488926041236_n_10153609655962377.jpg',
+  'photos/13697203_10153639958142377_8029216365421559883_n_10153639958142377.jpg',
+  'photos/13707549_10153639957852377_3518760584729096076_n_10153639957852377.jpg',
+  'photos/13716053_10153640949757377_3604769654070815134_n_10153640949757377.jpg',
+  'photos/13723940_10153640949792377_2610538513967196066_o_10153640949792377.jpg',
+  'photos/1377121_10151626525697377_126191076_n_10151626525697377.jpg',
+  'photos/1382238_10151639561137377_744461219_n_10151639561137377.jpg',
+  'photos/14207682_10153741054937377_6218174878150165248_o_10153741054937377.jpg',
+  'photos/14361176_10153795186607377_1557442043017797896_o_10153795186607377.jpg',
+  'photos/14517557_10153841264192377_1420324953714696446_n_10153841264192377.jpg',
+  'photos/1496535_10151764902742377_872460501_o_10151764902742377.jpg',
+  'photos/1526312_10151785395542377_817422539_n_10151785395542377.jpg',
+  'photos/1601958_10151849720537377_1550174898_o_10151849720537377.jpg',
+  'photos/1655971_10151884007707377_1675673825_n_10151884007707377.jpg',
+  'photos/165851_10150909203637377_731434013_n_10150909203637377.jpg',
+  'photos/174949_10150252953552377_1343671_o_10150252953552377.jpg',
+  'photos/18557062_10154441762757377_2967598064484453436_n_10154441762757377.jpg',
+  'photos/19030341_10154489241692377_6677731665405768019_n_10154489241692377.jpg',
+  'photos/1929890_10153251901562377_3355000441584468978_n_10153251901562377.jpg',
+  'photos/1980296_10151938042282377_1276937135_o_10151938042282377.jpg',
+  'photos/202021_10150989743042377_332555870_o_10150989743042377.jpg',
+  'photos/202210_10150157278562377_219079_o_10150157278562377.jpg',
+  'photos/202762_10150997698057377_885780528_o_10150997698057377.jpg',
+  'photos/204451_10150171072662377_2194007_o_10150171072662377.jpg',
+  'photos/21208_10151365699452377_1188041834_n_10151365699452377.jpg',
+  'photos/21728702_10154772730752377_8159424985639580569_o_10154772730752377.jpg',
+  'photos/21743575_10154772731092377_6608605372811588405_o_10154772731092377.jpg',
+  'photos/223408_10150174686657377_1920830_n_10150174686657377.jpg',
+  'photos/23771_392105892376_944888_n_392105892376.jpg',
+  'photos/241466_10150199529607377_8007055_o_10150199529607377.jpg',
+  'photos/24351_391819302376_3891521_n_391819302376.jpg',
+  'photos/251912_10150956657032377_852904666_n_10150956657032377.jpg',
+  'photos/256504_10150915758612377_952445019_o_10150915758612377.jpg',
+  'photos/259285_10150228653477377_6467237_o_10150228653477377.jpg',
+  'photos/266054_10150878098452377_1823445894_o_10150878098452377.jpg',
+  'photos/272051_10150229980012377_5918652_o_10150229980012377.jpg',
+  'photos/272650_10150230502512377_1301101_o_10150230502512377.jpg',
+  'photos/278032_10150876852332377_1154556001_o_10150876852332377.jpg',
+  'photos/27846_396768452376_5581516_n_396768452376.jpg',
+  'photos/27846_396825747376_5651708_n_396825747376.jpg',
+  'photos/280130_10150249563072377_3800097_o_10150249563072377.jpg',
+  'photos/28363_393856372376_6320541_n_393856372376.jpg',
+  'photos/290192_10150273694772377_7112483_o_10150273694772377.jpg',
+  'photos/291117_10151035095372377_1530017422_o_10151035095372377.jpg',
+  'photos/291966_10150300428832377_1086723864_n_10150300428832377.jpg',
+  'photos/29213_399691042376_715392_n_399691042376.jpg',
+  'photos/292766_10150300429807377_45758949_n_10150300429807377.jpg',
+  'photos/29333_396065497376_7532683_n_396065497376.jpg',
+  'photos/293686_10150299204767377_1876051113_n_10150299204767377.jpg',
+  'photos/30018_397338532376_549846_n_397338532376.jpg',
+  'photos/300708_10150304703017377_1085693555_n_10150304703017377.jpg',
+  'photos/30113_407545237376_4997395_n_407545237376.jpg',
+  'photos/32013_398244602376_1728365_n_398244602376.jpg',
+  'photos/32313338_10155336987882377_4893532561348755456_o_10155336987872377.jpg',
+  'photos/324824_10150335568657377_97942125_o_10150335568657377.jpg',
+  'photos/326806_10151081739122377_1258147571_o_10151081739122377.jpg',
+  'photos/326894_10151081739087377_2038138143_o_10151081739087377.jpg',
+  'photos/328464_10150335567642377_902035349_o_10150335567642377.jpg',
+  'photos/330331_10150327366607377_189596413_o_10150327366607377.jpg',
+  'photos/332215_10150275335112377_7147705_o_10150275335112377.jpg',
+  'photos/334693_10150280174342377_6237414_o_10150280174342377.jpg',
+  'photos/339149_10150335564907377_1676827848_o_10150335564907377.jpg',
+  'photos/37215_415126632376_7184922_n_415126632376.jpg',
+  'photos/383534_10150611971122377_1779726757_n_10150611971122377.jpg',
+  'photos/386095_10151014647567377_1317948029_n_10151014647567377.jpg',
+  'photos/38677_423205267376_5713278_n_423205267376.jpg',
+  'photos/39343_420768052376_3379551_n_420768052376.jpg',
+  'photos/402144_10150968928537377_815197516_n_10150968928537377.jpg',
+  'photos/403822_10150911096397377_772959161_n_10150911096397377.jpg',
+  'photos/404402_10151483662197377_406526747_n_10151483662197377.jpg',
+  'photos/411886_10151185445537377_811343607_o_10151185445537377.jpg',
+  'photos/413939_10150528908282377_214041493_o_10150528908282377.jpg',
+  'photos/414504_10150805994807377_822375546_o_10150805994807377.jpg',
+  'photos/414843_10150848030697377_245393163_o_10150848030697377.jpg',
+  'photos/424823_10150599997822377_1327614808_n_10150599997822377.jpg',
+  'photos/426723_10150555798677377_272108740_n_10150555798677377.jpg',
+  'photos/431911_10150908393582377_1787203411_n_10150908393582377.jpg',
+  'photos/44461454_10155666994237377_1423470518308175872_o_10155666994227377.jpg',
+  'photos/457751_10150858575527377_2010281807_o_10150858575527377.jpg',
+  'photos/458777_10150877925027377_932148796_o_10150877925027377.jpg',
+  'photos/459040_10150845626657377_1807942828_o_10150845626657377.jpg',
+  'photos/461830_10150839189082377_373211061_o_10150839189082377.jpg',
+  'photos/464410_10150848213507377_1716129950_o_10150848213507377.jpg',
+  'photos/46456_10151502998162377_735223992_n_10151502998162377.jpg',
+  'photos/46506_430310212376_7349087_n_430310212376.jpg',
+  'photos/468409_10151391611312377_824480050_o_10151391611312377.jpg',
+  'photos/470630_10150824710357377_1359207823_o_10150824710357377.jpg',
+  'photos/47292_430379247376_7867986_n_430379247376.jpg',
+  'photos/473617_10150938412432377_921126929_o_10150938412432377.jpg',
+  'photos/474718_10151403863962377_1527419886_o_10151403863962377.jpg',
+  'photos/475038_10150603112672377_492441534_o_10150603112672377.jpg',
+  'photos/478449_10150830328607377_254428917_o_10150830328607377.jpg',
+  'photos/524323_10151008531917377_727013078_n_10151008531917377.jpg',
+  'photos/528026_10150917770302377_603363876_n_10150917770302377.jpg',
+  'photos/531631_10151300698972377_598723791_n_10151300698972377.jpg',
+  'photos/532124_10151543540357377_2069320580_n_10151543540357377.jpg',
+  'photos/536665_10150611646707377_370606025_n_10150611646707377.jpg',
+  'photos/552405_10150611863517377_217879298_n_10150611863517377.jpg',
+  'photos/555164_10151485342787377_1563158253_n_10151485342787377.jpg',
+  'photos/558525_10151020907317377_1767528673_n_10151020907317377.jpg',
+  'photos/560999_10150919370392377_1994081733_n_10150919370392377.jpg',
+  'photos/561819_10150652596087377_1134483828_n_10150652596087377.jpg',
+  'photos/57015_10151034271672377_1927242620_o_10151034271672377.jpg',
+  'photos/578670_10150943454327377_1608562778_n_10150943454327377.jpg',
+  'photos/581939_10150908107547377_769752140_n_10150908107547377.jpg',
+  'photos/599334_10150925806932377_475074147_n_10150925806932377.jpg',
+  'photos/615112_10151018037272377_21347226_o_10151018037272377.jpg',
+  'photos/66296825_10156201028272377_7107196698987855872_o_10156201028257377.jpg',
+  'photos/664788_10151502947112377_736386097_o_10151502947112377.jpg',
+  'photos/72634_10151483662202377_1085756197_n_10151483662202377.jpg',
+  'photos/904156_10151353666022377_1190421661_o_10151353666022377.jpg',
+  'photos/919908_10151376949827377_1175811265_o_10151376949827377.jpg',
+  'photos/963822_10151517666087377_1844984172_o_10151517666087377.jpg',
+  'photos/971685_10151494896092377_2092689666_n_10151494896092377.jpg',
+  'photos/993978_10151527327117377_1431261026_n_10151527327117377.jpg',
+  'photos/994306_10151537268282377_987139146_n_10151537268282377.jpg',
+  'photos/995983_10151537269872377_416308946_n_10151537269872377.jpg',
 ]
 
 export default function Calibrate() {
+  const saved = Object.fromEntries(savedImages.map(img => [img.src, img.hotspot]))
   const [idx, setIdx] = useState(0)
-  const [hotspots, setHotspots] = useState([])
+  const [hotspots, setHotspots] = useState(saved)
   const [marker, setMarker] = useState(null)
   const imgRef = useRef(null)
   const BASE = import.meta.env.BASE_URL
 
-  const photo = PHOTOS_TO_CALIBRATE[idx]
+  const photo = ALL_PHOTOS[idx]
+  const current = hotspots[photo]
 
   const handleClick = (e) => {
     const rect = imgRef.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width
-    const y = (e.clientY - rect.top) / rect.height
-    setMarker({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-
-    const entry = { src: photo, hotspot: { x: +x.toFixed(4), y: +y.toFixed(4) } }
-    setHotspots(prev => {
-      const updated = [...prev]
-      updated[idx] = entry
-      return updated
-    })
+    const x = +(((e.clientX - rect.left) / rect.width).toFixed(4))
+    const y = +(((e.clientY - rect.top) / rect.height).toFixed(4))
+    setMarker({ px: e.clientX - rect.left, py: e.clientY - rect.top })
+    setHotspots(prev => ({ ...prev, [photo]: { x, y } }))
   }
 
+  const skip = () => {
+    setIdx(i => Math.min(i + 1, ALL_PHOTOS.length - 1))
+    setMarker(null)
+  }
+  const prev = () => {
+    setIdx(i => Math.max(i - 1, 0))
+    setMarker(null)
+  }
   const next = () => {
-    if (idx < PHOTOS_TO_CALIBRATE.length - 1) {
-      setIdx(i => i + 1)
-      setMarker(null)
-    }
+    if (!hotspots[photo]) return
+    setIdx(i => Math.min(i + 1, ALL_PHOTOS.length - 1))
+    setMarker(null)
   }
 
-  const output = hotspots
-    .filter(Boolean)
-    .map(h => `  { src: '${h.src}', hotspot: { x: ${h.hotspot.x}, y: ${h.hotspot.y} } },`)
+  const done = Object.keys(hotspots).filter(k => hotspots[k] && hotspots[k].x !== 0.5).length
+  const total = ALL_PHOTOS.length
+
+  const output = ALL_PHOTOS
+    .map(src => {
+      const h = hotspots[src] || { x: 0.5, y: 0.5 }
+      return `  { src: '${src}', hotspot: { x: ${h.x}, y: ${h.y} } },`
+    })
     .join('\n')
 
-  if (!PHOTOS_TO_CALIBRATE.length) {
-    return (
-      <div style={{ padding: '4rem', fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
-        <p>Add your photo filenames to <code>PHOTOS_TO_CALIBRATE</code> in <code>src/pages/Calibrate.jsx</code></p>
-      </div>
-    )
-  }
+  const markerPos = current && imgRef.current
+    ? {
+        px: current.x * (imgRef.current.getBoundingClientRect?.()?.width || 0),
+        py: current.y * (imgRef.current.getBoundingClientRect?.()?.height || 0),
+      }
+    : null
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300, padding: '2rem' }}>
-      <h2 style={{ fontWeight: 400, marginBottom: '0.5rem' }}>
-        Calibrate {idx + 1} / {PHOTOS_TO_CALIBRATE.length}: <code>{photo}</code>
-      </h2>
-      <p style={{ marginBottom: '1rem', opacity: 0.6 }}>Click on the tip of your pointing finger.</p>
+    <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300, padding: '1rem 2rem', background: '#fafafa', minHeight: '100vh' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '2rem', marginBottom: '0.5rem' }}>
+        <h2 style={{ fontWeight: 400, margin: 0 }}>
+          {idx + 1} / {total}
+        </h2>
+        <span style={{ opacity: 0.5, fontSize: '13px' }}>{done} calibrated</span>
+        <span style={{ opacity: 0.4, fontSize: '12px', fontFamily: 'monospace' }}>{photo.split('/').pop().slice(0, 30)}…</span>
+      </div>
+      <p style={{ margin: '0 0 0.75rem', opacity: 0.5, fontSize: '14px' }}>
+        Click the tip of your pointing finger. Skip if not pointing.
+      </p>
 
       <div style={{ position: 'relative', display: 'inline-block', cursor: 'crosshair' }}>
         <img
@@ -62,55 +241,44 @@ export default function Calibrate() {
           src={`${BASE}${photo}`}
           alt=""
           onClick={handleClick}
-          style={{ maxHeight: '70vh', maxWidth: '100%', display: 'block' }}
+          style={{ maxHeight: '65vh', maxWidth: '100%', display: 'block' }}
           draggable={false}
         />
+        {/* Show marker for current click */}
         {marker && (
           <div style={{
-            position: 'absolute',
-            left: marker.x - 8,
-            top: marker.y - 8,
-            width: 16,
-            height: 16,
-            borderRadius: '50%',
-            background: 'red',
-            pointerEvents: 'none',
+            position: 'absolute', left: marker.px - 8, top: marker.py - 8,
+            width: 16, height: 16, borderRadius: '50%',
+            background: 'red', pointerEvents: 'none', opacity: 0.85,
           }} />
         )}
       </div>
 
-      <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        {hotspots[idx] && (
-          <span style={{ opacity: 0.6 }}>
-            Hotspot: x={hotspots[idx].hotspot.x}, y={hotspots[idx].hotspot.y}
+      <div style={{ marginTop: '0.75rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <button onClick={prev} disabled={idx === 0}
+          style={{ padding: '0.4rem 1rem', cursor: 'pointer', opacity: idx === 0 ? 0.3 : 1 }}>← Back</button>
+        <button onClick={skip}
+          style={{ padding: '0.4rem 1rem', cursor: 'pointer', opacity: 0.5 }}>Skip</button>
+        <button onClick={next} disabled={!hotspots[photo]}
+          style={{ padding: '0.4rem 1rem', cursor: 'pointer', fontWeight: 500, opacity: hotspots[photo] ? 1 : 0.3 }}>
+          Next →
+        </button>
+        {current && (
+          <span style={{ opacity: 0.4, fontSize: '12px', fontFamily: 'monospace' }}>
+            x={current.x} y={current.y}
           </span>
-        )}
-        {idx < PHOTOS_TO_CALIBRATE.length - 1 && (
-          <button onClick={next} style={{ padding: '0.5rem 1.5rem', cursor: 'pointer' }}>
-            Next →
-          </button>
         )}
       </div>
 
-      {hotspots.some(Boolean) && (
-        <div style={{ marginTop: '2rem' }}>
-          <p style={{ fontWeight: 500, marginBottom: '0.5rem' }}>Paste into <code>src/data/images.js</code>:</p>
-          <textarea
-            readOnly
-            value={`export const images = [\n${output}\n]`}
-            style={{
-              width: '100%',
-              height: '200px',
-              fontFamily: 'monospace',
-              fontSize: '13px',
-              padding: '1rem',
-              background: '#f0f0f0',
-              border: '1px solid #ccc',
-            }}
-            onClick={e => e.target.select()}
-          />
-        </div>
-      )}
+      <details style={{ marginTop: '2rem' }}>
+        <summary style={{ cursor: 'pointer', opacity: 0.5, fontSize: '13px' }}>Copy images.js output</summary>
+        <textarea
+          readOnly
+          value={`export const images = [\n${output}\n]`}
+          style={{ width: '100%', height: '200px', fontFamily: 'monospace', fontSize: '12px', marginTop: '0.5rem', padding: '0.75rem', background: '#f0f0f0', border: '1px solid #ccc' }}
+          onClick={e => e.target.select()}
+        />
+      </details>
     </div>
   )
 }
