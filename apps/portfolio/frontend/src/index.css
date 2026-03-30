@@ -81,55 +81,39 @@ section.work {
   margin: 5vw;
   display: block;
   padding: 0;
-  position: relative;
-  overflow: hidden;
 }
 
-section.work a {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  position: relative;
-}
-
-/* Cover image background */
+/* Cover image — position:absolute + clip creates the clipping container for the fixed title */
 .project {
   display: block;
-  width: 100%;
+  width: 90%;
   height: 100%;
+  padding: 0 5%;
+  z-index: 1;
   position: absolute;
+  overflow: hidden;
   top: 0;
-  left: 0;
+  clip: rect(0, auto, auto, 0);
   background-size: cover;
   background-position: center;
-  z-index: 0;
+  text-decoration: none;
 }
 
-/* Gradient overlay for project title legibility */
-.project-gradient {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Project title on homepage cards */
-section.work a span {
+/* Title is fixed to viewport but clipped by the .project container above */
+section.work .project span {
   display: block;
-  position: absolute;
-  bottom: 5%;
-  left: 5%;
-  z-index: 2;
+  top: calc(50% - 200px);
+  left: 10vw;
+  height: 400px;
+  width: 80%;
+  position: fixed;
+  z-index: 1;
   color: #ffffff;
-  font-size: clamp(2rem, 6vw, 7vw);
-  line-height: 1;
-  font-weight: 500;
+  font-size: 10vw;
+  line-height: 10vw;
+  align-content: center;
   margin: 0;
+  font-weight: 500;
 }
 
 /* Image sections */
