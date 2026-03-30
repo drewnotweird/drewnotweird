@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const { PrismaClient } = require('@prisma/client');
 const { authRequired, authOptional } = require('../middleware/auth');
 const { cacheMovie, searchMovies, getTrending, getMovieDetail } = require('../services/tmdb');
+const { notify } = require('../services/notify');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -115,6 +116,7 @@ router.post('/:tmdbId/wunwurds', authRequired, wunwurdLimiter, async (req, res) 
     });
 
     res.json(wunwurd);
+    notify('New Wunwurd submitted', `${req.user.username} called "${movie.title}" → ${word}`);
   } catch (e) {
     res.status(500).json({ error: 'Failed to submit wunwurd' });
   }

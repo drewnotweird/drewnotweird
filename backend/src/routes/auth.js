@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const { authRequired } = require('../middleware/auth');
+const { notify } = require('../services/notify');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -33,6 +34,7 @@ router.post('/register', async (req, res) => {
     );
     res.cookie('token', token, COOKIE_OPTS);
     res.json({ id: user.id, username: user.username, email: user.email });
+    notify('New Wunwurd registration', `${username} (${email}) just registered.`);
   } catch (e) {
     if (e.code === 'P2002')
       return res.status(409).json({ error: 'Username or email already taken' });
