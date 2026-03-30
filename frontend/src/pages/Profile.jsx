@@ -124,14 +124,14 @@ export default function Profile() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
                     className="text-[#FF1493] font-bold uppercase text-center px-2 drop-shadow-lg leading-none"
-                    style={{ fontSize: 'clamp(1rem, 4vw, 1.75rem)' }}
+                    style={{ fontSize: 'clamp(1.75rem, 6vw, 3rem)' }}
                   >
                     {w.word.toUpperCase()}
                   </span>
                 </div>
                 {/* Movie title at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 pt-6">
-                  <p className="text-white text-xs uppercase leading-none font-bold line-clamp-2">
+                  <p className="text-white text-sm uppercase leading-none font-bold line-clamp-2">
                     {w.movie.title}
                   </p>
                 </div>
