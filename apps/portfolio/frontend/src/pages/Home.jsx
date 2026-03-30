@@ -33,7 +33,7 @@ export default function Home() {
           creatives; let people{' '}
           <a href="https://www.whiskyblender.com/" target="_blank" rel="noreferrer">create their own whisky</a>;{' '}
           <a href="https://justgiving.com/fundraising/fulltandy" target="_blank" rel="noreferrer">raise funds</a> for Glasgow
-          NE Foodbank; and <Link to="/points">point at things</Link>.
+          NE Foodbank; and <a href="/points">point at things</a>.
         </p>
       </section>
 
