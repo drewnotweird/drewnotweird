@@ -45,7 +45,7 @@ export default function Search() {
               : 'bg-gray-900 text-white border-2 border-[#FF1493]'
           }`}
         >
-          By title
+          Title
         </button>
         <button
           onClick={() => setSearchType('wunwurds')}
@@ -55,16 +55,16 @@ export default function Search() {
               : 'bg-gray-900 text-white border-2 border-[#FF1493]'
           }`}
         >
-          By Wurd
+          Wurd
         </button>
       </div>
 
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder={searchType === 'movies' ? 'SEARCH MOVIES...' : 'SEARCH WUNWURDS...'}
+        placeholder={searchType === 'movies' ? 'Name a movie' : 'Adjective'}
         autoFocus
-        className="w-full bg-transparent border-b-2 border-[#FF1493] text-white font-bold text-2xl uppercase py-2 outline-none placeholder-gray-800 mb-8"
+        className="w-full bg-transparent border-b-2 border-[#FF1493] text-white font-bold text-2xl uppercase py-2 outline-none placeholder-gray-700 mb-8"
       />
 
       {/* Loading skeleton */}

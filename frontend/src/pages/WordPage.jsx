@@ -41,9 +41,9 @@ export default function WordPage() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-transparent text-white font-bold leading-none uppercase outline-none border-none text-center"
+            className="w-full bg-transparent text-white font-bold leading-none uppercase outline-none border-none text-center placeholder-gray-700"
             style={{ fontSize: 'clamp(2.5rem, 12vw, 6rem)' }}
-            placeholder="SEARCH"
+            placeholder={searchMode === 'movies' ? 'Name a movie' : 'Adjective'}
             autoFocus
           />
         </div>
@@ -61,7 +61,7 @@ export default function WordPage() {
             }`}
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
-            By title
+            Title
           </button>
           <button
             onClick={() => setSearchMode('wunwurds')}
@@ -72,7 +72,7 @@ export default function WordPage() {
             }`}
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
-            By Wurd
+            Wurd
           </button>
         </div>
       </div>
