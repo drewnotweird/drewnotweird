@@ -40,7 +40,7 @@ app.get('/health', async (req, res) => {
   try {
     const prisma = new PrismaClient();
     await prisma.$queryRaw`SELECT 1`;
-    res.json({ db: 'ok' });
+    res.json({ db: 'ok', allowedOrigins });
   } catch (e) {
     res.json({ db: 'error', message: e.message });
   }
