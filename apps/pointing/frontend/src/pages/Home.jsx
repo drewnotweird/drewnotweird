@@ -86,15 +86,17 @@ export default function Home() {
 
   useEffect(() => {
     const onMouseMove = e => handleCursor(e.clientX, e.clientY)
-    const onTouchMove = e => {
+    const onTouch = e => {
       e.preventDefault()
       handleCursor(e.touches[0].clientX, e.touches[0].clientY)
     }
     window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('touchstart', onTouch, { passive: false })
+    window.addEventListener('touchmove', onTouch, { passive: false })
     return () => {
       window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchstart', onTouch)
+      window.removeEventListener('touchmove', onTouch)
     }
   }, [handleCursor])
 
