@@ -5,7 +5,7 @@ const BASE = '/work/introducing'
 
 export default function Introducing() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="introducing"
       title="Introducing"
       subtitle="Instagram feed"
       tags="Project Management / Branding / Copywriting / Motion graphics"

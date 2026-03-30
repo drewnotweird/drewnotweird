@@ -5,7 +5,7 @@ const BASE = '/work/whiskyblender'
 
 export default function WhiskyBlender() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="whiskyblender"
       title="Whisky Blender"
       subtitle="aka Andrews of Bothwell"
       tags="Product / UI / UX / Print / Digital / HTML / CSS"
@@ -17,9 +17,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender01.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender02.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender03.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-01.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-02.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-03.jpg`, layout: 'full' },
       ]} />
 
       <section>
@@ -27,9 +27,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender04.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender05.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender06.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-04.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-05.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-06.jpg`, layout: 'full' },
       ]} />
 
       <section>
@@ -37,9 +37,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender07.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender08.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender09.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-07.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-08.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-09.jpg`, layout: 'full' },
       ]} />
 
       <section>
@@ -47,9 +47,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender11.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender12.gif`, layout: 'half' },
-        { src: `${BASE}/whiskyblender10.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-11.jpg`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-12.gif`, layout: 'half' },
+        { src: `${BASE}/whiskyblender-10.jpg`, layout: 'full' },
       ]} />
 
       <section>

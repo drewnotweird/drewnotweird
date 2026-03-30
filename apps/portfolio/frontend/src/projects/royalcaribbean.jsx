@@ -5,7 +5,7 @@ const BASE = '/work/royalcaribbean'
 
 export default function RoyalCaribbean() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="royalcaribbean"
       title="Royal Caribbean"
       subtitle="Responsive web components"
       tags="UI / Prototyping"

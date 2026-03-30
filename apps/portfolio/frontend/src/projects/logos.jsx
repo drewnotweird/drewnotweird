@@ -5,7 +5,7 @@ const BASE = '/work/logos'
 
 export default function Logos() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="logos"
       title="Logos"
     >
       <ImageSection images={[

@@ -5,7 +5,7 @@ const BASE = '/work/frontpage'
 
 export default function FrontPage() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="frontpage"
       title="Front Page"
       subtitle="Design agency rebrand"
       tags="Branding / Logo design / Animation"

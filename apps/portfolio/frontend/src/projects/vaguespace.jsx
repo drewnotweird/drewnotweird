@@ -5,7 +5,7 @@ const BASE = '/work/vaguespace'
 
 export default function VagueSpace() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="vaguespace"
       title="Vague Space"
       subtitle="True Scottish Indie Rock"
       tags="Performing live 2003—2013"

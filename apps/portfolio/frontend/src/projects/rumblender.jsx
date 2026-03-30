@@ -5,7 +5,7 @@ const BASE = '/work/rumblender'
 
 export default function RumBlender() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="rumblender"
       title="Rum Blender"
       subtitle="Journey collection"
       tags="Web / Product / UI / Packaging / Print"

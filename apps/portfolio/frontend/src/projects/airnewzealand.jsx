@@ -5,7 +5,7 @@ const BASE = '/work/airnewzealand'
 
 export default function AirNewZealand() {
   return (
-    <ProjectLayout
+    <ProjectLayout slug="airnewzealand"
       title="Air New Zealand"
       subtitle="Cabin Viewer"
       tags="VR app / UI / illustration"
