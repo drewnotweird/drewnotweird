@@ -31,7 +31,7 @@ export default function Home() {
 
     const { Engine, Runner, Bodies, Body, World, Composite, Mouse, MouseConstraint } = Matter
 
-    const engine = Engine.create({ gravity: { y: 2 } })
+    const engine = Engine.create({ gravity: { y: 0.7 } })
     const runner = Runner.create()
 
     const CAT_WALL = 0x0001
@@ -222,6 +222,27 @@ export default function Home() {
         position: 'fixed', inset: 0,
       }}
     >
+      <div style={{
+        position: 'fixed', inset: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        pointerEvents: 'none', zIndex: 1,
+      }}>
+        <h1 style={{
+          fontFamily: 'var(--font-primary)',
+          color: 'var(--color-primary)',
+          fontSize: 'clamp(3rem, 12vw, 10rem)',
+          fontWeight: 700,
+          margin: 0,
+          letterSpacing: '0.05em',
+          textAlign: 'center',
+          lineHeight: 1,
+          WebkitTextStroke: '6px white',
+          paintOrder: 'stroke fill',
+        }}>
+          BIG JUICY
+        </h1>
+      </div>
+
       {!images.length && (
         <div style={{
           position: 'fixed', inset: 0,
