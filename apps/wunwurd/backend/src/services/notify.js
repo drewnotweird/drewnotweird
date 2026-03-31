@@ -1,18 +1,11 @@
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.NOTIFY_EMAIL,
-    pass: process.env.NOTIFY_APP_PASSWORD,
-  },
-});
+const { Resend } = require('resend');
 
 async function notify(subject, text) {
-  if (!process.env.NOTIFY_EMAIL || !process.env.NOTIFY_APP_PASSWORD) return;
+  if (!process.env.RESEND_API_KEY) return;
+  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    await transporter.sendMail({
-      from: process.env.NOTIFY_EMAIL,
+    await resend.emails.send({
+      from: 'Wunwurd <notifications@wunwurd.com>',
       to: process.env.NOTIFY_EMAIL,
       subject,
       text,
