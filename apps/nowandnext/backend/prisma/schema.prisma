@@ -1,0 +1,41 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime  @default(now())
+  boards       Board[]
+  routines     Routine[]
+}
+
+// A saved Now & Next or First & Then board
+model Board {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  name      String
+  mode      String   @default("now-and-next") // "now-and-next" | "first-and-then"
+  items     Json     // array of { symbolId, label }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// A saved Today's Plan routine
+model Routine {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  name      String
+  steps     Json     // array of { symbolId, label }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -141,14 +141,19 @@ export default function Home() {
       }, 10000)
 
       const img = document.createElement('img')
-      img.src = `${BASE}photos/${src}`
       img.draggable = false
       img.style.cssText = `width: 100%; height: 100%; object-fit: cover; display: block;`
       wrapper.appendChild(img)
       container.appendChild(wrapper)
 
+      // Hold the body static until the image is loaded, then release
+      Body.setStatic(body, true)
       World.add(engine.world, body)
       pairs.push(pair)
+
+      img.onload = () => Body.setStatic(body, false)
+      img.onerror = () => Body.setStatic(body, false)
+      img.src = `${BASE}photos/${src}`
     }
 
     // Update floor/wall positions on resize
