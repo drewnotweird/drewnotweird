@@ -10,6 +10,7 @@ const projectMap = {
   introducing: lazy(() => import('../projects/introducing.jsx')),
   logos: lazy(() => import('../projects/logos.jsx')),
   vaguespace: lazy(() => import('../projects/vaguespace.jsx')),
+  wunwurd: lazy(() => import('../projects/wunwurd.jsx')),
 }
 
 export default function Project() {

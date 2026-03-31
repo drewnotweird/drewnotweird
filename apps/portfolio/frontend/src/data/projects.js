@@ -7,4 +7,5 @@ export const projects = [
   { slug: 'introducing',    title: 'Introducing',       cover: '/work/introducing/introducing01.jpg',              ogImage: 'https://www.drewnotweird.co.uk/work/introducing/introducing01.jpg' },
   { slug: 'logos',          title: 'Logos',             cover: '/work/logos/logos.gif',                            ogImage: 'https://www.drewnotweird.co.uk/work/logos/logos09.png' },
   { slug: 'vaguespace',     title: 'Vague Space',       cover: '/work/vaguespace/vaguespace01.jpg',                ogImage: 'https://www.drewnotweird.co.uk/work/vaguespace/vaguespace01.jpg' },
+  { slug: 'wunwurd',        title: 'Wunwurd',           cover: '/work/wunwurd/wunwurd01.jpg',                      ogImage: 'https://www.drewnotweird.co.uk/work/wunwurd/wunwurd01.jpg' },
 ]
