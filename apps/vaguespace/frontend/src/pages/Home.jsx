@@ -3,7 +3,7 @@ import TrackSection from '../components/TrackSection.jsx'
 import { useAudioPlayer } from '../hooks/useAudioPlayer.js'
 
 export default function Home() {
-  const { activeIndex, toggle } = useAudioPlayer()
+  const { activeIndex, toggle, getAudioData } = useAudioPlayer()
 
   return (
     <div className="grid">
@@ -13,6 +13,7 @@ export default function Home() {
           track={track}
           isActive={activeIndex === i}
           onTap={() => toggle(i)}
+          getAudioData={activeIndex === i ? getAudioData : null}
         />
       ))}
     </div>

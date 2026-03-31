@@ -5,29 +5,56 @@ export function useAudioPlayer() {
   const [activeIndex, setActiveIndex] = useState(null)
   const audioRef = useRef(null)
   const activeIndexRef = useRef(null)
+  const analyserRef = useRef(null)
+  const dataRef = useRef(new Uint8Array(128))
+  const contextRef = useRef(null)
 
   useEffect(() => {
-    audioRef.current = new Audio()
-    audioRef.current.preload = 'none'
+    const audio = new Audio()
+    audio.preload = 'none'
+    audio.crossOrigin = 'anonymous'
+    audioRef.current = audio
 
     const onEnded = () => {
       const current = activeIndexRef.current
       if (current === null) return
-      const next = (current + 1) % TRACKS.length
-      playTrack(next)
+      playTrack((current + 1) % TRACKS.length)
     }
+    audio.addEventListener('ended', onEnded)
 
-    audioRef.current.addEventListener('ended', onEnded)
     return () => {
-      audioRef.current.removeEventListener('ended', onEnded)
-      audioRef.current.pause()
-      audioRef.current.src = ''
+      audio.removeEventListener('ended', onEnded)
+      audio.pause()
+      audio.src = ''
+      contextRef.current?.close()
     }
   }, [])
+
+  const ensureAnalyser = () => {
+    if (analyserRef.current) return
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const analyser = ctx.createAnalyser()
+    analyser.fftSize = 256
+    analyser.smoothingTimeConstant = 0.75
+    const source = ctx.createMediaElementSource(audioRef.current)
+    source.connect(analyser)
+    analyser.connect(ctx.destination)
+    contextRef.current = ctx
+    analyserRef.current = analyser
+    dataRef.current = new Uint8Array(analyser.frequencyBinCount)
+  }
+
+  const getAudioData = () => {
+    if (!analyserRef.current) return null
+    analyserRef.current.getByteFrequencyData(dataRef.current)
+    return dataRef.current
+  }
 
   const playTrack = (index) => {
     const audio = audioRef.current
     if (!audio) return
+    ensureAnalyser()
+    contextRef.current?.resume()
     audio.pause()
     audio.src = TRACKS[index].previewUrl
     audio.currentTime = 0
@@ -46,12 +73,9 @@ export function useAudioPlayer() {
   }
 
   const toggle = (index) => {
-    if (activeIndexRef.current === index) {
-      stopTrack()
-    } else {
-      playTrack(index)
-    }
+    if (activeIndexRef.current === index) stopTrack()
+    else playTrack(index)
   }
 
-  return { activeIndex, toggle }
+  return { activeIndex, toggle, getAudioData }
 }
