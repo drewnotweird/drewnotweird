@@ -17,7 +17,7 @@ html, body, #root {
   height: 100dvh;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(3, 1fr);
-  cursor: url('/brackets.svg') 20 20, auto;
+  cursor: auto;
 }
 
 @media (orientation: landscape) {

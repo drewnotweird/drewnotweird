@@ -6,7 +6,7 @@ export default function Home() {
   const { activeIndex, toggle, getAudioData } = useAudioPlayer()
 
   return (
-    <div className="grid">
+    <div className="grid" style={{ cursor: `url('${import.meta.env.BASE_URL}brackets.svg') 20 20, auto` }}>
       {TRACKS.map((track, i) => (
         <TrackSection
           key={track.id}
