@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Matter from 'matter-js'
 import { images } from '../data/images.js'
 
-const BATCH = 30
+const BATCH = 60
 
 function getSizes() {
   const vw = window.innerWidth
@@ -15,7 +15,7 @@ function getSizes() {
 
 function getInterval() {
   const vw = window.innerWidth
-  return Math.round(600 - (vw - 400) / 1000 * 400)
+  return Math.round(900 - (vw - 400) / 1000 * 500)
 }
 
 // Preload a list of image srcs, returns a promise that resolves when all are done
@@ -32,16 +32,25 @@ export default function Home() {
   const containerRef = useRef(null)
   const [ready, setReady] = useState(false)
 
-  // Preload first batch, then signal ready
   const BASE = import.meta.env.BASE_URL
   const shuffledRef = useRef([...images].sort(() => Math.random() - 0.5))
+  const readySrcsRef = useRef([])
 
   useEffect(() => {
-    const firstBatch = shuffledRef.current.slice(0, BATCH).map(i => i.src)
-    preloadBatch(firstBatch, BASE).then(() => setReady(true))
-    // Preload the rest in the background
-    const restBatch = shuffledRef.current.slice(BATCH).map(i => i.src)
-    preloadBatch(restBatch, BASE)
+    const all = shuffledRef.current.map(i => i.src)
+    const firstBatch = all.slice(0, BATCH)
+    preloadBatch(firstBatch, BASE).then(() => {
+      readySrcsRef.current = firstBatch
+      setReady(true)
+      // Load remaining images in batches; add each batch to the pool when ready
+      const remaining = all.slice(BATCH)
+      for (let i = 0; i < remaining.length; i += BATCH) {
+        const batch = remaining.slice(i, i + BATCH)
+        preloadBatch(batch, BASE).then(() => {
+          readySrcsRef.current = [...readySrcsRef.current, ...batch]
+        })
+      }
+    })
   }, [])
 
   useEffect(() => {
@@ -147,7 +156,6 @@ export default function Home() {
     }
     window.addEventListener('resize', onResize)
 
-    const shuffled = shuffledRef.current
     let idx = 0
     const ENTRY_POINTS = [0.2, 0.4, 0.6, 0.8]
     let entryIdx = 0
@@ -155,12 +163,15 @@ export default function Home() {
 
     const scheduleNext = () => {
       timeoutId = setTimeout(() => {
-        const x = ENTRY_POINTS[entryIdx % ENTRY_POINTS.length] * window.innerWidth
-        entryIdx++
-        spawnPhoto(shuffled[idx % shuffled.length].src, x)
-        idx++
+        const ready = readySrcsRef.current
+        if (ready.length > 0) {
+          const x = ENTRY_POINTS[entryIdx % ENTRY_POINTS.length] * window.innerWidth
+          entryIdx++
+          spawnPhoto(ready[idx % ready.length], x)
+          idx++
+        }
         scheduleNext()
-      }, Math.max(200, getInterval()))
+      }, Math.max(400, getInterval()))
     }
     scheduleNext()
 
@@ -169,7 +180,8 @@ export default function Home() {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX
       const { bodyW } = getSizes()
       const x = Math.max(bodyW / 2, Math.min(window.innerWidth - bodyW / 2, clientX))
-      spawnPhoto(shuffled[Math.floor(Math.random() * shuffled.length)].src, x)
+      const ready = readySrcsRef.current
+      if (ready.length > 0) spawnPhoto(ready[Math.floor(Math.random() * ready.length)], x)
     }
     window.addEventListener('click', onPointer)
     window.addEventListener('touchstart', onPointer, { passive: true })
