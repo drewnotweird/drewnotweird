@@ -9,15 +9,19 @@ export default function MakeItHappen() {
       title="Make it Happen"
       subtitle="Inspiring digital learning"
       tags="App / UI / Animation / Illustration"
-      credit="A volunteer for Make it Happen (at JP Morgan Chase &amp; Co)"
+      credit={`Collaborated with Maria McParland as volunteers for <a href="https://makeithappen.club/" target="_blank" rel="noreferrer">Make it Happen</a> (at J.P. Morgan)`}
     >
+
+      <ImageSection images={[
+        { src: `${BASE}/makeithappen01.jpg`, layout: 'full' },
+      ]} />
       <section>
         <p>Make it Happen is a charity with the aim to inspire children's digital learning. They run an innovative and exciting app design competition for Primary Schools across Scotland, and I have been fortunate enough to be given the opportunity of getting involved.</p>
         <p>I've helped realise a number of different apps since I started volunteering on the programme. Apps to battle climate change, help with basic colour theory, educate kids on the Coronavirus, learn about space, measuring out ingredients for recipes, anything&hellip; and all designed by kids.</p>
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen01.jpg`, layout: 'full' },
+        { src: `${BASE}/makeithappen02.jpg`, layout: 'full' },
       ]} />
 
       <section>
@@ -25,11 +29,9 @@ export default function MakeItHappen() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen02.jpg`, layout: 'half' },
-        { src: `${BASE}/makeithappen04.jpg`, layout: 'half' },
-        { src: `${BASE}/makeithappen03.gif`, layout: 'third' },
-        { src: `${BASE}/makeithappen05.gif`, layout: 'third' },
-        { src: `${BASE}/makeithappen15.gif`, layout: 'third' },
+        { src: `${BASE}/makeithappen03.jpg`, layout: 'full' },
+        { src: `${BASE}/makeithappen04.jpg`, layout: 'full' },
+        { src: `${BASE}/makeithappen03.gif`, layout: 'full' },
       ]} />
 
       <section>
@@ -37,9 +39,7 @@ export default function MakeItHappen() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen06.jpg`, layout: 'third' },
-        { src: `${BASE}/makeithappen12.jpg`, layout: 'third' },
-        { src: `${BASE}/makeithappen13.jpg`, layout: 'third' },
+        { src: `${BASE}/makeithappen05.gif`, layout: 'full' },
       ]} />
 
       <section>
