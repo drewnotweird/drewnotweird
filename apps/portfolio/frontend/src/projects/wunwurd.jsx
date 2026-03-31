@@ -46,7 +46,7 @@ export default function Wunwurd() {
 
       <section>
         <p>I don't think I'll ever convince Google to implement it next to those ratings in movie search results, like I always wanted. But just having the site as a wee proof of concept has been enough to finally scratch that itch after so many years.</p>
-        <p><a href="/wunwurd" target="_blank" rel="noreferrer">Visit Wunwurd</a></p>
+        <p><a href="/wunwurd" target="_blank" rel="noreferrer">Visit WUNWURD</a></p>
       </section>
     </ProjectLayout>
   )
