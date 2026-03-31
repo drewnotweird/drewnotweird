@@ -138,7 +138,9 @@ html, body, #root {
   100% { transform: scale(0.3) translateY(0); opacity: 0.3; }
 }
 .eq--orbit .eq-bar {
-  animation: eq-orbit 1.4s ease-in-out infinite;
+  animation-name: eq-orbit;
+  animation-duration: 1.4s;
+  animation-timing-function: ease-in-out;
   animation-delay: calc(var(--i) * 220ms);
 }
 
@@ -153,7 +155,12 @@ html, body, #root {
   80%  { transform: scaleX(0.2); opacity: 0.3; }
   100% { transform: scaleX(0.1); opacity: 0.2; }
 }
-.eq--scanline .eq-bar { animation: eq-scanline 2.8s ease-in-out infinite; animation-delay: calc(var(--i) * 600ms); }
+.eq--scanline .eq-bar {
+  animation-name: eq-scanline;
+  animation-duration: 2.8s;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--i) * 600ms);
+}
 
 /* ── SCATTER (track 2) ────────────────────────────────────── */
 
@@ -165,7 +172,13 @@ html, body, #root {
   75%  { height: 20%; }
   100% { height: 15%; clip-path: inset(0 0 0 0); }
 }
-.eq--scatter .eq-bar { animation: eq-scatter 0.35s steps(1) infinite; animation-delay: calc(var(--i) * 45ms); border-radius: 0; }
+.eq--scatter .eq-bar {
+  animation-name: eq-scatter;
+  animation-duration: 0.35s;
+  animation-timing-function: steps(1);
+  animation-delay: calc(var(--i) * 45ms);
+  border-radius: 0;
+}
 
 /* ── TILT (track 3) ───────────────────────────────────────── */
 
@@ -176,7 +189,12 @@ html, body, #root {
   80%  { height: 95%; transform: rotate(calc(var(--i) * 8deg - 16deg)); }
   100% { height: 30%; transform: rotate(0deg); }
 }
-.eq--tilt .eq-bar { animation: eq-tilt 1.2s steps(4) infinite; animation-delay: calc(var(--i) * 150ms); }
+.eq--tilt .eq-bar {
+  animation-name: eq-tilt;
+  animation-duration: 1.2s;
+  animation-timing-function: steps(4);
+  animation-delay: calc(var(--i) * 150ms);
+}
 
 /* ── WAVEFORM (track 4) ───────────────────────────────────── */
 
@@ -188,7 +206,14 @@ html, body, #root {
   75%  { height: 60%; }
   100% { height: 20%; }
 }
-.eq--waveform .eq-bar { animation: eq-waveform 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * -160ms); opacity: 0.65; border-radius: 1px; }
+.eq--waveform .eq-bar {
+  animation-name: eq-waveform;
+  animation-duration: 1.8s;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--i) * -160ms);
+  opacity: 0.65;
+  border-radius: 1px;
+}
 
 /* ── MIRROR (track 5) ─────────────────────────────────────── */
 
@@ -198,4 +223,9 @@ html, body, #root {
   0%, 100% { transform: scaleY(0.05); }
   50%       { transform: scaleY(1); }
 }
-.eq--mirror .eq-bar { animation: eq-mirror 2.4s ease-in-out infinite; animation-delay: calc(var(--i) * 300ms - 900ms); }
+.eq--mirror .eq-bar {
+  animation-name: eq-mirror;
+  animation-duration: 2.4s;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--i) * 300ms - 900ms);
+}
