@@ -2,14 +2,25 @@ import { useEffect, useRef } from 'react'
 import Matter from 'matter-js'
 import { images } from '../data/images.js'
 
-// Polaroid dimensions
-const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
-const PHOTO_W = isMobile ? 110 : 160
-const PHOTO_H = isMobile ? 110 : 160
-const BORDER = isMobile ? 7 : 10
-const BOTTOM_LABEL = isMobile ? 26 : 36
-const BODY_W = PHOTO_W + BORDER * 2
-const BODY_H = PHOTO_H + BORDER + BOTTOM_LABEL
+// Polaroid dimensions based on current viewport width
+function getSizes() {
+  const vw = window.innerWidth
+  const photoW = Math.round(Math.max(80, Math.min(160, vw * 0.14)))
+  const photoH = photoW
+  const border = Math.round(photoW * 0.06)
+  const bottomLabel = Math.round(photoW * 0.22)
+  return {
+    photoW, photoH, border, bottomLabel,
+    bodyW: photoW + border * 2,
+    bodyH: photoH + border + bottomLabel,
+  }
+}
+
+// Drop interval: 200ms at 1400px+, 600ms at 400px, linear in between
+function getInterval() {
+  const vw = window.innerWidth
+  return Math.round(600 - (vw - 400) / 1000 * 400)
+}
 
 export default function Home() {
   const containerRef = useRef(null)
@@ -18,41 +29,53 @@ export default function Home() {
     const container = containerRef.current
     if (!container) return
 
-    const { Engine, Runner, Bodies, Body, World } = Matter
-    const W = window.innerWidth
-    const H = window.innerHeight
+    const { Engine, Runner, Bodies, Body, World, Composite } = Matter
 
     const engine = Engine.create({ gravity: { y: 2 } })
     const runner = Runner.create()
 
-    // Collision categories per layer. Walls collide with all.
     const CAT_WALL = 0x0001
     const CAT_LAYER = [0x0002, 0x0004, 0x0008]
 
-    // Static walls + floor (3 copies, one per layer)
+    // Keep refs to floor/wall bodies so we can reposition on resize
+    const floors = []
+    const leftWalls = []
+    const rightWalls = []
+
     CAT_LAYER.forEach(cat => {
-      World.add(engine.world, [
-        Bodies.rectangle(W / 2, H + 25, W * 2, 50, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }),
-        Bodies.rectangle(-25,   H / 2, 50, H * 3,  { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }),
-        Bodies.rectangle(W + 25, H / 2, 50, H * 3, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }),
-      ])
+      const floor = Bodies.rectangle(
+        window.innerWidth / 2, window.innerHeight + 25, window.innerWidth * 4, 50,
+        { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }
+      )
+      const leftWall = Bodies.rectangle(
+        -25, window.innerHeight / 2, 50, window.innerHeight * 3,
+        { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }
+      )
+      const rightWall = Bodies.rectangle(
+        window.innerWidth + 25, window.innerHeight / 2, 50, window.innerHeight * 3,
+        { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }
+      )
+      floors.push(floor)
+      leftWalls.push(leftWall)
+      rightWalls.push(rightWall)
+      World.add(engine.world, [floor, leftWall, rightWall])
     })
 
     Runner.run(runner, engine)
 
     const pairs = []
     const BASE = import.meta.env.BASE_URL
-    // 3 layers: back=10, mid=20, front=30
     const LAYERS = [10, 20, 30]
     let spawnCount = 0
 
     const spawnPhoto = (src, x) => {
+      const { photoW, photoH, border, bottomLabel, bodyW, bodyH } = getSizes()
       const layerIdx = spawnCount % LAYERS.length
       const zIndex = LAYERS[layerIdx]
       const cat = CAT_LAYER[layerIdx]
       spawnCount++
 
-      const body = Bodies.rectangle(x, -BODY_H, BODY_W, BODY_H, {
+      const body = Bodies.rectangle(x, -bodyH, bodyW, bodyH, {
         restitution: 0.05,
         friction: 0.8,
         frictionStatic: 0.9,
@@ -62,15 +85,14 @@ export default function Home() {
       })
       Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.08)
 
-      // Polaroid wrapper
       const wrapper = document.createElement('div')
       wrapper.style.cssText = `
         position: fixed;
         top: 0; left: 0;
-        width: ${BODY_W}px;
-        height: ${BODY_H}px;
+        width: ${bodyW}px;
+        height: ${bodyH}px;
         background: #fff;
-        padding: ${BORDER}px ${BORDER}px ${BOTTOM_LABEL}px ${BORDER}px;
+        padding: ${border}px ${border}px ${bottomLabel}px ${border}px;
         box-sizing: border-box;
         box-shadow: 2px 4px 18px rgba(0,0,0,0.28);
         pointer-events: none;
@@ -79,9 +101,8 @@ export default function Home() {
         z-index: ${zIndex};
         transition: opacity 1s ease;
       `
+      const pair = { body, el: wrapper, bodyW, bodyH }
 
-      // Fade out and remove after 10s
-      const pair = { body, el: wrapper }
       setTimeout(() => {
         wrapper.style.opacity = '0'
         setTimeout(() => {
@@ -91,15 +112,11 @@ export default function Home() {
           if (i !== -1) pairs.splice(i, 1)
         }, 1000)
       }, 10000)
+
       const img = document.createElement('img')
       img.src = `${BASE}photos/${src}`
       img.draggable = false
-      img.style.cssText = `
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      `
+      img.style.cssText = `width: 100%; height: 100%; object-fit: cover; display: block;`
       wrapper.appendChild(img)
       container.appendChild(wrapper)
 
@@ -107,46 +124,62 @@ export default function Home() {
       pairs.push(pair)
     }
 
-    // Shuffle once, loop infinitely through the list
+    // Update floor/wall positions on resize
+    const onResize = () => {
+      const W = window.innerWidth
+      const H = window.innerHeight
+      floors.forEach(f => Body.setPosition(f, { x: W / 2, y: H + 25 }))
+      leftWalls.forEach(w => Body.setPosition(w, { x: -25, y: H / 2 }))
+      rightWalls.forEach(w => Body.setPosition(w, { x: W + 25, y: H / 2 }))
+    }
+    window.addEventListener('resize', onResize)
+
+    // Shuffle once, loop infinitely
     const shuffled = [...images].sort(() => Math.random() - 0.5)
     let idx = 0
-
     const ENTRY_POINTS = [0.2, 0.4, 0.6, 0.8]
     let entryIdx = 0
+    let timeoutId
 
-    const autoTimer = setInterval(() => {
-      const x = ENTRY_POINTS[entryIdx % ENTRY_POINTS.length] * window.innerWidth
-      entryIdx++
-      spawnPhoto(shuffled[idx % shuffled.length].src, x)
-      idx++
-    }, 350)
+    const scheduleNext = () => {
+      timeoutId = setTimeout(() => {
+        const x = ENTRY_POINTS[entryIdx % ENTRY_POINTS.length] * window.innerWidth
+        entryIdx++
+        spawnPhoto(shuffled[idx % shuffled.length].src, x)
+        idx++
+        scheduleNext()
+      }, Math.max(200, getInterval()))
+    }
+    scheduleNext()
 
-    // Click / tap to drop a random one
+    // Click / tap to drop
     const onPointer = (e) => {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX
-      const x = Math.max(BODY_W / 2, Math.min(window.innerWidth - BODY_W / 2, clientX))
+      const { bodyW } = getSizes()
+      const x = Math.max(bodyW / 2, Math.min(window.innerWidth - bodyW / 2, clientX))
       const src = shuffled[Math.floor(Math.random() * shuffled.length)].src
       spawnPhoto(src, x)
     }
     window.addEventListener('click', onPointer)
     window.addEventListener('touchstart', onPointer, { passive: true })
 
-    // Animation loop: sync DOM → physics
+    // Animation loop
     let rafId
     const loop = () => {
-      pairs.forEach(({ body, el }) => {
+      pairs.forEach(({ body, el, bodyW, bodyH }) => {
         const { x, y } = body.position
-        el.style.transform = `translate(${x - BODY_W / 2}px, ${y - BODY_H / 2}px) rotate(${body.angle}rad)`
+        el.style.transform = `translate(${x - bodyW / 2}px, ${y - bodyH / 2}px) rotate(${body.angle}rad)`
       })
       rafId = requestAnimationFrame(loop)
     }
     loop()
 
     return () => {
-      clearInterval(autoTimer)
+      clearTimeout(timeoutId)
       cancelAnimationFrame(rafId)
       window.removeEventListener('click', onPointer)
       window.removeEventListener('touchstart', onPointer)
+      window.removeEventListener('resize', onResize)
       Runner.stop(runner)
       pairs.forEach(({ el }) => el.remove())
     }
@@ -156,12 +189,9 @@ export default function Home() {
     <div
       ref={containerRef}
       style={{
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-        background: '#f0ece4',
-        position: 'fixed',
-        inset: 0,
+        width: '100vw', height: '100vh',
+        overflow: 'hidden', background: '#f0ece4',
+        position: 'fixed', inset: 0,
       }}
     >
       {!images.length && (
