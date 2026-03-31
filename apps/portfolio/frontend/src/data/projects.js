@@ -6,6 +6,6 @@ export const projects = [
   { slug: 'frontpage',      title: 'Front Page',        cover: '/work/frontpage/frontpage06.jpg',                  ogImage: 'https://www.drewnotweird.co.uk/work/frontpage/frontpage06.jpg' },
   { slug: 'introducing',    title: 'Introducing',       cover: '/work/introducing/introducing01.jpg',              ogImage: 'https://www.drewnotweird.co.uk/work/introducing/introducing01.jpg' },
   { slug: 'logos',          title: 'Logos',             cover: '/work/logos/logos.gif',                            ogImage: 'https://www.drewnotweird.co.uk/work/logos/logos09.png' },
-  { slug: 'vaguespace',     title: 'Vague( )Space',       cover: '/work/vaguespace/vaguespace01.jpg',                ogImage: 'https://www.drewnotweird.co.uk/work/vaguespace/vaguespace01.jpg' },
+  { slug: 'vaguespace',     title: 'Vague Space',       cover: '/work/vaguespace/vaguespace01.jpg',                ogImage: 'https://www.drewnotweird.co.uk/work/vaguespace/vaguespace01.jpg' },
   { slug: 'wunwurd',        title: 'WUNWURD',           cover: '/work/wunwurd/wunwurd01.jpg',                      ogImage: 'https://www.drewnotweird.co.uk/work/wunwurd/wunwurd01.jpg' },
 ]
