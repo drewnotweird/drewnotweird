@@ -7,7 +7,7 @@ export default function Home() {
       <header>
         <h1>Andrew Nicolson</h1>
         <p>
-          Multidisciplinary designer with over 20 years’ experience across industries, bringing adaptability, resourcefulness, and a focus on making things happen.
+          Multidisciplinary designer with over 20 years’ experience across industries&emdash;bringing adaptability, resourcefulness, and a focus on making things happen.
         </p>
       </header>
 
