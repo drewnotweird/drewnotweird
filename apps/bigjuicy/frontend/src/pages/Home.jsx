@@ -6,7 +6,7 @@ const BATCH = 60
 
 function getSizes() {
   const vw = window.innerWidth
-  const photoW = Math.round(Math.max(80, Math.min(160, vw * 0.14)))
+  const photoW = Math.round(Math.max(110, Math.min(160, vw * 0.18)))
   const photoH = photoW
   const border = Math.round(photoW * 0.06)
   const bottomLabel = Math.round(photoW * 0.22)
