@@ -49,6 +49,10 @@ html, body, #root {
   filter: brightness(1) saturate(1.2);
 }
 
+.track-section--active .track-title {
+  color: #fff;
+}
+
 /* Inner glow when active */
 .track-section--active::after {
   content: '';
@@ -81,6 +85,7 @@ html, body, #root {
   text-align: center;
   line-height: 1.1;
   text-shadow: 0 0 40px var(--accent), 0 0 80px var(--accent), 0 2px 8px rgba(0,0,0,0.9);
+  transition: color 0.4s ease;
 }
 
 /* ── Equalizer — pinned to bottom ─────────────────────────── */
