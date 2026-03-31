@@ -47,6 +47,11 @@ export default function Home() {
     let spawnCount = 0
 
     const spawnPhoto = (src, x) => {
+      const layerIdx = spawnCount % LAYERS.length
+      const zIndex = LAYERS[layerIdx]
+      const cat = CAT_LAYER[layerIdx]
+      spawnCount++
+
       const body = Bodies.rectangle(x, -BODY_H, BODY_W, BODY_H, {
         restitution: 0.05,
         friction: 0.8,
@@ -56,11 +61,6 @@ export default function Home() {
         collisionFilter: { category: cat, mask: CAT_WALL | cat },
       })
       Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.08)
-
-      const layerIdx = spawnCount % LAYERS.length
-      const zIndex = LAYERS[layerIdx]
-      const cat = CAT_LAYER[layerIdx]
-      spawnCount++
 
       // Polaroid wrapper
       const wrapper = document.createElement('div')
