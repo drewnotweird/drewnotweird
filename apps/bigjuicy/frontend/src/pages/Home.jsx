@@ -71,6 +71,26 @@ export default function Home() {
     })
     World.add(engine.world, mouseConstraint)
 
+    // Override body selection: prefer the visually topmost (highest z-index) body at the click point
+    Matter.Events.on(mouseConstraint, 'mousedown', () => {
+      const pos = mouse.position
+      const hits = Matter.Query.point(pairs.map(p => p.body), pos)
+      if (hits.length < 2) return
+      const top = hits.reduce((best, b) => {
+        const bZ = pairs.find(p => p.body === b)?.zIndex ?? 0
+        const bestZ = pairs.find(p => p.body === best)?.zIndex ?? 0
+        return bZ > bestZ ? b : best
+      })
+      if (top !== mouseConstraint.body) {
+        mouseConstraint.body = top
+        mouseConstraint.constraint.bodyB = top
+        mouseConstraint.constraint.pointB = {
+          x: pos.x - top.position.x,
+          y: pos.y - top.position.y,
+        }
+      }
+    })
+
     const pairs = []
     const BASE = import.meta.env.BASE_URL
     const LAYERS = [10, 20, 30]
@@ -108,7 +128,7 @@ export default function Home() {
         z-index: ${zIndex};
         transition: opacity 1s ease;
       `
-      const pair = { body, el: wrapper, bodyW, bodyH }
+      const pair = { body, el: wrapper, bodyW, bodyH, zIndex }
 
       setTimeout(() => {
         wrapper.style.opacity = '0'
