@@ -11,13 +11,17 @@ export default function Wunwurd() {
       tags="AI-collab / Branding / UX / Build"
       credit={`Self-initiated project`}
     >
+
+      <ImageSection images={[
+        { src: `${BASE}/wunwurd02.jpg`, layout: 'full' },
+      ]} />
       <section>
         <p>When you search for a film you get numbers. IMDb gives you a score out of 10. Rotten Tomatoes gives you a percentage. Metacritic has its own number as well. You can tell if something is broadly "good" or "bad", but that's about it. If you actually want anything more, you have to start exploring deeper — video reviews, articles from critics, user-submitted comments — and it can be difficult to do this and avoid spoilers, when most of the time you're just looking for the tiniest bit of context.</p>
         <p>I'm also much more likely to rate a movie as "haunting", or "epic", or "heartbreaking" than I am 60% or 3 stars or whatever arbitrary number.</p>
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/wunwurd02.jpg`, layout: 'full' },
+        { src: `${BASE}/wunwurd06.jpg`, layout: 'full' },
       ]} />
 
       <section>
@@ -38,7 +42,6 @@ export default function Wunwurd() {
 
       <ImageSection images={[
         { src: `${BASE}/wunwurd03.jpg`, layout: 'full' },
-        { src: `${BASE}/wunwurd06.jpg`, layout: 'full' },
       ]} />
 
       <section>
