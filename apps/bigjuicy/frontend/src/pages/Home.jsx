@@ -29,7 +29,7 @@ export default function Home() {
     const container = containerRef.current
     if (!container) return
 
-    const { Engine, Runner, Bodies, Body, World, Composite } = Matter
+    const { Engine, Runner, Bodies, Body, World, Composite, Mouse, MouseConstraint } = Matter
 
     const engine = Engine.create({ gravity: { y: 2 } })
     const runner = Runner.create()
@@ -63,6 +63,14 @@ export default function Home() {
 
     Runner.run(runner, engine)
 
+    // Mouse / touch drag
+    const mouse = Mouse.create(container)
+    const mouseConstraint = MouseConstraint.create(engine, {
+      mouse,
+      constraint: { stiffness: 0.2, render: { visible: false } },
+    })
+    World.add(engine.world, mouseConstraint)
+
     const pairs = []
     const BASE = import.meta.env.BASE_URL
     const LAYERS = [10, 20, 30]
@@ -95,7 +103,6 @@ export default function Home() {
         padding: ${border}px ${border}px ${bottomLabel}px ${border}px;
         box-sizing: border-box;
         box-shadow: 2px 4px 18px rgba(0,0,0,0.28);
-        pointer-events: none;
         user-select: none;
         will-change: transform;
         z-index: ${zIndex};
@@ -152,8 +159,9 @@ export default function Home() {
     }
     scheduleNext()
 
-    // Click / tap to drop
+    // Click / tap to drop (but not when dragging a card)
     const onPointer = (e) => {
+      if (mouseConstraint.body) return
       const clientX = e.touches ? e.touches[0].clientX : e.clientX
       const { bodyW } = getSizes()
       const x = Math.max(bodyW / 2, Math.min(window.innerWidth - bodyW / 2, clientX))
