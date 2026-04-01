@@ -1,15 +1,12 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Stars, MeshDistortMaterial } from '@react-three/drei'
-import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { useRef, useMemo, useEffect } from 'react'
 import * as THREE from 'three'
 
 // ── Scene background colour ────────────────────────────────────────────────
 function Background({ color }) {
-  const { gl, scene } = useThree()
-  useEffect(() => {
-    scene.background = new THREE.Color(color)
-  }, [color, scene, gl])
+  const { scene } = useThree()
+  useEffect(() => { scene.background = new THREE.Color(color) }, [color, scene])
   return null
 }
 
@@ -23,14 +20,11 @@ function Planet({ getAudioDataRef, config }) {
     const data = getAudioDataRef.current?.()
     let bass = 0, amp = 0
     if (data) {
-      let b = 0
-      for (let i = 0; i < 8; i++) b += data[i]
+      let b = 0; for (let i = 0; i < 8; i++) b += data[i]
       bass = Math.min(1, b / 8 / 180)
-      let a = 0
-      for (let i = 0; i < 32; i++) a += data[i]
+      let a = 0; for (let i = 0; i < 32; i++) a += data[i]
       amp = Math.min(1, a / 32 / 160)
     }
-
     if (matRef.current) {
       matRef.current.distort = THREE.MathUtils.lerp(
         matRef.current.distort,
@@ -39,7 +33,7 @@ function Planet({ getAudioDataRef, config }) {
       )
       matRef.current.emissiveIntensity = THREE.MathUtils.lerp(
         matRef.current.emissiveIntensity,
-        0.6 + amp * 1.4,
+        0.6 + amp * 1.6,
         0.1
       )
     }
@@ -50,50 +44,75 @@ function Planet({ getAudioDataRef, config }) {
     if (atmoRef.current) {
       atmoRef.current.material.opacity = THREE.MathUtils.lerp(
         atmoRef.current.material.opacity,
-        0.1 + amp * 0.28,
+        0.1 + amp * 0.3,
         0.08
       )
-      const s = 1 + amp * 0.1
-      atmoRef.current.scale.setScalar(THREE.MathUtils.lerp(atmoRef.current.scale.x, s, 0.06))
     }
   })
 
+  const r = config.planetSize
   return (
     <group>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[2.2, 64, 64]} />
+        <sphereGeometry args={[r, 64, 64]} />
         <MeshDistortMaterial
           ref={matRef}
           color={config.planet}
           emissive={config.glow}
           emissiveIntensity={0.6}
           distort={config.distortBase}
-          speed={2.5}
+          speed={config.distortSpeed}
           roughness={0.1}
           metalness={0.15}
         />
       </mesh>
       <mesh ref={atmoRef}>
-        <sphereGeometry args={[2.65, 32, 32]} />
-        <meshBasicMaterial
-          color={config.glow}
-          transparent
-          opacity={0.1}
-          side={THREE.BackSide}
-          depthWrite={false}
-        />
+        <sphereGeometry args={[r * 1.22, 32, 32]} />
+        <meshBasicMaterial color={config.glow} transparent opacity={0.1} side={THREE.BackSide} depthWrite={false} />
       </mesh>
     </group>
   )
 }
 
+// ── Saturn-style rings ─────────────────────────────────────────────────────
+function Rings({ config }) {
+  const meshRef = useRef()
+  const r = config.planetSize
+
+  const geo = useMemo(() => {
+    return new THREE.RingGeometry(r * 1.55, r * 2.8, 80)
+  }, [r])
+
+  // Fix ring geometry UVs so it renders as a flat band
+  useMemo(() => {
+    const pos = geo.attributes.position
+    const uv = geo.attributes.uv
+    const inner = r * 1.55, outer = r * 2.8
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), y = pos.getY(i)
+      const dist = Math.sqrt(x * x + y * y)
+      uv.setXY(i, (dist - inner) / (outer - inner), 0)
+    }
+  }, [geo, r])
+
+  useFrame(() => {
+    if (meshRef.current) meshRef.current.rotation.z += 0.0006
+  })
+
+  return (
+    <mesh ref={meshRef} rotation={[Math.PI * 0.42, 0.1, 0]} geometry={geo}>
+      <meshBasicMaterial color={config.ringColor} transparent opacity={0.28} side={THREE.DoubleSide} depthWrite={false} />
+    </mesh>
+  )
+}
+
 // ── Orbiting spark tubes ───────────────────────────────────────────────────
-function Sparks({ getAudioDataRef, colors }) {
+function Sparks({ getAudioDataRef, config }) {
   const group1 = useRef()
   const group2 = useRef()
 
   const { tubes1, tubes2 } = useMemo(() => {
-    const make = (n, rMin, rMax, thickness) =>
+    const make = (n, [rMin, rMax], thickness) =>
       Array.from({ length: n }, () => {
         const pts = Array.from({ length: 6 }, () => {
           const theta = Math.random() * Math.PI * 2
@@ -107,24 +126,20 @@ function Sparks({ getAudioDataRef, colors }) {
         })
         const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5)
         const geo = new THREE.TubeGeometry(curve, 24, thickness + Math.random() * thickness, 4, false)
-        const color = colors[Math.floor(Math.random() * colors.length)]
+        const color = config.sparks[Math.floor(Math.random() * config.sparks.length)]
         return { geo, color }
       })
 
     return {
-      tubes1: make(35, 3.2, 5.5, 0.012),
-      tubes2: make(20, 5.5, 9.0, 0.008),
+      tubes1: make(config.sparkCount1, config.sparkRadius1, config.sparkThickness1),
+      tubes2: make(config.sparkCount2, config.sparkRadius2, config.sparkThickness2),
     }
-  }, [colors])
+  }, [config])
 
   useFrame(() => {
     const data = getAudioDataRef.current?.()
     let amp = 0
-    if (data) {
-      let s = 0
-      for (let i = 0; i < 32; i++) s += data[i]
-      amp = Math.min(1, s / 32 / 160)
-    }
+    if (data) { let s = 0; for (let i = 0; i < 32; i++) s += data[i]; amp = Math.min(1, s / 32 / 160) }
     if (group1.current) {
       group1.current.rotation.y += 0.0012 + amp * 0.009
       group1.current.rotation.z += 0.0007 + amp * 0.004
@@ -155,12 +170,15 @@ function Sparks({ getAudioDataRef, colors }) {
   )
 }
 
-// ── Slow camera drift ──────────────────────────────────────────────────────
-function Camera() {
+// ── Camera drift ───────────────────────────────────────────────────────────
+function Camera({ config }) {
   const { camera } = useThree()
+  useEffect(() => { camera.position.z = config.cameraZ }, [config.cameraZ, camera])
   useFrame((state) => {
-    camera.position.x = Math.sin(state.clock.elapsedTime * 0.07) * 1.5
-    camera.position.y = Math.cos(state.clock.elapsedTime * 0.05) * 0.8
+    const t = state.clock.elapsedTime
+    const d = config.cameraDrift
+    camera.position.x = Math.sin(t * 0.07 * d) * 1.5
+    camera.position.y = Math.cos(t * 0.05 * d) * 0.9
     camera.lookAt(0, 0, 0)
   })
   return null
@@ -173,22 +191,16 @@ export default function SolarScene({ config, getAudioData }) {
 
   return (
     <Canvas
-      camera={{ fov: 70, position: [0, 0, 12] }}
+      camera={{ fov: 70, position: [0, 0, config.cameraZ] }}
       style={{ position: 'absolute', inset: 0 }}
+      gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.4 }}
     >
       <Background color={config.bg} />
-      <Camera />
-      <Stars radius={80} depth={60} count={4000} factor={3} saturation={0} fade speed={0.5} />
+      <Camera config={config} />
+      <Stars radius={80} depth={60} count={4000} factor={3} saturation={0} fade speed={config.starsSpeed} />
       <Planet getAudioDataRef={getAudioDataRef} config={config} />
-      <Sparks getAudioDataRef={getAudioDataRef} colors={config.sparks} />
-      <EffectComposer>
-        <Bloom
-          intensity={config.bloomStrength}
-          luminanceThreshold={0.15}
-          luminanceSmoothing={0.85}
-          height={400}
-        />
-      </EffectComposer>
+      {config.rings && <Rings config={config} />}
+      <Sparks getAudioDataRef={getAudioDataRef} config={config} />
     </Canvas>
   )
 }
