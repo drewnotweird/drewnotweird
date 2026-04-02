@@ -2,13 +2,14 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Matter from 'matter-js'
 import { JOKES } from '../data/jokes.js'
 
-const R = 52               // circle radius px (bigger)
-const EXP_W = 320          // expanded width px
-const EXP_H = 240          // expanded height px
-const REPEL_R = 90         // cursor repulsion radius px
-const REPEL_F = 0.0025     // repulsion force strength
-const TRANSITION = 380     // ms
-const STAGGER = 180        // ms between each circle dropping
+const WIDE = window.innerWidth >= 1024
+const R = WIDE ? 70 : 52
+const EXP_W = WIDE ? 440 : 320
+const EXP_H = WIDE ? 300 : 240
+const REPEL_R = WIDE ? 120 : 90
+const REPEL_F = 0.0025
+const TRANSITION = 380
+const STAGGER = 180
 
 export default function PhysicsScene() {
   const containerRef = useRef(null)
@@ -242,14 +243,14 @@ export default function PhysicsScene() {
             {isExpanded && (
               <p style={{
                 position: 'absolute',
-                top: 100,
+                top: WIDE ? 130 : 105,
                 left: 0,
                 right: 0,
-                padding: '0 24px',
+                padding: `0 ${WIDE ? 32 : 24}px`,
                 textAlign: 'center',
-                fontFamily: "'Georgia', serif",
-                fontSize: '1.2rem',
-                lineHeight: 1.6,
+                fontFamily: "'Barriecito', cursive",
+                fontSize: WIDE ? '1.9rem' : '1.4rem',
+                lineHeight: 1.5,
                 color: '#333',
                 pointerEvents: 'none',
               }}>

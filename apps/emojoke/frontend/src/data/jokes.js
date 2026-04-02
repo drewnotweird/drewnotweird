@@ -1,5 +1,5 @@
 export const JOKES = [
-  { id: 0,  emoji: '🐶', joke: 'Coming soon...' },
+  { id: 0,  emoji: '🐶', joke: 'My wife asked me if I’d seen the dog bowl… I said I didn’t know he could.' },
   { id: 1,  emoji: '🐱', joke: 'Coming soon...' },
   { id: 2,  emoji: '🍕', joke: 'What to hear a joke about pizza? Never mind it’s too cheesy.' },
   { id: 3,  emoji: '🌈', joke: 'Today I successfully weighed a rainbow. Pretty light.' },
@@ -7,11 +7,11 @@ export const JOKES = [
   { id: 5,  emoji: '🌮', joke: 'What does Pac-Man put on his tacos? Guacauacauacauacauacauacauacauamole.' },
   { id: 6,  emoji: '🐸', joke: 'What do you call an illegally parked frog? Toad' },
   { id: 7,  emoji: '🍦', joke: 'Coming soon...' },
-  { id: 8,  emoji: '🦄', joke: 'Coming soon...' },
+  { id: 8,  emoji: '🦄', joke: 'What has one horn and isn’t magic? A dead unicorn.' },
   { id: 9,  emoji: '🌵', joke: 'Coming soon...' },
   { id: 10, emoji: '🐙', joke: 'How many times do you have to tickle an octopus to make it laugh? Ten-tickles.' },
-  { id: 11, emoji: '🍩', joke: 'Coming soon...' },
+  { id: 11, emoji: '🍩', joke: 'How’d Bob Marley like his donuts? Wi’ jammin’.' },
   { id: 12, emoji: '🦋', joke: 'Coming soon...' },
-  { id: 13, emoji: '🐳', joke: 'Coming soon...' },
+  { id: 13, emoji: '🐳', joke: 'Where do you weigh Whales? At the whale weigh station.' },
   { id: 14, emoji: '🌺', joke: 'Coming soon...' },
 ]
