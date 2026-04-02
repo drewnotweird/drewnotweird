@@ -1,0 +1,17 @@
+export const JOKES = [
+  { id: 0,  emoji: '🐶', joke: 'Coming soon...' },
+  { id: 1,  emoji: '🐱', joke: 'Coming soon...' },
+  { id: 2,  emoji: '🍕', joke: 'Coming soon...' },
+  { id: 3,  emoji: '🌈', joke: 'Coming soon...' },
+  { id: 4,  emoji: '🦊', joke: 'Coming soon...' },
+  { id: 5,  emoji: '🌮', joke: 'Coming soon...' },
+  { id: 6,  emoji: '🐸', joke: 'Coming soon...' },
+  { id: 7,  emoji: '🍦', joke: 'Coming soon...' },
+  { id: 8,  emoji: '🦄', joke: 'Coming soon...' },
+  { id: 9,  emoji: '🌵', joke: 'Coming soon...' },
+  { id: 10, emoji: '🐙', joke: 'Coming soon...' },
+  { id: 11, emoji: '🍩', joke: 'Coming soon...' },
+  { id: 12, emoji: '🦋', joke: 'Coming soon...' },
+  { id: 13, emoji: '🐳', joke: 'Coming soon...' },
+  { id: 14, emoji: '🌺', joke: 'Coming soon...' },
+]
