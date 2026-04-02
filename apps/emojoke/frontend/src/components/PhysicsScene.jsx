@@ -221,6 +221,7 @@ export default function PhysicsScene() {
             overflow: 'hidden',
             zIndex: 1,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
           }}
@@ -246,22 +247,15 @@ export default function PhysicsScene() {
 
 function EmojiContent({ joke, isExpanded }) {
   return (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: isExpanded ? 'flex-start' : 'center',
-      paddingTop: isExpanded ? 28 : 0,
-      pointerEvents: 'none',
-    }}>
+    <>
       <span style={{
-        fontSize: isExpanded ? 52 : R * 1.0,
+        fontSize: isExpanded ? 52 : R * 1.1,
         lineHeight: 1,
         display: 'block',
         flexShrink: 0,
         transition: 'font-size 0.3s ease',
+        marginTop: isExpanded ? 28 : 0,
+        pointerEvents: 'none',
       }}>
         {joke.emoji}
       </span>
@@ -275,9 +269,10 @@ function EmojiContent({ joke, isExpanded }) {
         color: '#333',
         opacity: isExpanded ? 1 : 0,
         transition: `opacity ${isExpanded ? '0.25s 0.2s' : '0.1s 0s'} ease`,
+        pointerEvents: 'none',
       }}>
         {joke.joke}
       </p>
-    </div>
+    </>
   )
 }
