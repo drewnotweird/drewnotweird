@@ -31,7 +31,7 @@ export default function Visualizer({ getTimeDomainData, track }) {
       frameRef.current++
       const i = frameRef.current
 
-      const { stepFactor, colorStepFactor, opacity, radius } = trackRef.current
+      const { stepFactor, colorStepFactor, opacity, radius, amplitudeScale, bgColor } = trackRef.current
 
       const buf = getDataRef.current?.() ?? new Uint8Array(2048).fill(128)
 
@@ -46,7 +46,7 @@ export default function Visualizer({ getTimeDomainData, track }) {
       )
 
       // clear
-      ctx.fillStyle = 'rgb(0,0,0)'
+      ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, w, h)
 
       // colour — same sine cycling as the original
@@ -66,7 +66,7 @@ export default function Visualizer({ getTimeDomainData, track }) {
       for (let n = 0; n < 2048; n++) {
         theta += SLICE_WIDTH
         const amp = buf[n] / 256
-        const ro = amp * h * 0.2 + h * 0.09
+        const ro = amp * h * amplitudeScale + h * 0.09
         const x = w / 2 + Math.cos(theta) * ro
         const y = h / 2 + Math.sin(theta) * ro
         ctx.beginPath()

@@ -13,7 +13,6 @@ html, body, #root {
 
 .track-bar {
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
   display: flex;
@@ -21,9 +20,11 @@ html, body, #root {
   flex-wrap: wrap;
   gap: 2px;
   padding: 16px 12px 20px;
-  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
   z-index: 10;
   pointer-events: none;
+  flex-direction: column;
+  align-content: center;
+  height: 100%;
 }
 
 .track-btn {
@@ -60,6 +61,7 @@ html, body, #root {
   letter-spacing: 0.15em;
   color: var(--accent);
   line-height: 1;
+  display: none;
 }
 
 .track-btn--active .track-num {
