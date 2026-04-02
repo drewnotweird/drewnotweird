@@ -14,17 +14,18 @@ html, body, #root {
 .track-bar {
   position: absolute;
   left: 0;
-  right: 0;
+  top: 0;
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2px;
-  padding: 16px 12px 20px;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+  gap: 20px;
+  padding: 30px;
   z-index: 10;
-  pointer-events: none;
   flex-direction: column;
-  align-content: center;
   height: 100%;
+  width: 100%;
+  align-items: center;
+  mix-blend-mode: lighten
 }
 
 .track-btn {
@@ -35,29 +36,24 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 8px 12px;
   border-radius: 4px;
-  transition: background 0.2s ease, opacity 0.3s ease;
+  transition: opacity 0.3s ease;
   opacity: 0.35;
-  -webkit-tap-highlight-color: transparent;
   user-select: none;
-  max-width: 120px;
 }
 
 .track-btn:hover {
   opacity: 0.65;
-  background: rgba(255,255,255,0.06);
 }
 
 .track-btn--active {
-  opacity: 1;
-  background: rgba(255,255,255,0.07);
+  opacity: 1!important;
+  transition: opacity 0.3s ease;
 }
 
 .track-num {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.65rem;
+  font-size: 12px;
   letter-spacing: 0.15em;
   color: var(--accent);
   line-height: 1;
@@ -71,14 +67,30 @@ html, body, #root {
 
 .track-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(0.6rem, 1.4vw, 0.8rem);
   color: rgba(255,255,255,0.6);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-align: center;
-  line-height: 1.2;
+  line-height: 0.8;
+}
+
+.track-btn .track-name {
+  color: grey;
 }
 
 .track-btn--active .track-name {
   color: #fff;
+}
+
+@media (orientation: landscape) {
+
+.track-name {
+  font-size: 6vw;
+}
+}
+
+@media (orientation: portrait) {
+.track-name {
+  font-size: 11vw;
+}
 }
