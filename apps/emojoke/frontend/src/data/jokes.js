@@ -4,7 +4,7 @@ export const JOKES = [
   { id: 2,  emoji: '🍕', joke: 'Coming soon...' },
   { id: 3,  emoji: '🌈', joke: 'Coming soon...' },
   { id: 4,  emoji: '🦊', joke: 'Coming soon...' },
-  { id: 5,  emoji: '🌮', joke: 'Coming soon...' },
+  { id: 5,  emoji: '🌮', joke: 'What does Pac-Man put on his tacos? Guacauacauacauacauacauacauacauamole.' },
   { id: 6,  emoji: '🐸', joke: 'Coming soon...' },
   { id: 7,  emoji: '🍦', joke: 'Coming soon...' },
   { id: 8,  emoji: '🦄', joke: 'Coming soon...' },
