@@ -1,7 +1,9 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { MeshDistortMaterial, CameraShake, Stars } from '@react-three/drei'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { MeshDistortMaterial, CameraShake, Stars, Line } from '@react-three/drei'
 import { useRef, useMemo, useEffect } from 'react'
 import * as THREE from 'three'
+
+const COLORS = ['#c06995','#de77c7','#df86df','#d998ee','#ceadf4','#c6bff9']
 
 // ── Planet ─────────────────────────────────────────────────────────────────
 function Planet({ getAudioDataRef }) {
@@ -16,11 +18,10 @@ function Planet({ getAudioDataRef }) {
       amp = Math.min(1, s / 32 / 180)
     }
     if (matRef.current) {
-      matRef.current.distort = THREE.MathUtils.lerp(matRef.current.distort, 0.3 + amp * 0.4, 0.05)
+      matRef.current.distort = THREE.MathUtils.lerp(matRef.current.distort, 0.3 + amp * 0.5, 0.05)
     }
     if (meshRef.current) {
       meshRef.current.rotation.y += 0.003
-      meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.1) * 0.05
     }
   })
 
@@ -32,13 +33,65 @@ function Planet({ getAudioDataRef }) {
           ref={matRef}
           color="#600935"
           emissive="#de77c7"
-          emissiveIntensity={0.8}
+          emissiveIntensity={1.5}
           distort={0.3}
           speed={2}
           roughness={0}
-          metalness={0.1}
         />
       </mesh>
+    </group>
+  )
+}
+
+// ── Sparks — thick animated lines via drei Line ───────────────────────────
+function Sparks({ getAudioDataRef }) {
+  const groupRef = useRef()
+
+  const lines = useMemo(() => {
+    const radius = 10
+    const rv = () => 0.2 + Math.random() * 0.8
+    return Array.from({ length: 20 }, (_, index) => {
+      const pos = new THREE.Vector3(
+        Math.sin(0) * radius * rv(),
+        Math.cos(0) * radius * rv(),
+        0
+      )
+      const pts = Array.from({ length: 30 }, (_, i) => {
+        const angle = (i / 20) * Math.PI * 2
+        return pos.add(new THREE.Vector3(
+          Math.sin(angle) * radius * rv(),
+          Math.cos(angle) * radius * rv(),
+          0
+        )).clone()
+      })
+      return {
+        points: new THREE.CatmullRomCurve3(pts).getPoints(100),
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        lineWidth: Math.max(0.3, (1.5 * index) / 20),
+      }
+    })
+  }, [])
+
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.x += 0.0002
+      groupRef.current.rotation.y += 0.0004
+    }
+  })
+
+  return (
+    <group ref={groupRef} position={[-20, -10, -10]} scale={[1, 1.3, 1]}>
+      {lines.map((l, i) => (
+        <Line
+          key={i}
+          points={l.points}
+          color={l.color}
+          lineWidth={l.lineWidth}
+          transparent
+          opacity={0.7}
+          depthTest={false}
+        />
+      ))}
     </group>
   )
 }
@@ -81,67 +134,8 @@ function SpaceDust() {
   )
 }
 
-// ── Sparks ─────────────────────────────────────────────────────────────────
-const COLORS = ['#c06995','#de77c7','#df86df','#d998ee','#ceadf4','#c6bff9']
-
-function Sparks() {
-  const groupRef = useRef()
-  const lines = useMemo(() => {
-    const radius = 10
-    const rv = () => 0.2 + Math.random() * 0.8
-    return Array.from({ length: 20 }, (_, index) => {
-      const pos = new THREE.Vector3(Math.sin(0) * radius * rv(), Math.cos(0) * radius * rv(), 0)
-      const points = Array.from({ length: 30 }, (_, i) => {
-        const angle = (i / 20) * Math.PI * 2
-        return pos.add(new THREE.Vector3(
-          Math.sin(angle) * radius * rv(),
-          Math.cos(angle) * radius * rv(),
-          0
-        )).clone()
-      })
-      const geo = new THREE.BufferGeometry().setFromPoints(
-        new THREE.CatmullRomCurve3(points).getPoints(200)
-      )
-      return {
-        geo,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      }
-    })
-  }, [])
-
-  useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.x += 0.0002
-      groupRef.current.rotation.y += 0.0004
-    }
-  })
-
-  return (
-    <group ref={groupRef} position={[-20, -10, -10]} scale={[1, 1.3, 1]}>
-      {lines.map((l, i) => (
-        <line key={i} geometry={l.geo}>
-          <lineBasicMaterial color={l.color} transparent opacity={0.7} depthTest={false} />
-        </line>
-      ))}
-    </group>
-  )
-}
-
-// ── Scene ──────────────────────────────────────────────────────────────────
-function Scene({ getAudioDataRef }) {
-  return (
-    <>
-      <CameraShake yawFrequency={0.05} rollFrequency={0.2} pitchFrequency={0.1} />
-      <pointLight distance={100} intensity={4} color="white" />
-      <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade />
-      <Planet getAudioDataRef={getAudioDataRef} />
-      <SpaceDust />
-      <Sparks />
-    </>
-  )
-}
-
-export default function SolarScene({ config, getAudioData }) {
+// ── Main ───────────────────────────────────────────────────────────────────
+export default function SolarScene({ getAudioData }) {
   const getAudioDataRef = useRef(getAudioData)
   useEffect(() => { getAudioDataRef.current = getAudioData }, [getAudioData])
 
@@ -149,9 +143,15 @@ export default function SolarScene({ config, getAudioData }) {
     <Canvas
       camera={{ fov: 100, position: [0, 0, 30] }}
       style={{ position: 'absolute', inset: 0 }}
+      gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.5 }}
       onCreated={({ gl }) => gl.setClearColor(new THREE.Color('#020207'))}
     >
-      <Scene getAudioDataRef={getAudioDataRef} />
+      <CameraShake yawFrequency={0.05} rollFrequency={0.2} pitchFrequency={0.1} />
+      <pointLight distance={100} intensity={4} color="white" />
+      <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade />
+      <Planet getAudioDataRef={getAudioDataRef} />
+      <SpaceDust />
+      <Sparks getAudioDataRef={getAudioDataRef} />
     </Canvas>
   )
 }
