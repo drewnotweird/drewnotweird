@@ -1,0 +1,131 @@
+.home {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  filter: brightness(0.6);
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.text-box {
+  margin-bottom: 3rem;
+}
+
+.text-box h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.text-box p {
+  font-size: 1.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.play-btn, .pause-btn {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: 2px solid white;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-weight: bold;
+}
+
+.play-btn:hover, .pause-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.play-btn:active, .pause-btn:active {
+  transform: scale(0.95);
+}
+
+/* Falling "40" GIFs */
+.falling-40 {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  z-index: 5;
+  animation: fall 4s linear forwards;
+  opacity: 1;
+}
+
+@keyframes fall {
+  0% {
+    top: -100px;
+    opacity: 1;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    top: 100vh;
+    opacity: 0;
+    transform: rotateZ(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .text-box h1 {
+    font-size: 2.5rem;
+  }
+
+  .text-box p {
+    font-size: 1rem;
+  }
+
+  .play-btn, .pause-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .falling-40 {
+    width: 60px;
+    height: 60px;
+  }
+}

@@ -1,0 +1,45 @@
+name: Deploy Stuart
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: cd apps/stuart/frontend && npm install
+
+      - name: Build
+        env:
+          VITE_BASE_PATH: /stuart/
+        run: cd apps/stuart/frontend && npm run build
+
+      - name: Deploy to drewnotweird.com
+        uses: milanmk/actions-file-deployer@master
+        with:
+          remote_url: ${{ secrets.DEPLOY_FTP_URL_COM }}
+          remote_user: ${{ secrets.DEPLOY_FTP_USER_COM }}
+          remote_password: ${{ secrets.DEPLOY_FTP_PASSWORD_COM }}
+          local_path: ./apps/stuart/frontend/dist/
+          remote_path: ./htdocs/stuart/
+          passive: true
+
+      - name: Deploy to drewnotweird.co.uk
+        uses: milanmk/actions-file-deployer@master
+        with:
+          remote_url: ${{ secrets.DEPLOY_FTP_URL_UK }}
+          remote_user: ${{ secrets.DEPLOY_FTP_USER_UK }}
+          remote_password: ${{ secrets.DEPLOY_FTP_PASSWORD_UK }}
+          local_path: ./apps/stuart/frontend/dist/
+          remote_path: ./htdocs/stuart/
+          passive: true
