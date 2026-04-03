@@ -8,20 +8,20 @@ export default function Home() {
   const baseUrl = import.meta.env.BASE_URL
 
   useEffect(() => {
-    // Try to autoplay on mount (browsers may block this)
+    // Start playing muted on mount (browsers allow this)
     if (audioRef.current) {
-      const playPromise = audioRef.current.play()
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Browser blocked autoplay - user must click play
-        })
-      }
+      audioRef.current.muted = true
+      audioRef.current.play().catch(() => {
+        // If even muted autoplay is blocked, do nothing
+      })
       triggerBigConfetti()
     }
   }, [])
 
-  const handlePlayClick = () => {
+  const handleScreenClick = () => {
     if (audioRef.current) {
+      // Unmute and ensure it's playing
+      audioRef.current.muted = false
       audioRef.current.play()
       triggerBigConfetti()
     }
@@ -56,7 +56,7 @@ export default function Home() {
   }, [baseUrl])
 
   return (
-    <div className="home" ref={containerRef}>
+    <div className="home" ref={containerRef} onClick={handleScreenClick}>
       {/* Background image */}
       <div className="background" style={{ backgroundImage: `url(${baseUrl}stuart.jpg)` }} />
 
@@ -65,16 +65,8 @@ export default function Home() {
         ref={audioRef}
         src={`${baseUrl}stevie.mp3`}
         loop
+        muted
       />
-
-      {/* Play button for browsers that block autoplay */}
-      <button 
-        className="play-button"
-        onClick={handlePlayClick}
-        aria-label="Play birthday song"
-      >
-        🎵 Play
-      </button>
     </div>
   )
 }
