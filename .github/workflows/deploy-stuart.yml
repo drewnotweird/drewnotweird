@@ -1,45 +1,163 @@
-name: Deploy Stuart
+name: Deploy Stuart to Fasthosts
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+    paths:
+      - 'apps/stuart/frontend/**'
+      - '.github/workflows/deploy-stuart.yml'
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
 
       - name: Install dependencies
-        run: cd apps/stuart/frontend && npm install
+        working-directory: apps/stuart/frontend
+        run: npm install
 
       - name: Build
+        working-directory: apps/stuart/frontend
         env:
           VITE_BASE_PATH: /stuart/
-        run: cd apps/stuart/frontend && npm run build
+        run: npm run build
 
-      - name: Deploy to drewnotweird.com
-        uses: milanmk/actions-file-deployer@master
-        with:
-          remote_url: ${{ secrets.DEPLOY_FTP_URL_COM }}
-          remote_user: ${{ secrets.DEPLOY_FTP_USER_COM }}
-          remote_password: ${{ secrets.DEPLOY_FTP_PASSWORD_COM }}
-          local_path: ./apps/stuart/frontend/dist/
-          remote_path: ./htdocs/stuart/
-          passive: true
+      - name: Deploy to drewnotweird.com via FTP
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          python3 - <<'EOF'
+          import ftplib, os, time
 
-      - name: Deploy to drewnotweird.co.uk
-        uses: milanmk/actions-file-deployer@master
-        with:
-          remote_url: ${{ secrets.DEPLOY_FTP_URL_UK }}
-          remote_user: ${{ secrets.DEPLOY_FTP_USER_UK }}
-          remote_password: ${{ secrets.DEPLOY_FTP_PASSWORD_UK }}
-          local_path: ./apps/stuart/frontend/dist/
-          remote_path: ./htdocs/stuart/
-          passive: true
+          RECONNECT_EVERY = 20
+          ALWAYS_UPLOAD = {'favicon.jpg', 'og-stuart.jpg'}
+
+          def make_ftp(host, user, password):
+              ftp = ftplib.FTP()
+              ftp.connect(host, 21, timeout=60)
+              ftp.login(user, password)
+              ftp.set_pasv(True)
+              return ftp
+
+          def ftp_upload(host, user, password, local_dir, remote_dir):
+              ftp = make_ftp(host, user, password)
+              print(f"Connected to {host}")
+              count = [0]
+
+              def ensure_dir(path):
+                  try:
+                      ftp.mkd(path)
+                  except ftplib.error_perm:
+                      pass
+
+              def upload_file(local_item, remote_item):
+                  nonlocal ftp
+                  if count[0] > 0 and count[0] % RECONNECT_EVERY == 0:
+                      ftp.quit()
+                      ftp = make_ftp(host, user, password)
+                      print(f"Reconnected after {count[0]} files")
+                  for attempt in range(3):
+                      try:
+                          with open(local_item, 'rb') as f:
+                              ftp.storbinary(f'STOR {remote_item}', f, blocksize=65536)
+                          count[0] += 1
+                          print(f"  ✓ {remote_item}")
+                          return
+                      except Exception as e:
+                          if attempt < 2:
+                              time.sleep(1)
+                          else:
+                              print(f"  ✗ {remote_item} - {e}")
+
+              def walk_and_upload(local_path, remote_path):
+                  ensure_dir(remote_path)
+                  for item in os.listdir(local_path):
+                      local_item = os.path.join(local_path, item)
+                      remote_item = f"{remote_path}/{item}".replace('\\', '/')
+                      if os.path.isdir(local_item):
+                          walk_and_upload(local_item, remote_item)
+                      else:
+                          upload_file(local_item, remote_item)
+
+              walk_and_upload(local_dir, remote_dir)
+              ftp.quit()
+              print(f"✓ Uploaded {count[0]} files to {host}")
+
+          ftp_upload(os.environ['FTP_HOST'], os.environ['FTP_USER'], os.environ['FTP_PASS'], 
+                     'apps/stuart/frontend/dist', 'htdocs/stuart')
+          EOF
+
+      - name: Deploy to drewnotweird.co.uk via FTP
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST_UK }}
+          FTP_USER: ${{ secrets.FTP_USER_UK }}
+          FTP_PASS: ${{ secrets.FTP_PASS_UK }}
+        run: |
+          python3 - <<'EOF'
+          import ftplib, os, time
+
+          RECONNECT_EVERY = 20
+          ALWAYS_UPLOAD = {'favicon.jpg', 'og-stuart.jpg'}
+
+          def make_ftp(host, user, password):
+              ftp = ftplib.FTP()
+              ftp.connect(host, 21, timeout=60)
+              ftp.login(user, password)
+              ftp.set_pasv(True)
+              return ftp
+
+          def ftp_upload(host, user, password, local_dir, remote_dir):
+              ftp = make_ftp(host, user, password)
+              print(f"Connected to {host}")
+              count = [0]
+
+              def ensure_dir(path):
+                  try:
+                      ftp.mkd(path)
+                  except ftplib.error_perm:
+                      pass
+
+              def upload_file(local_item, remote_item):
+                  nonlocal ftp
+                  if count[0] > 0 and count[0] % RECONNECT_EVERY == 0:
+                      ftp.quit()
+                      ftp = make_ftp(host, user, password)
+                      print(f"Reconnected after {count[0]} files")
+                  for attempt in range(3):
+                      try:
+                          with open(local_item, 'rb') as f:
+                              ftp.storbinary(f'STOR {remote_item}', f, blocksize=65536)
+                          count[0] += 1
+                          print(f"  ✓ {remote_item}")
+                          return
+                      except Exception as e:
+                          if attempt < 2:
+                              time.sleep(1)
+                          else:
+                              print(f"  ✗ {remote_item} - {e}")
+
+              def walk_and_upload(local_path, remote_path):
+                  ensure_dir(remote_path)
+                  for item in os.listdir(local_path):
+                      local_item = os.path.join(local_path, item)
+                      remote_item = f"{remote_path}/{item}".replace('\\', '/')
+                      if os.path.isdir(local_item):
+                          walk_and_upload(local_item, remote_item)
+                      else:
+                          upload_file(local_item, remote_item)
+
+              walk_and_upload(local_dir, remote_dir)
+              ftp.quit()
+              print(f"✓ Uploaded {count[0]} files to {host}")
+
+          ftp_upload(os.environ['FTP_HOST'], os.environ['FTP_USER'], os.environ['FTP_PASS'], 
+                     'apps/stuart/frontend/dist', 'htdocs/stuart')
+          EOF
