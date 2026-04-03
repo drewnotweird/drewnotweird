@@ -28,7 +28,7 @@ jobs:
           VITE_BASE_PATH: /stuart/
         run: npm run build
 
-      - name: Deploy via FTP
+      - name: Deploy to drewnotweird.com via FTP
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
@@ -68,13 +68,10 @@ jobs:
                           with open(local_item, 'rb') as f:
                               ftp.storbinary(f'STOR {remote_item}', f, blocksize=65536)
                           count[0] += 1
-                          print(f"  ✓ {remote_item}")
                           return
                       except Exception as e:
                           if attempt < 2:
                               time.sleep(1)
-                          else:
-                              print(f"  ✗ {remote_item} - {e}")
 
               def walk_and_upload(local_path, remote_path):
                   ensure_dir(remote_path)
@@ -91,5 +88,68 @@ jobs:
               print(f"✓ Uploaded {count[0]} files to {host}")
 
           ftp_upload(os.environ['FTP_HOST'], os.environ['FTP_USER'], os.environ['FTP_PASS'], 
+                     'apps/stuart/frontend/dist', 'htdocs/stuart')
+          EOF
+
+      - name: Deploy to drewnotweird.co.uk via FTP
+        env:
+          FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
+          FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
+          FTP_PASS_COUK: ${{ secrets.FTP_PASS_COUK }}
+        run: |
+          python3 - <<'EOF'
+          import ftplib, os, time
+
+          RECONNECT_EVERY = 20
+
+          def make_ftp(host, user, password):
+              ftp = ftplib.FTP()
+              ftp.connect(host, 21, timeout=60)
+              ftp.login(user, password)
+              ftp.set_pasv(True)
+              return ftp
+
+          def ftp_upload(host, user, password, local_dir, remote_dir):
+              ftp = make_ftp(host, user, password)
+              print(f"Connected to {host}")
+              count = [0]
+
+              def ensure_dir(path):
+                  try:
+                      ftp.mkd(path)
+                  except ftplib.error_perm:
+                      pass
+
+              def upload_file(local_item, remote_item):
+                  nonlocal ftp
+                  if count[0] > 0 and count[0] % RECONNECT_EVERY == 0:
+                      ftp.quit()
+                      ftp = make_ftp(host, user, password)
+                      print(f"Reconnected after {count[0]} files")
+                  for attempt in range(3):
+                      try:
+                          with open(local_item, 'rb') as f:
+                              ftp.storbinary(f'STOR {remote_item}', f, blocksize=65536)
+                          count[0] += 1
+                          return
+                      except Exception as e:
+                          if attempt < 2:
+                              time.sleep(1)
+
+              def walk_and_upload(local_path, remote_path):
+                  ensure_dir(remote_path)
+                  for item in os.listdir(local_path):
+                      local_item = os.path.join(local_path, item)
+                      remote_item = f"{remote_path}/{item}".replace('\\', '/')
+                      if os.path.isdir(local_item):
+                          walk_and_upload(local_item, remote_item)
+                      else:
+                          upload_file(local_item, remote_item)
+
+              walk_and_upload(local_dir, remote_dir)
+              ftp.quit()
+              print(f"✓ Uploaded {count[0]} files to {host}")
+
+          ftp_upload(os.environ['FTP_HOST_COUK'], os.environ['FTP_USER_COUK'], os.environ['FTP_PASS_COUK'], 
                      'apps/stuart/frontend/dist', 'htdocs/stuart')
           EOF
