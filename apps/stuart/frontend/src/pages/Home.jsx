@@ -8,14 +8,24 @@ export default function Home() {
   const baseUrl = import.meta.env.BASE_URL
 
   useEffect(() => {
-    // Autoplay on mount
+    // Try to autoplay on mount (browsers may block this)
     if (audioRef.current) {
-      audioRef.current.play().catch(() => {
-        // Browser blocked autoplay - no action needed
-      })
+      const playPromise = audioRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Browser blocked autoplay - user must click play
+        })
+      }
       triggerBigConfetti()
     }
   }, [])
+
+  const handlePlayClick = () => {
+    if (audioRef.current) {
+      audioRef.current.play()
+      triggerBigConfetti()
+    }
+  }
 
   const triggerBigConfetti = () => {
     confetti({
@@ -55,8 +65,16 @@ export default function Home() {
         ref={audioRef}
         src={`${baseUrl}stevie.mp3`}
         loop
-        autoPlay
       />
+
+      {/* Play button for browsers that block autoplay */}
+      <button 
+        className="play-button"
+        onClick={handlePlayClick}
+        aria-label="Play birthday song"
+      >
+        🎵 Play
+      </button>
     </div>
   )
 }

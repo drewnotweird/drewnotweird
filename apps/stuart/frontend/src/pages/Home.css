@@ -49,3 +49,32 @@
     height: 100px;
   }
 }
+
+/* Play button */
+.play-button {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: bold;
+  background: rgba(206, 14, 45, 0.9);
+  color: white;
+  border: 2px solid white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.play-button:hover {
+  background: rgba(206, 14, 45, 1);
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.play-button:active {
+  transform: translateX(-50%) scale(0.95);
+}
