@@ -125,11 +125,6 @@ export default function PhysicsScene() {
     const W = containerRef.current.clientWidth
 
     handsOffRef.current.add(id)
-    // Make body static so it doesn't interfere during animation
-    if (body) {
-      Matter.Body.setStatic(body, true)
-    }
-    
     // Fade text out and card out simultaneously
     setTextVisibleId(null)
     el.style.transition = `opacity ${TEXT_FADE}ms ease`
@@ -151,11 +146,12 @@ export default function PhysicsScene() {
       el.style.transform = ''
 
       if (body) {
-        // Reposition and unlock
-        Matter.Body.setPosition(body, { x: randomX, y: -R })
-        Matter.Body.setVelocity(body, { x: 0, y: 0 })
-        Matter.Body.setAngularVelocity(body, 0)
+        // Re-add to world (expand removed it)
+        Matter.World.add(worldRef.current, body)
         Matter.Body.setStatic(body, false)
+        Matter.Body.setPosition(body, { x: randomX, y: -R })
+        Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
+        Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
       }
       handsOffRef.current.delete(id)
     }, TEXT_FADE + 20)
