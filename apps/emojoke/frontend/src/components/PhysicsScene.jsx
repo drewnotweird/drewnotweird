@@ -4,8 +4,8 @@ import { JOKES } from '../data/jokes.js'
 
 const WIDE = window.innerWidth >= 1024
 const R = WIDE ? 70 : 52
-const EXP_W = WIDE ? 440 : 320
-const EXP_H = WIDE ? 300 : 240
+const EXP_W = WIDE ? 460 : 340
+const EXP_H = WIDE ? 340 : 300
 const REPEL_R = WIDE ? 120 : 90
 const REPEL_F = 0.0025
 const TRANSITION = 380
@@ -252,7 +252,7 @@ export default function PhysicsScene() {
             {isExpanded && (
               <p style={{
                 position: 'absolute',
-                top: WIDE ? 130 : 105,
+                top: WIDE ? 90 : 105,
                 left: 0,
                 right: 0,
                 padding: `0 ${WIDE ? 32 : 24}px`,
