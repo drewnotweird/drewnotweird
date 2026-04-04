@@ -77,14 +77,12 @@ export default function PhysicsScene() {
     const ro = new ResizeObserver(() => buildWalls())
     ro.observe(container)
 
-    let lastTime = performance.now()
     let rafId
+    const FIXED_DT = 16 // 16ms ~ 60fps
 
     function tick() {
       rafId = requestAnimationFrame(tick)
-      const now = performance.now()
-      Matter.Engine.update(engine, Math.min(now - lastTime, 32))
-      lastTime = now
+      Matter.Engine.update(engine, FIXED_DT)
 
       const cx = cursorRef.current.x
       const cy = cursorRef.current.y
