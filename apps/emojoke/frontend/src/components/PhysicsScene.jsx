@@ -3,7 +3,7 @@ import Matter from 'matter-js'
 import { JOKES } from '../data/jokes.js'
 
 const WIDE = window.innerWidth >= 1024
-const R = WIDE ? 70 : 52
+const R = WIDE ? 80 : 40
 const EXP_W = WIDE ? 460 : 340
 const EXP_H = WIDE ? 340 : 300
 const REPEL_R = WIDE ? 120 : 90
