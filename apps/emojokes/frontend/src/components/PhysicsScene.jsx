@@ -71,6 +71,8 @@ export default function PhysicsScene() {
       setTimeout(() => {
         if (worldRef.current) {
           Matter.World.add(worldRef.current, body)
+          const el = elMap.current[joke.id]
+          if (el) el.style.opacity = '1'
         }
       }, i * STAGGER)
     })
@@ -234,7 +236,7 @@ export default function PhysicsScene() {
               WebkitUserSelect: 'none',
               overflow: 'hidden',
               zIndex: 1,
-              opacity: 1,
+              opacity: 0,
             }}
           >
             {/* Emoji — absolutely centred in the circle at all times */}
