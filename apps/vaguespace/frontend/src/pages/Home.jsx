@@ -59,7 +59,7 @@ export default function Home() {
             <h1 className="band-info-name">VAGUE ( ) SPACE</h1>
             <p className="band-info-location">Glasgow, Scotland</p>
             <p className="band-info-bio">
-              True Scottish indie rock. Six songs about love, loss, and the endless static between.
+              True Scottish indie rock
             </p>
             <div className="band-info-ep">
               <p className="band-info-ep-label">Debut EP</p>
