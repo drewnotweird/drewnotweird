@@ -3,7 +3,7 @@ export const JOKES = [
   { id: 1,  emoji: '🐱', setup: "What is a cat's favorite dessert?", punchline: "A mice cream cone." },
   { id: 2,  emoji: '🍕', setup: "What to hear a joke about pizza?", punchline: "Never mind it's too cheesy." },
   { id: 3,  emoji: '🌈', setup: "Today I successfully weighed a rainbow.", punchline: "Pretty light." },
-  { id: 4,  emoji: '🌮', setup: "What does Pac-Man put on his tacos?", punchline: "Guacauacauacauamole." },
+  { id: 4,  emoji: '🌮', setup: "What does Pac-Man put on his tacos?", punchline: "Guacauacauacamole." },
   { id: 5,  emoji: '🐸', setup: "What do you call an illegally parked frog?", punchline: "Toad." },
   { id: 6,  emoji: '🦄', setup: "What has one horn and isn't magic?", punchline: "A dead unicorn." },
   { id: 7,  emoji: '🐙', setup: "How many times do you have to tickle an octopus to make it laugh?", punchline: "Ten-tickles." },

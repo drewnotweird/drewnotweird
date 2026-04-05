@@ -3,15 +3,16 @@ import { useParams, Navigate } from 'react-router-dom'
 
 const projectMap = {
   whiskyblender: lazy(() => import('../projects/whiskyblender.jsx')),
-  royalcaribbean: lazy(() => import('../projects/royalcaribbean.jsx')),
+  wunwurd: lazy(() => import('../projects/wunwurd.jsx')),
   airnewzealand: lazy(() => import('../projects/airnewzealand.jsx')),
-  rumblender: lazy(() => import('../projects/rumblender.jsx')),
   frontpage: lazy(() => import('../projects/frontpage.jsx')),
   introducing: lazy(() => import('../projects/introducing.jsx')),
+  royalcaribbean: lazy(() => import('../projects/royalcaribbean.jsx')),
+  mickey90: lazy(() => import('../projects/mickey90.jsx')),
+  makeithappen: lazy(() => import('../projects/makeithappen.jsx')),
+  rumblender: lazy(() => import('../projects/rumblender.jsx')),
   logos: lazy(() => import('../projects/logos.jsx')),
   vaguespace: lazy(() => import('../projects/vaguespace.jsx')),
-  wunwurd: lazy(() => import('../projects/wunwurd.jsx')),
-  makeithappen: lazy(() => import('../projects/makeithappen.jsx')),
 }
 
 export default function Project() {
