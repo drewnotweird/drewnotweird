@@ -31,7 +31,7 @@ export default function Home() {
           creatives; let people{' '}
           <a href="https://www.whiskyblender.com/" target="_blank" rel="noreferrer">create their own whisky</a>;{' '}
           <a href="https://justgiving.com/fundraising/fulltandy" target="_blank" rel="noreferrer">raise funds</a> for Glasgow
-          NE Foodbank; enjoy the odd  <a href="/bigjuicy" target="_blank" rel="noreferrer">Big Juicy</a>, tell <a href="/emojoke" target="_blank" rel="noreferrer">bad jokes</a>, and <a href="/pointing" target="_blank" rel="noreferrer">point at things</a> (oh, did I mention I used to be in <a href="/vaguespace" target="_blank" rel="noreferrer">a band</a>).
+          NE Foodbank; enjoy the odd  <a href="/bigjuicy" target="_blank" rel="noreferrer">Big Juicy</a>, tell <a href="/emojokes" target="_blank" rel="noreferrer">bad jokes</a>, and <a href="/pointing" target="_blank" rel="noreferrer">point at things</a> (oh, did I mention I used to be in <a href="/vaguespace" target="_blank" rel="noreferrer">a band</a>).
         </p>
       </section>
 
