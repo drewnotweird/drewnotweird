@@ -77,8 +77,15 @@ async function fetchAll() {
     }
   };
 
-  console.log('  Fetching popular (pages 16–40)…');
-  for (let p = 16; p <= 40; p++) push(await tmdbGet(`/movie/popular?page=${p}`));
+  // Trending week pages 1–5 first — these are exactly what the homepage shows
+  console.log('  Fetching trending this week (pages 1–5, homepage content)…');
+  for (let p = 1; p <= 5; p++) push(await tmdbGet(`/trending/movie/week?page=${p}`));
+
+  console.log('  Fetching now-playing…');
+  for (let p = 1; p <= 5; p++) push(await tmdbGet(`/movie/now_playing?page=${p}`));
+
+  console.log('  Fetching popular (pages 1–20)…');
+  for (let p = 1; p <= 20; p++) push(await tmdbGet(`/movie/popular?page=${p}`));
 
   console.log('  Fetching top-rated (pages 11–30)…');
   for (let p = 11; p <= 30; p++) push(await tmdbGet(`/movie/top_rated?page=${p}`));
