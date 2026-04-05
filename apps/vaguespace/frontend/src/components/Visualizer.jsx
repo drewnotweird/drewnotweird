@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 const SLICE_WIDTH = (2 * Math.PI) / 2048
 
-export default function Visualizer({ getTimeDomainData, track }) {
+export default function Visualizer({ getTimeDomainData, track, isActive }) {
   const canvasRef = useRef(null)
   const rafRef = useRef(null)
   const frameRef = useRef(0)
@@ -84,7 +84,7 @@ export default function Visualizer({ getTimeDomainData, track }) {
       ref={canvasRef}
       width={window.innerWidth * window.devicePixelRatio}
       height={window.innerHeight * window.devicePixelRatio}
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', filter: isActive ? 'none' : 'grayscale(1)', transition: 'filter 0.6s ease' }}
     />
   )
 }

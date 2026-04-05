@@ -1,11 +1,11 @@
-name: Deploy Emojoke to Fasthosts
+name: Deploy Emojokes to Fasthosts
 
 on:
   push:
     branches: [main]
     paths:
-      - 'apps/emojoke/frontend/**'
-      - '.github/workflows/deploy-emojoke.yml'
+      - 'apps/emojokes/frontend/**'
+      - '.github/workflows/deploy-emojokes.yml'
   workflow_dispatch:
 
 jobs:
@@ -19,13 +19,13 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: apps/emojoke/frontend
+        working-directory: apps/emojokes/frontend
         run: npm install
 
       - name: Build
-        working-directory: apps/emojoke/frontend
+        working-directory: apps/emojokes/frontend
         env:
-          VITE_BASE_PATH: /emojoke/
+          VITE_BASE_PATH: /emojokes/
         run: npm run build
 
       - name: Deploy to drewnotweird.com via FTP
@@ -94,8 +94,8 @@ jobs:
               os.environ['FTP_HOST'],
               os.environ['FTP_USER'],
               os.environ['FTP_PASS'],
-              'apps/emojoke/frontend/dist',
-              'htdocs/emojoke',
+              'apps/emojokes/frontend/dist',
+              'htdocs/emojokes',
           )
           EOF
 
@@ -165,7 +165,7 @@ jobs:
               os.environ['FTP_HOST_COUK'],
               os.environ['FTP_USER_COUK'],
               os.environ['FTP_PASS_COUK'],
-              'apps/emojoke/frontend/dist',
-              'htdocs/emojoke',
+              'apps/emojokes/frontend/dist',
+              'htdocs/emojokes',
           )
           EOF

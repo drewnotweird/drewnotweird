@@ -16,7 +16,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate('/login')
+      navigate('/login?from=/profile')
       return
     }
     if (user) {

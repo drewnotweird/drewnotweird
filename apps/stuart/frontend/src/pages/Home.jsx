@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 import './Home.css'
 
@@ -6,8 +6,13 @@ export default function Home() {
   const audioRef = useRef(null)
   const containerRef = useRef(null)
   const baseUrl = import.meta.env.BASE_URL
+  const [showAlt, setShowAlt] = useState(false)
 
   useEffect(() => {
+    // Preload the alternate image so the swap is instant
+    const img = new Image()
+    img.src = `${baseUrl}stuart2.jpg`
+
     // Start playing muted on mount (browsers allow this)
     if (audioRef.current) {
       audioRef.current.muted = true
@@ -19,6 +24,7 @@ export default function Home() {
   }, [])
 
   const handleScreenClick = () => {
+    setShowAlt(prev => !prev)
     if (audioRef.current) {
       // Unmute and ensure it's playing
       audioRef.current.muted = false
@@ -58,7 +64,7 @@ export default function Home() {
   return (
     <div className="home" ref={containerRef} onClick={handleScreenClick}>
       {/* Background image */}
-      <div className="background" style={{ backgroundImage: `url(${baseUrl}stuart.jpg)` }} />
+      <div className="background" style={{ backgroundImage: `url(${baseUrl}${showAlt ? 'stuart2.jpg' : 'stuart.jpg'})` }} />
 
       {/* Audio element - local MP3 file */}
       <audio

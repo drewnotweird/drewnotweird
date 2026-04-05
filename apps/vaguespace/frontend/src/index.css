@@ -94,3 +94,160 @@ html, body, #root {
   font-size: 11vw;
 }
 }
+
+/* ── Band logo row ────────────────────────────────────────────── */
+
+.band-logo-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+  pointer-events: all;
+}
+
+.band-logo-btn:hover {
+  opacity: 0.65;
+}
+
+.band-logo-svg {
+  width: clamp(28px, 6vw, 48px);
+  height: clamp(28px, 6vw, 48px);
+}
+
+/* ── Band info overlay ────────────────────────────────────────── */
+
+.band-info-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.band-info-content {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: #0a0a0a;
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 48px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.band-info-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.band-info-close:hover {
+  color: #fff;
+}
+
+.band-info-logo {
+  width: 56px;
+  height: 56px;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.band-info-name {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: clamp(1rem, 6vw, 2.4rem);
+  letter-spacing: 0.05em;
+  color: #fff;
+  line-height: 1;
+  margin: 0;
+}
+
+.band-info-location {
+  font-family: 'Arial', Arial, sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+}
+
+.band-info-bio {
+  font-family: 'Arial', Arial, sans-serif;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  max-width: 340px;
+}
+
+.band-info-ep {
+  margin-top: 8px;
+}
+
+.band-info-ep-label {
+  font-family: 'Arial', Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.band-info-ep-title {
+  font-family: 'Arial', Arial, sans-serif;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.9);
+}
+
+.band-info-tracklist {
+  list-style: none;
+  width: 100%;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.band-info-tracklist li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.band-info-track-num {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+.band-info-track-name {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.65);
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .band-info-content {
+    padding: 40px 24px 32px;
+  }
+}

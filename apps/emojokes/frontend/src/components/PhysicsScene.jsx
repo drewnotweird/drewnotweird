@@ -5,7 +5,7 @@ import { JOKES } from '../data/jokes.js'
 const WIDE = window.innerWidth >= 1024
 const R = WIDE ? 80 : 40
 const EXP_W = WIDE ? 460 : 340
-const EXP_H = WIDE ? 340 : 300
+const EXP_H = WIDE ? 400 : 360
 const REPEL_R = WIDE ? 120 : 90
 const REPEL_F = 0.0025
 const TRANSITION = 380
@@ -23,6 +23,7 @@ export default function PhysicsScene() {
   const handsOffRef = useRef(new Set())
   const [expandedId, setExpandedId] = useState(null)
   const [textVisibleId, setTextVisibleId] = useState(null)
+  const [punchlineVisibleId, setPunchlineVisibleId] = useState(null)
   const TEXT_FADE = 220  // ms for text fade in/out
 
   useEffect(() => { expandedRef.current = expandedId }, [expandedId])
@@ -127,9 +128,10 @@ export default function PhysicsScene() {
     handsOffRef.current.add(id)
     // Fade text out and card out simultaneously
     setTextVisibleId(null)
+    setPunchlineVisibleId(null)
     el.style.transition = `opacity ${TEXT_FADE}ms ease`
     el.style.opacity = '0'
-    
+
     setTimeout(() => {
       setExpandedId(null)
       // Reset to circle and position at random horizontal position off-screen at top
@@ -180,8 +182,9 @@ export default function PhysicsScene() {
     el.style.boxShadow = '0 8px 40px rgba(0,0,0,0.2)'
 
     setExpandedId(id)
-    // Fade text in after card has finished opening
+    // Fade setup in after card has finished opening, then punchline 1s later
     setTimeout(() => setTextVisibleId(id), TRANSITION + 40)
+    setTimeout(() => setPunchlineVisibleId(id), TRANSITION + 40 + 1000)
   }, [])
 
   const handleTap = useCallback((id) => {
@@ -248,25 +251,50 @@ export default function PhysicsScene() {
               {joke.emoji}
             </span>
 
-            {/* Joke text — present in DOM when expanded, fades in/out */}
+            {/* Setup + punchline — present in DOM when expanded, fade in sequentially */}
             {isExpanded && (
-              <p style={{
+              <div style={{
                 position: 'absolute',
                 top: WIDE ? 90 : 105,
+                bottom: 20,
                 left: 0,
                 right: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 12,
                 padding: `0 ${WIDE ? 32 : 24}px`,
-                textAlign: 'center',
-                fontFamily: "'DynaPuff', cursive",
-                fontSize: WIDE ? '1.9rem' : '1.4rem',
-                lineHeight: 1.5,
-                color: '#333',
-                pointerEvents: 'none',
-                opacity: textVisibleId === joke.id ? 1 : 0,
-                transition: `opacity ${TEXT_FADE}ms ease`,
               }}>
-                {joke.joke}
-              </p>
+                <p style={{
+                  fontFamily: "'DynaPuff', cursive",
+                  fontSize: WIDE ? '1.9rem' : '1.4rem',
+                  lineHeight: 1.5,
+                  color: '#333',
+                  textAlign: 'center',
+                  pointerEvents: 'none',
+                  fontWeight: 300,
+                  opacity: textVisibleId === joke.id ? 0.6 : 0,
+                  transition: `opacity ${TEXT_FADE}ms ease`,
+                  margin: 0,
+                }}>
+                  {joke.setup}
+                </p>
+                <p style={{
+                  fontFamily: "'DynaPuff', cursive",
+                  fontSize: WIDE ? '1.9rem' : '1.4rem',
+                  lineHeight: 1.5,
+                  color: '#333',
+                  textAlign: 'center',
+                  pointerEvents: 'none',
+                  fontWeight: 700,
+                  opacity: punchlineVisibleId === joke.id ? 1 : 0,
+                  transition: `opacity ${TEXT_FADE}ms ease`,
+                  margin: 0,
+                }}>
+                  {joke.punchline}
+                </p>
+              </div>
             )}
           </div>
         )

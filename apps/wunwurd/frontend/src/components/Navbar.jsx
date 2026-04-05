@@ -90,7 +90,7 @@ export default function Navbar() {
 
   function closeSearch() { setSearchOpen(false); setQuery(''); setResults([]) }
   function handleResultClick(movie) { navigate(`/movie/${movie.id}`); closeSearch() }
-  function handleProfileClick() { user ? navigate('/profile') : navigate('/login') }
+  function handleProfileClick() { user ? navigate('/profile') : navigate(`/login?from=${encodeURIComponent(location.pathname)}`) }
 
   // Scroll progress: 0 = at top of home page, 1 = scrolled / not home page
   const progress = isHome ? Math.min(1, scrollY / SCROLL_THRESHOLD) : 1
