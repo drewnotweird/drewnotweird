@@ -47,14 +47,17 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender-11.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-12.gif`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-10.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-11.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-12.gif`, layout: 'full' },
       ]} />
 
       <section>
         <p>That's Whisky Blender in a nutshell. From personal blends to limited releases, collaborations, and playful marketing, it's never about doing the obvious. It's about understanding behaviour, context, and memory – and designing around it. Built messy, evolving, and entirely hands-on, it's a project that proves a half-serious idea can become something people genuinely connect with.</p>
       </section>
+
+      <ImageSection images={[
+        { src: `${BASE}/whiskyblender-10.jpg`, layout: 'full' },
+      ]} />
     </ProjectLayout>
   )
 }
