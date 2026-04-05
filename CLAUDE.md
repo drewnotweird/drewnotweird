@@ -37,7 +37,18 @@ When setting up any new app, always do all of the following before considering i
 2. `BrowserRouter basename={import.meta.env.BASE_URL}`
 3. `index.html` — full OG + Twitter card block (title, description, og:image, og:url, og:type, twitter:card, twitter:title, twitter:description, twitter:image). Images go at `https://www.drewnotweird.co.uk/<name>/og-<name>.jpg` and `favicon.png`.
 4. Deploy workflow targeting both `.com` and `.co.uk` FTP servers, with `VITE_BASE_PATH: /<name>/` and remote dir `htdocs/<name>/`. Always upload favicon and og image (never skip them). Reconnect every 20 files.
-5. After scaffolding, **prompt the user to add `favicon.png` and `og-<name>.jpg` to `apps/<name>/frontend/public/`** before the first deploy.
+5. `index.html` — add Google Analytics snippet (GA4 ID: `G-TNKV47M2TS`) just before `</head>`:
+   ```html
+   <!-- Google Analytics -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TNKV47M2TS"></script>
+   <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'G-TNKV47M2TS');
+   </script>
+   ```
+6. After scaffolding, **prompt the user to add `favicon.png` and `og-<name>.jpg` to `apps/<name>/frontend/public/`** before the first deploy.
 
 ## Conventions
 - DOM-managed animation (no React state in render loops) — use refs + `requestAnimationFrame`
