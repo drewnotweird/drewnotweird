@@ -29,7 +29,7 @@ export const JOKES = [
   { id: 27, emoji: '🦞', setup: "Why did the lobster blush?", punchline: "Because it saw the ocean's bottom!" },
   { id: 28, emoji: '🍎', setup: "How many apples can you grow on a tree?", punchline: "All of them." },
   { id: 29, emoji: '🍔', setup: "Where do hamburgers go to dance?", punchline: "The meatball." },
-  { id: 30, emoji: '🪰', setup: "What has four wheels and flies?", punchline: "A garbage truck." },
+  { id: 30, emoji: '🪰', setup: "What has four wheels and flies?", punchline: "A bin lorry." },
   { id: 31, emoji: '☕', setup: "What do you call a sad cup of coffee?", punchline: "A depresso." },
   { id: 32, emoji: '🐻', setup: "What do you call bears with no ears?", punchline: "B." },
   { id: 33, emoji: '⚾', setup: "I couldn't figure out why the baseball kept getting bigger.", punchline: "Then, it hit me." },

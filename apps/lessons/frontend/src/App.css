@@ -67,6 +67,7 @@
   bottom: 0;
   right: 0;
   padding: 4vw;
+  z-index: 20;
 }
 
 .ui-share a {
@@ -87,6 +88,8 @@
 .content p {
   display: block;
   margin: 0;
+  padding-bottom: 4vh;
+  text-align: center;
 }
 
 /* ── Main text animations ── */
@@ -118,38 +121,29 @@
 .enter-next { animation: enter-next 450ms cubic-bezier(0, 0, 0.2, 1) forwards; }
 .enter-prev { animation: enter-prev 450ms cubic-bezier(0, 0, 0.2, 1) forwards; }
 
-/* ── Navigation buttons ── */
+/* ── Click zones (desktop only) ── */
 
-.nav {
+.zone {
   position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #e3d4c7;
-  font-size: 24px;
-  padding: 16px 20px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  z-index: 20;
-  font-family: sans-serif;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 5;
 }
 
-.nav--prev { left: 0; }
-.nav--next { right: 0; }
-
-.stage:hover .nav,
-.nav:focus {
-  opacity: 0.4;
+.zone--prev {
+  left: 0;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='32,8 16,24 32,40' fill='%23968d85' opacity='0.9'/%3E%3C/svg%3E") 24 24, w-resize;
 }
 
-.nav:hover {
-  opacity: 0.8 !important;
+.zone--next {
+  right: 0;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='16,8 32,24 16,40' fill='%23968d85' opacity='0.9'/%3E%3C/svg%3E") 24 24, e-resize;
 }
 
+/* Hide zones on touch devices — taps handled by onTouchEnd */
 @media (pointer: coarse) {
-  .nav { opacity: 0.25; }
+  .zone { display: none; }
 }
 
 /* ── Per-lesson typography (preserved exactly from original) ── */

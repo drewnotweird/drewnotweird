@@ -110,13 +110,13 @@ export const lessons = [
   {
     number: '#019',
     headline: "I\u2019d rather be a hypocrite than the same person forever",
-    small: "",
+    small: "Appearing consistent is not a good reason for refusing to grow.",
     shareUrl: 'https://twitter.com/drewnotweird/status/1536427471603748865',
   },
   {
     number: '#020',
     headline: 'Doing nothing often is more productive than always doing something',
-    small: "",
+    small: "niksen - a conscious, guilt-free choice to stop, allowing for increased productivity and creativity.",
     shareUrl: 'https://twitter.com/drewnotweird/status/1536427471603748865',
   },
   {
@@ -134,7 +134,7 @@ export const lessons = [
   {
     number: '#023',
     headline: 'Practice makes progress',
-    small: "",
+    small: "Turn the focus from 'I need to be perfect' to 'I am getting better every day.'",
     shareUrl: 'https://twitter.com/drewnotweird/status/1536427471603748865',
   },
   {
