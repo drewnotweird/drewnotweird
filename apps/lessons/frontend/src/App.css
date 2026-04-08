@@ -316,7 +316,28 @@
 
 /* LESSON 24 */
 .lesson-24 { font-family: 'Spline Sans Mono'; }
-.lesson-24 p { font-size: 7vw; line-height: 8vw; }
+.lesson-24 p { font-size: 8vw; line-height: 10vw; }
 @media (orientation: portrait) {
-  .lesson-24 p { font-size: 11vw; line-height: 12vw; }
+  .lesson-24 p { font-size: 15vw; line-height: 20vw; }
+}
+
+/* LESSON 25 */
+.lesson-25 { font-family: "Mynerve", cursive; }
+.lesson-25 p { font-size: 9vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-25 p { font-size: 16vw; line-height: 16vw; }
+}
+
+/* LESSON 26 */
+.lesson-26 { font-family: "Great Vibes", cursive; }
+.lesson-26 p { font-size: 8vw; line-height: 10vw; }
+@media (orientation: portrait) {
+  .lesson-26 p { font-size: 14vw; line-height: 18vw; }
+}
+
+/* LESSON 27 */
+.lesson-27 { font-family: "Frijole", system-ui; }
+.lesson-27 p { font-size: 10vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-27 p { font-size: 18vw; line-height: 14vw; }
 }

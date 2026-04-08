@@ -13,7 +13,7 @@ const FONT_FAMILIES = [
   'Sansita Swashed', 'Bungee', 'Press Start 2P', 'Special Elite',
   'Stardos Stencil', 'Raleway Dots', 'Finger Paint', 'Barrio', 'Yatra One',
   'Katibeh', 'Life Savers', 'Lily Script One', 'Sarina', 'Anybody',
-  'Cabin Sketch', 'Bebas Neue', 'Graduate', 'Spline Sans Mono',
+  'Cabin Sketch', 'Bebas Neue', 'Graduate', 'Spline Sans Mono', 'Mynerve', 'Great Vibes', 'Frijole',
 ]
 
 function formatNum(n) {
