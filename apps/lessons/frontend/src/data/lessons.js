@@ -74,7 +74,7 @@ export const lessons = [
   {
     number: '#013',
     headline: 'Every dead body on Mount Everest was once a highly motivated person',
-    small: "Motivation is necessary for achieving goals but over-motivation can actually get in the way of eventual success.",
+    small: "Intense motivation, passion, and ambition are not sufficient to guarantee success and, in some cases, can even prevent it.",
     shareUrl: 'https://twitter.com/drewnotweird/status/1542839609654235136',
   },
   {
