@@ -7,15 +7,23 @@ import './App.css'
 const TOTAL = lessons.length
 const BASE = 'https://www.drewnotweird.co.uk/lessons/'
 
+// All font families used across lessons — ensures they're requested early
+const FONT_FAMILIES = [
+  'Yeseva One', 'Zilla Slab Highlight', 'Racing Sans One', 'Calistoga',
+  'Sansita Swashed', 'Bungee', 'Press Start 2P', 'Special Elite',
+  'Stardos Stencil', 'Raleway Dots', 'Finger Paint', 'Barrio', 'Yatra One',
+  'Katibeh', 'Life Savers', 'Lily Script One', 'Sarina', 'Anybody',
+  'Cabin Sketch', 'Bebas Neue', 'Graduate', 'Spline Sans Mono',
+]
+
 function formatNum(n) {
-  return `#${String(n + 1).padStart(3, '0')}`
+  return `#${String(n + 1).padStart(2, '0')}`
 }
 
 function lessonUrl(n) {
   return `${BASE}#${n + 1}`
 }
 
-// Read hash on load; fall back to random
 function initialIdx() {
   const hash = parseInt(window.location.hash.slice(1), 10)
   if (!isNaN(hash) && hash >= 1 && hash <= TOTAL) return hash - 1
@@ -37,15 +45,31 @@ function updateMeta(idx) {
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', desc)
 }
 
+// Preload all fonts by checking they're in the FontFaceSet
+async function preloadFonts() {
+  const checks = FONT_FAMILIES.map(family =>
+    document.fonts.load(`16px "${family}"`)
+  )
+  await Promise.all(checks)
+  await document.fonts.ready
+}
+
 export default function App() {
   const [idx, setIdx] = useState(initialIdx)
   const [displayNum, setDisplayNum] = useState(() => initialIdx())
   const [animClass, setAnimClass] = useState('')
   const [smallVisible, setSmallVisible] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [fontsReady, setFontsReady] = useState(false)
   const transitioning = useRef(false)
   const touchStartX = useRef(null)
+  const touchStartOnShare = useRef(false)
   const counterRef = useRef(null)
+
+  // Preload all fonts before allowing any interaction
+  useEffect(() => {
+    preloadFonts().then(() => setFontsReady(true))
+  }, [])
 
   // Sync hash and meta on idx change
   useEffect(() => {
@@ -67,7 +91,7 @@ export default function App() {
   }, [])
 
   const go = useCallback((fromIdx, toIdx, dir) => {
-    if (transitioning.current) return
+    if (!fontsReady || transitioning.current) return
     transitioning.current = true
 
     setAnimClass(`exit-${dir}`)
@@ -83,11 +107,9 @@ export default function App() {
     }, 60)
 
     setTimeout(() => {
-      // Phase 2: swap content while still invisible, no animation class
       setIdx(toIdx)
       setAnimClass('hidden')
 
-      // Phase 3: enter animation starts only after content has committed to DOM
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setAnimClass(`enter-${dir}`)
@@ -99,7 +121,7 @@ export default function App() {
         })
       })
     }, 300)
-  }, [])
+  }, [fontsReady])
 
   const prev = useCallback(() => go(idx, (idx - 1 + TOTAL) % TOTAL, 'prev'), [idx, go])
   const next = useCallback(() => go(idx, (idx + 1) % TOTAL, 'next'), [idx, go])
@@ -116,13 +138,19 @@ export default function App() {
 
   useEffect(() => () => clearInterval(counterRef.current), [])
 
-  // Touch: swipe = directional, tap = next
+  // Touch — track if the touch started on the share button
   const onTouchStart = useCallback((e) => {
+    touchStartOnShare.current = !!e.target.closest('.ui-share')
     touchStartX.current = e.touches[0].clientX
   }, [])
 
   const onTouchEnd = useCallback((e) => {
     if (touchStartX.current === null) return
+    if (touchStartOnShare.current) {
+      touchStartX.current = null
+      touchStartOnShare.current = false
+      return
+    }
     const dx = e.changedTouches[0].clientX - touchStartX.current
     touchStartX.current = null
     if (Math.abs(dx) < 40) next()
@@ -138,6 +166,7 @@ export default function App() {
   // Share: Web Share API → clipboard fallback
   const handleShare = useCallback(async (e) => {
     e.preventDefault()
+    e.stopPropagation()
     const lesson = lessons[idx]
     const url = lessonUrl(idx)
     const shareData = {
