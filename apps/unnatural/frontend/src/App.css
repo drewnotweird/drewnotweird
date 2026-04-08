@@ -60,7 +60,7 @@
 @media (orientation: portrait) {
   .stage {
     align-items: flex-start;
-    padding-top: calc(50vh - 65vw);
+    padding-top: calc(47vh - 65vw);
   }
 
   .ui-title {
