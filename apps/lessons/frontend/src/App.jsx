@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { lessons } from './data/lessons.js'
 import Particles from './components/Particles.jsx'
+import Typewriter from './components/Typewriter.jsx'
 import './App.css'
 
 const TOTAL = lessons.length
@@ -168,7 +169,7 @@ export default function App() {
 
       {lesson.small && (
         <p className={`ui-small ${smallVisible ? 'small--in' : 'small--out'}`}>
-          {lesson.small}
+          <Typewriter text={lesson.small} active={smallVisible} />
         </p>
       )}
 

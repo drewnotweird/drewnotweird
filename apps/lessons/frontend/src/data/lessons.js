@@ -140,7 +140,7 @@ export const lessons = [
   {
     number: '#024',
     headline: 'Remember to write to remember',
-    small: "Never assume you\u2019ll simply \u2018remember\u2019 something, you won\u2019t. Write it down.",
+    small: "Never assume you\u2019ll simply \u2018remember\u2019 something, you won\u2019t. Write it down. You probably won't even need to read it again.",
     shareUrl: 'https://twitter.com/drewnotweird/status/1536427471603748865',
   },
 ]
