@@ -6,6 +6,78 @@
   justify-content: center;
 }
 
+/* ── Credits UI ── */
+
+.ui-title,
+.ui-credits {
+  position: fixed;
+  font-family: 'Spline Sans Mono', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #fff;
+  background: #000;
+  padding: 4px 8px;
+  z-index: 10;
+}
+
+.ui-title { pointer-events: none; }
+
+.credit-name {
+  cursor: pointer;
+}
+
+.credit-name:hover {
+  text-decoration: underline;
+}
+
+/* Landscape / desktop: stacked, title left-centre, credits right-centre */
+@media (orientation: landscape) {
+  .ui-title,
+  .ui-credits {
+    font-size: clamp(10px, 1.1vw, 16px);
+  }
+
+  .ui-title {
+    left: 2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+  }
+
+  .ui-credits {
+    right: 2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+  }
+
+  .ui-credits .credit-name { display: block; }
+  .ui-credits .credit-sep  { display: none; }
+
+}
+
+/* Portrait / mobile: inline wrapping, title top-centre, credits bottom-centre */
+@media (orientation: portrait) {
+  .stage {
+    align-items: flex-start;
+    padding-top: calc(50vh - 65vw);
+  }
+
+  .ui-title {
+    top: 2vw;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .ui-credits {
+    bottom: 2vw;
+    left: 4vw;
+    right: 4vw;
+    text-align: center;
+  }
+}
+
 /* A4 ratio: 1 : √2 (1 : 1.41421356)
    Fit within the viewport leaving 4vw padding on all sides.
    Width is the lesser of:
@@ -24,11 +96,14 @@
   touch-action: none;
 }
 
-/* Each segment is 1/3 of the paper height */
+/* Each segment is 1/3 of the paper height.
+   1px overlap top/bottom prevents sub-pixel rendering gaps between segments. */
 .segment-window {
   flex: 1;
   overflow: hidden;
   position: relative;
+  margin-top: -1px;
+  margin-bottom: -1px;
 }
 
 /* Strip is REPS×N = 56 images wide — expressed as a % of the window */

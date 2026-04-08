@@ -24,15 +24,28 @@ const Segment = forwardRef(function Segment({ images, label, initialIdx = 0 }, r
     stripRef.current.style.transform = toTranslate(posRef.current)
   }, [])
 
-  const spin = useCallback((targetIdx) => {
-    if (busyRef.current) return
+  const spin = useCallback((targetIdx, fast = false) => {
+    // fast (credit click) always interrupts; normal taps respect busyRef
+    if (!fast && busyRef.current) return
     busyRef.current = true
 
     const strip = stripRef.current
+
+    // Snap to current visual position so we don't jump on interrupt
+    if (fast) {
+      const computed = window.getComputedStyle(strip).transform
+      strip.style.transition = 'none'
+      strip.style.transform = computed
+      // Force reflow so the transition cancels cleanly
+      void strip.offsetWidth
+    }
+
     const currentIdx = posRef.current - MID * N
     const dir = Math.random() < 0.5 ? 1 : -1
-    const extraLaps = Math.floor(Math.random() * 2) + 1   // 1–2 extra laps
-    const duration = 3000 + Math.random() * 2000           // 3000–5000 ms
+    const extraLaps = fast ? 0 : Math.floor(Math.random() * 2) + 1
+    const duration = fast
+      ? 600 + Math.random() * 300    // 600–900 ms
+      : 3000 + Math.random() * 2000  // 3000–5000 ms
 
     // Steps needed in the chosen direction to reach targetIdx
     const stepsToTarget = dir === 1

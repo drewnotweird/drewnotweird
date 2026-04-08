@@ -18,6 +18,17 @@ function uniqueIndices() {
 const initialTargets = uniqueIndices()
 const initialColour = Math.floor(Math.random() * COLOURS.length)
 
+// index is 0-based (image 1 = index 0)
+const CREDITS = [
+  { name: 'Graham Dobie',  targets: [0, 0, 0] },
+  { name: 'Lewis Fraser',  targets: [1, 1, 1] },
+  { name: 'Katie Guthrie', targets: [2, 2, 2] },
+  { name: 'Ruth Martin',   targets: [3, 3, 3] },
+  { name: 'Kath Oakley',   targets: [[5, 5, 5], [6, 6, 6]] },
+  { name: 'Ben Oliphant',  targets: [4, 4, 4] },
+  { name: 'Chris Whyte',   targets: [7, 7, 7] },
+]
+
 const SEGMENTS = [
   { key: 'head', images: head, label: 'Head' },
   { key: 'body', images: body, label: 'Body' },
@@ -28,17 +39,22 @@ export default function App() {
   const segRefs = useRef([])
   const stageRef = useRef(null)
   const colourIdx = useRef(initialColour)
+  const creditToggles = useRef({})
 
   const advanceColour = useCallback(() => {
     colourIdx.current = (colourIdx.current + 1) % COLOURS.length
     stageRef.current.style.backgroundColor = COLOURS[colourIdx.current]
   }, [])
 
-  const spin = useCallback(() => {
-    const targets = uniqueIndices()
-    segRefs.current.forEach((seg, i) => seg?.spin(targets[i]))
-    advanceColour()
+  const spin = useCallback((targets = uniqueIndices(), fast = false, colour = null) => {
+    segRefs.current.forEach((seg, i) => seg?.spin(targets[i], fast))
+    if (colour) {
+      stageRef.current.style.backgroundColor = colour
+    } else {
+      advanceColour()
+    }
   }, [advanceColour])
+
 
   // Set initial colour and auto-spin on load
   useEffect(() => {
@@ -54,6 +70,31 @@ export default function App() {
 
   return (
     <div className="stage" ref={stageRef}>
+      <p className="ui-title">Unnatural</p>
+      <p className="ui-credits">
+        {CREDITS.map(({ name, targets }, i) => (
+          <span key={name}>
+            <span
+              className="credit-name"
+              onClick={e => {
+                e.stopPropagation()
+                const resolved = Array.isArray(targets[0])
+                  ? targets[(creditToggles.current[name] = ((creditToggles.current[name] ?? -1) + 1) % targets.length)]
+                  : targets
+                spin(resolved, true, COLOURS[resolved[0]])
+              }}
+              onTouchEnd={e => {
+                e.stopPropagation(); e.preventDefault()
+                const resolved = Array.isArray(targets[0])
+                  ? targets[(creditToggles.current[name] = ((creditToggles.current[name] ?? -1) + 1) % targets.length)]
+                  : targets
+                spin(resolved, true, COLOURS[resolved[0]])
+              }}
+            >{name}</span>
+            {i < CREDITS.length - 1 && <span className="credit-sep"> / </span>}
+          </span>
+        ))}
+      </p>
       <div
         className="paper"
         onClick={handleTap}
