@@ -69,8 +69,9 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: box-shadow 0.15s, transform 0.15s;
+  transition: box-shadow 0.18s, transform 0.18s ease-out;
   transform-origin: center center;
+  transform: rotate(var(--rot));
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
 }
@@ -78,6 +79,7 @@
 .card--active:hover {
   box-shadow: 3px 5px 20px rgba(0,0,0,0.6), 0 0 0 2px #ffffff;
   z-index: 50 !important;
+  transform: rotate(calc(var(--rot) + 6deg)) translateY(-10px) scale(1.05);
 }
 
 .card--active:active {
@@ -646,20 +648,58 @@
 /* ===== GOO BURST (correct mash) ===== */
 .goo-burst {
   transform: translate(-50%, -50%);
+  /* Goo filter: blurs then thresholds alpha so nearby blobs merge into one mass */
+  filter: url('#splat-goo');
+}
+
+.goo-central {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  left: -110px;
+  top: -110px;
+  pointer-events: none;
+  animation: gooCentral 1.1s cubic-bezier(0.2, 0, 0.5, 1) forwards;
+  transform-origin: center;
+}
+
+@keyframes gooCentral {
+  0%   { transform: scale(0.05) rotate(-15deg); opacity: 1; }
+  18%  { transform: scale(1.2) rotate(8deg);    opacity: 1; }
+  55%  { transform: scale(1.0) rotate(-4deg);   opacity: 1; }
+  100% { transform: scale(1.1) rotate(2deg);    opacity: 0; }
 }
 
 .goo-piece {
   position: absolute;
+  left: 0;
+  top: 0;
   border-radius: 50%;
-  background: #69f0ae;
-  transform-origin: center;
+  transform-origin: 0 0;
   animation: gooFly ease-out forwards;
 }
 
+/* Blobs start clustered (merged by filter) then fly outward as separate globs */
 @keyframes gooFly {
-  0%   { transform: rotate(var(--angle)) translateX(0) scale(1.4);    opacity: 1; }
-  40%  { opacity: 1; }
-  100% { transform: rotate(var(--angle)) translateX(var(--dist)) scale(0.5); opacity: 0; }
+  0%   { transform: rotate(var(--angle)) translateX(0);              opacity: 1; }
+  15%  { transform: rotate(var(--angle)) translateX(20px);           opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateX(var(--dist));    opacity: 0; }
+}
+
+/* Drips are tall teardrops */
+.goo-piece--drip {
+  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+  transform-origin: 50% 0;
+}
+
+@keyframes gooDrip {
+  0%   { transform: rotate(var(--angle)) translateX(0) scaleY(1);            opacity: 1; }
+  30%  { transform: rotate(var(--angle)) translateX(calc(var(--dist)*0.4)) scaleY(1.8); opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateX(var(--dist)) scaleY(0.6); opacity: 0; }
+}
+
+.goo-piece--drip {
+  animation-name: gooDrip;
 }
 
 /* ===== HAND SLAP ===== */
@@ -1105,7 +1145,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 2vw, 20px);
+  gap: clamp(4px, 1.2vw, 14px);
   background: radial-gradient(ellipse at center, #161e28 0%, #000000 100%);
   animation: compareFadeIn 0.35s ease-out forwards;
 }
@@ -1115,47 +1155,41 @@
   to { opacity: 1; }
 }
 
-.compare-overlay-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  position: relative;
-  z-index: 1;
-}
-
 .compare-overlay-title {
   font-family: 'Creepster', sans-serif;
   font-size: clamp(48px, 13vw, 96px);
-  color: #ff5722;
-  text-shadow: 4px 4px 0 #b71c1c, 0 0 40px rgba(255,87,34,0.5);
+  color: #ffd54f;
+  text-shadow: 4px 4px 0 #e65100, 0 0 40px rgba(255,213,79,0.5);
   line-height: 1;
   animation: titleSlam 0.5s cubic-bezier(0.2, 2, 0.4, 1) forwards;
+  position: relative;
+  z-index: 1;
 }
 
 .compare-overlay-message {
   font-family: 'Knewave', cursive;
   font-size: clamp(16px, 4vw, 28px);
-  color: rgba(255,255,255,1);
-  animation: fadeIn 0.4s 0.2s ease-out both;
+  color: rgba(255,255,255,0.8);
+  animation: fadeIn 0.4s 0.3s ease-out both;
 }
 
 .compare-overlay-cards {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: clamp(12px, 4vw, 36px);
   animation: fadeIn 0.45s 0.1s ease-out both;
 }
 
 .compare-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
+/* Use a wrapper so align-items: center aligns the card inners, not the full col with icon */
 .compare-card-inner {
-  width: clamp(90px, 18vw, 170px);
+  width: clamp(70px, 13vw, 130px);
   aspect-ratio: 1370 / 2088;
   border-radius: 8px;
   overflow: hidden;
@@ -1171,8 +1205,8 @@
 }
 
 .compare-card--correct .compare-card-inner {
-  width: clamp(120px, 26vw, 240px);
-  border: 8px solid #ffffff;
+  width: clamp(95px, 18vw, 180px);
+  border: 6px solid #ffffff;
   box-shadow: 0 8px 40px rgba(255,255,255,0.35);
 }
 
@@ -1189,19 +1223,10 @@
   pointer-events: none;
 }
 
-.compare-card-label {
-  font-family: 'Knewave', cursive;
-  font-size: clamp(16px, 4vw, 26px);
-  color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-}
-
-.compare-card--wrong .compare-card-label {
-  color: #ff5252;
-}
-
-.compare-card--correct .compare-card-label {
-  color: #69f0ae;
+.compare-card-icon {
+  width: clamp(28px, 6vw, 44px);
+  height: clamp(28px, 6vw, 44px);
+  flex-shrink: 0;
 }
 
 /* ===== TIMEOUT SCREEN ===== */
@@ -1220,10 +1245,11 @@
 
 .timeout-title {
   font-family: 'Creepster', sans-serif;
-  font-size: clamp(52px, 15vw, 110px);
-  color: #ff5722;
-  text-shadow: 4px 4px 0 #b71c1c, 0 0 50px rgba(255,87,34,0.6);
+  font-size: clamp(48px, 13vw, 96px);
+  color: #ffd54f;
+  text-shadow: 4px 4px 0 #e65100, 0 0 40px rgba(255,213,79,0.5);
   text-align: center;
+  line-height: 1;
   animation: titleSlam 0.5s cubic-bezier(0.2, 2, 0.4, 1) forwards;
 }
 

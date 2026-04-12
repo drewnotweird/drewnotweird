@@ -21,7 +21,6 @@ export default forwardRef(function Card(
     top: `${y}px`,
     width: `${cardW}px`,
     height: `${cardH}px`,
-    transform: `rotate(${rotation}deg)`,
     zIndex: index + 2,
   }
 
