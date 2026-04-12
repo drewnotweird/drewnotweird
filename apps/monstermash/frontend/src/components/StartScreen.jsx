@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import Segment from './Segment'
 import { heads, bodies, legs, titleImgs } from '../data/monsters'
 
@@ -141,13 +141,13 @@ export default function StartScreen({ onPlay, slideIn = false, initialMonster = 
         <div className="info-overlay" onClick={() => setInfoOpen(false)}>
           <div className="info-panel" onClick={e => e.stopPropagation()}>
             <div className="info-title">MONSTER MASH</div>
-            <p className="info-body">Spin up your monster, then find it among the scattered cards — before time runs out!</p>
-            <ul className="info-list">
+            <p className="info-body">I created this game because it was something I loved playing when I was around 6 years old.</p>
+            {/* <ul className="info-list">
               <li>Press the big red button to generate your monster</li>
               <li>Study it carefully as the countdown goes</li>
               <li>Find the matching card and mash it!</li>
               <li>Faster is better — 15 levels, shrinking time limits</li>
-            </ul>
+            </ul> */}
             <button className="info-close" onClick={() => setInfoOpen(false)}>GOT IT!</button>
           </div>
         </div>
