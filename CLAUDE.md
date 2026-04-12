@@ -36,13 +36,22 @@ On this machine, `npm install` sometimes creates `node_modules/.bin/vite` as a p
 - 15 levels defined in `src/data/levels.js` (LEVEL_CONFIG array); level config drives both time limit and card count
 - Level 1: 10s / 2 cards → Level 15: 1s / 12 cards (see levels.js for full table)
 - Game phases per level: `generating → countdown → playing → slapping → celebrating/comparing/timeout → [curtain drops] → next level / home`
-- Generator curtain (z-index 50) covers all transitions; slides up on `revealed=true`; slides back down to end a level
-- Button pressed state: yellow (matching machine casing); before press: red
+- Generator curtain (z-index 50) covers all transitions; slides up on `revealed=true` (0.6s ease-in); slides back down (1s ease-out)
+- Button pressed state: yellow (matching machine casing); before press: red; pulsing glow animation on idle button
 - Home screen starts at last game monster (stored in `localStorage` key `mm_last_monster`)
 - `src/data/monsters.js` — heads/bodies/legs image arrays (3 each); titleHeads/Bodies/Legs for start screen (face 0 & 2 are monsters, face 1 is title)
-- Timer: full-screen background wash (opacity 0.17) that shrinks left→right; green→yellow→red
-- Starburst effect on monster lock: `repeating-conic-gradient` expanding and fading (1.6s)
-- TimeoutScreen shown when timer expires before returning to home
+- Timer: full-screen background wash that expands left→right; green→yellow→red; `mix-blend-mode: color`
+- Starburst effect on monster lock: `repeating-conic-gradient` blurred, expanding + rotating (CSS-only)
+- Gold spark particles also burst from generator centre on monster lock (`GoldSparks` component in Generator.jsx)
+- Cards have no entrance animation — they appear in place before curtain rises
+- On wrong mash: non-tapped cards fly off screen (`card--fly-away` + `--fly-dx`/`--fly-dy` CSS custom props)
+- On correct mash: green goo particles burst from card centre (`GooSplatter` rendered in HandSlap.jsx, no MASH/WRONG text)
+- Success screen: dark teal radial gradient + rotating gold starburst `::before` pseudo-element + confetti particles
+- Fail screens (CompareOverlay + TimeoutScreen): dark grey/blue gradient; "GAME OVER" Creepster title; level-dependent Knewave message
+  - CompareOverlay: correct card larger than wrong card; "You reached level N" (level >1) or "Better luck next time"
+  - TimeoutScreen: no monster card shown; "Your time ran out on level N" (level >1) or "Need to go faster next time"
+- Hint text ("Find this monster") fades out as curtain rises — `hintFading`/`hintGone` state in Generator; no abrupt removal
+- Info `?` button on StartScreen (top-right, disappears after button pressed) opens a modal overlay with game blurb
 
 ## New app checklist
 When setting up any new app, always do all of the following before considering it done:

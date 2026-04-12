@@ -147,7 +147,7 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
       )}
 
       {phase === 'comparing' && wrongMonster && monster && (
-        <CompareOverlay wrongMonster={wrongMonster} correctMonster={monster} />
+        <CompareOverlay wrongMonster={wrongMonster} correctMonster={monster} level={level} />
       )}
 
       {phase === 'timeout' && monster && (

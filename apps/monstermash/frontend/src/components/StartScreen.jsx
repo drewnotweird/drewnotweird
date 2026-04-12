@@ -35,6 +35,7 @@ export default function StartScreen({ onPlay, slideIn = false, initialMonster = 
   const [titleSettled, setTitleSettled] = useState(false)
   const [shaking, setShaking] = useState(false)
   const [thumped, setThumped] = useState(false)
+  const [infoOpen, setInfoOpen] = useState(false)
 
   // Build arrays once on mount from the initialMonster snapshot
   const arraysRef = useRef(buildArrays(initialMonster))
@@ -129,6 +130,28 @@ export default function StartScreen({ onPlay, slideIn = false, initialMonster = 
           aria-label="Play"
         />
       </div>
+
+      {/* Info button — only before button pressed */}
+      {!pressed && (
+        <button className="info-button" onClick={() => setInfoOpen(true)} aria-label="How to play">?</button>
+      )}
+
+      {/* Info overlay */}
+      {infoOpen && (
+        <div className="info-overlay" onClick={() => setInfoOpen(false)}>
+          <div className="info-panel" onClick={e => e.stopPropagation()}>
+            <div className="info-title">MONSTER MASH</div>
+            <p className="info-body">Spin up your monster, then find it among the scattered cards — before time runs out!</p>
+            <ul className="info-list">
+              <li>Press the big red button to generate your monster</li>
+              <li>Study it carefully as the countdown goes</li>
+              <li>Find the matching card and mash it!</li>
+              <li>Faster is better — 15 levels, shrinking time limits</li>
+            </ul>
+            <button className="info-close" onClick={() => setInfoOpen(false)}>GOT IT!</button>
+          </div>
+        </div>
+      )}
 
       {/* "Mash that button" hint
           Landscape: text then downward-pointing arrow, centred in left third.

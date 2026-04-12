@@ -1,9 +1,58 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import Segment from './Segment'
 import { heads, bodies, legs } from '../data/monsters'
 
 const COUNT_STEPS = ['3', '2', '1', 'MASH!']
 const COUNT_DURATIONS = [900, 900, 900, 700]
+
+const GOLD_COLOURS = ['#ffd54f', '#ffea00', '#ffe082', '#fff176', '#ffc400', '#ffab00', '#ffffff', '#fff9c4']
+
+function GoldSparks({ side }) {
+  const sparks = useMemo(() => {
+    const baseAngle = side === 'left' ? 180 : 0
+    const count = 40
+    return Array.from({ length: count }, (_, i) => {
+      const isStar = Math.random() > 0.55  // thin elongated sparkle vs blob
+      const size = isStar
+        ? { w: 3 + Math.random() * 4, h: 14 + Math.random() * 22 }
+        : { w: 8 + Math.random() * 20, h: 8 + Math.random() * 20 }
+      return {
+        id: i,
+        angle: baseAngle + (i / count) * 180 - 90 + (Math.random() - 0.5) * 24,
+        dist: 90 + Math.random() * 220,
+        w: size.w,
+        h: size.h,
+        color: GOLD_COLOURS[i % GOLD_COLOURS.length],
+        dur: 0.45 + Math.random() * 0.6,
+        delay: Math.random() * 0.3,
+        round: !isStar,
+        spin: (Math.random() - 0.5) * 180,
+      }
+    })
+  }, [side])
+
+  return (
+    <div className={`gold-sparks gold-sparks--${side}`} aria-hidden="true">
+      {sparks.map(s => (
+        <div
+          key={s.id}
+          className="gold-spark"
+          style={{
+            '--angle': `${s.angle}deg`,
+            '--dist': `${s.dist}px`,
+            '--spin': `${s.spin}deg`,
+            width: s.w,
+            height: s.h,
+            background: s.color,
+            borderRadius: s.round ? '50%' : '2px',
+            animationDuration: `${s.dur}s`,
+            animationDelay: `${s.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export default function Generator({ revealed, onLocked, initialMonster, autoStart, showCountdown, onCountdownDone, showHint = false, level = null }) {
   const headRef = useRef()
@@ -17,18 +66,19 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
   const [shaking, setShaking] = useState(false)
   const [thumped, setThumped] = useState(false)
   const [labelVisible, setLabelVisible] = useState(level !== 1)
-  const hintDismissedRef = useRef(false)
+  const [hintFading, setHintFading] = useState(false)
+  const [hintGone, setHintGone] = useState(false)
 
-  // Once the curtain rises, permanently suppress the locked hint so it
-  // doesn't reappear when the curtain comes back down.
+  // Manage hint and label visibility around curtain transitions.
   useEffect(() => {
     if (!revealed) {
       // Curtain coming back down — fade label in when curtain settles
       const t = setTimeout(() => setLabelVisible(true), 1100)
       return () => clearTimeout(t)
     }
-    // Curtain going up — hide label once fully off screen
-    const t1 = setTimeout(() => { hintDismissedRef.current = true }, 1100)
+    // Curtain going up — fade hint out immediately, remove from DOM after fade
+    setHintFading(true)
+    const t1 = setTimeout(() => setHintGone(true), 600)
     const t2 = setTimeout(() => setButtonPressed(false), 1100)
     const t3 = setTimeout(() => setLabelVisible(false), 1100)
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
@@ -104,6 +154,8 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
       <div className="texture-overlay texture-curtain" aria-hidden="true" />
       {/* Starburst — rendered before machine so it's visually behind it */}
       {locked && <div className="generator-starburst" aria-hidden="true" />}
+      {locked && <GoldSparks side="left" />}
+      {locked && <GoldSparks side="right" />}
 
 
       <div className={`generator-machine${shaking ? ' shaking' : ''}`}>
@@ -150,24 +202,6 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
         </div>
       )}
 
-      {/* "Find this monster" hint — shown when locked, dismissed once curtain rises */}
-      {locked && !hintDismissedRef.current && (
-        <div className="panel-hint panel-hint--find" key="find-hint" aria-hidden="true">
-          <p className="panel-hint-text">Find this<br className="landscape-br" /> monster</p>
-          <svg viewBox="0 0 110 40" className="hint-arrow--right" aria-hidden="true">
-            <path d="M 5,21 C 22,19 46,22 68,20 C 82,18 94,20 104,20" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M 104,20 C 96,15 88,11 83,9" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M 104,20 C 96,25 89,29 84,32" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
-          </svg>
-          {/* Portrait: downward arrow pointing toward the generator below */}
-          <svg viewBox="0 0 48 84" className="hint-arrow--portrait-down" aria-hidden="true">
-            <path d="M 24,5 C 26,23 22,41 27,61 C 29,69 28,75 25,80" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M 25,80 C 19,71 14,65 11,57" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M 25,80 C 31,72 36,66 39,58" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
-          </svg>
-        </div>
-      )}
-
       {/* "Ready to mash again?" hint — between levels, before player presses */}
       {showHint && !spinning && !locked && (
         <div className="panel-hint" key="ready-hint" aria-hidden="true">
@@ -187,6 +221,23 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
         </div>
       )}
 
+      {/* "Find this monster" hint — travels with curtain; hintGone prevents it
+          reappearing when curtain comes back down */}
+      {locked && !hintGone && (
+        <div className={`panel-hint panel-hint--find${hintFading ? ' panel-hint--fading' : ''}`} key="find-hint" aria-hidden="true">
+          <p className="panel-hint-text">Find this<br className="landscape-br" /> monster</p>
+          <svg viewBox="0 0 110 40" className="hint-arrow--right" aria-hidden="true">
+            <path d="M 5,21 C 22,19 46,22 68,20 C 82,18 94,20 104,20" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 104,20 C 96,15 88,11 83,9" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 104,20 C 96,25 89,29 84,32" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+          </svg>
+          <svg viewBox="0 0 48 84" className="hint-arrow--portrait-down" aria-hidden="true">
+            <path d="M 24,5 C 26,23 22,41 27,61 C 29,69 28,75 25,80" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 25,80 C 19,71 14,65 11,57" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 25,80 C 31,72 36,66 39,58" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+          </svg>
+        </div>
+      )}
 
     </div>
   )

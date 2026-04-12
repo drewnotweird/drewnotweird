@@ -136,6 +136,7 @@ export default function CardTable({ monster, level, cardCount, active, onCardTap
           index={i}
           isSlapped={i === slappedIdx}
           isWrong={i === wrongIdx}
+          flyAway={wrongIdx !== -1 && i !== wrongIdx}
         />
       ))}
     </div>
