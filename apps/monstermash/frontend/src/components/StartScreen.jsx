@@ -100,6 +100,7 @@ export default function StartScreen({ onPlay, slideIn = false, initialMonster = 
   return (
     <div className={`start-screen${pressed ? ' start-active' : ''}${entering ? ' entering' : ''}`}>
       <div className="start-green-overlay" />
+      <div className="texture-overlay texture-curtain" aria-hidden="true" />
       <div className={`generator-machine${shaking ? ' shaking' : ''}`}>
         <img
           className="generator-machine-img"
@@ -133,7 +134,7 @@ export default function StartScreen({ onPlay, slideIn = false, initialMonster = 
           Landscape: text then downward-pointing arrow, centred in left third.
           Portrait:  up-arrow above text, all centred at bottom. */}
       <div className={`start-hint${pressed ? ' start-hint--out' : ''}`} aria-hidden="true">
-        <p className="start-hint-text">Mash that<br />button</p>
+        <p className="start-hint-text">Mash that<br /> button</p>
         <svg viewBox="0 0 110 70" className="hint-arrow--right hint-arrow--down" aria-hidden="true">
           <path d="M 5,10 C 22,13 48,11 68,32 C 84,48 96,58 106,64" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M 106,64 C 98,60 86,57 82,52" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />

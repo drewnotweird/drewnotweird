@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import StartScreen from './components/StartScreen'
 import GameScreen from './components/GameScreen'
 import GameOver from './components/GameOver'
@@ -30,6 +30,16 @@ export default function App() {
 
   // Initialise from localStorage so home screen shows the last played monster
   const [homeMonster, setHomeMonster] = useState(loadLastMonster)
+
+  // Set texture CSS variables with correct base path for deployment
+  useEffect(() => {
+    const base = import.meta.env.BASE_URL
+    const root = document.documentElement
+    root.style.setProperty('--tex-curtain', `url(${base}textures/curtain-backdrop.jpg)`)
+    root.style.setProperty('--tex-card',    `url(${base}textures/card-backdrop.jpg)`)
+    root.style.setProperty('--tex-win',     `url(${base}textures/win-backdrop.jpg)`)
+    root.style.setProperty('--tex-lose',    `url(${base}textures/lose-backdrop.jpg)`)
+  }, [])
 
   function startGame(initialMonster) {
     prevMonsterRef.current = initialMonster ?? null

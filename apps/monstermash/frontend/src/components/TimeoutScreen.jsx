@@ -3,6 +3,7 @@ import { heads, bodies, legs } from '../data/monsters'
 export default function TimeoutScreen({ level, correctMonster }) {
   return (
     <div className="timeout-screen">
+      <div className="texture-overlay texture-lose" aria-hidden="true" />
       <div className="timeout-title">TIME'S UP!</div>
       <div className="timeout-level">Level {level}</div>
       {correctMonster && (

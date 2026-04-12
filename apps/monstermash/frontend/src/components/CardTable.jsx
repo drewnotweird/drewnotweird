@@ -42,8 +42,8 @@ function getLayout(desiredCount) {
   // Divisor 4 gives a comfortable ~25% fill per card so they overlap nicely when scattered.
   const aspect = 2088 / 1370 // h/w
   const spacePerCard = (availW * availH) / desiredCount
-  const rawW = Math.sqrt(spacePerCard / (aspect * 4))
-  const cardW = Math.max(80, Math.min(240, Math.round(rawW)))
+  const rawW = Math.sqrt(spacePerCard / (aspect * 2.2))
+  const cardW = Math.max(80, Math.min(320, Math.round(rawW)))
   const cardH = Math.round(cardW * aspect)
 
   const stepX = Math.round(cardW * 1.08)
@@ -115,6 +115,7 @@ export default function CardTable({ monster, level, cardCount, active, onCardTap
 
   return (
     <div className={`card-table${fail ? ' fail' : ''}${revealed ? ' revealed' : ''}`}>
+      <div className="texture-overlay texture-card" aria-hidden="true" />
       {/* Timer renders first so it's behind all cards in this stacking context */}
       {timerDuration && active && (
         <Timer duration={timerDuration} onTimeout={onTimeout} />

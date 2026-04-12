@@ -125,6 +125,7 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
         showCountdown={phase === 'countdown'}
         onCountdownDone={handleCountdownDone}
         showHint={phase === 'generating' && level > 1}
+        level={level}
       />
 
       {phase === 'slapping' && slapTarget && (
@@ -133,6 +134,7 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
 
       {phase === 'celebrating' && (
         <div className="level-clear">
+          <div className="texture-overlay texture-win" aria-hidden="true" />
           <MashedBurst key={level} />
           <div className="level-clear-level">LEVEL {level}</div>
           <div className="level-clear-cleared">MASHED!</div>

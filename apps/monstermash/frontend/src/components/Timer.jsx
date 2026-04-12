@@ -12,17 +12,23 @@ export default function Timer({ duration, onTimeout }) {
       const fraction = Math.max(0, 1 - elapsed / duration)
 
       if (barRef.current) {
-        barRef.current.style.transform = `scaleX(${fraction})`
-        // Green → yellow → red
-        if (fraction > 0.5) {
-          const t = (fraction - 0.5) * 2
-          const r = Math.round((1 - t) * 255)
-          barRef.current.style.backgroundColor = `rgb(${r}, 220, 0)`
+        const fill = 1 - fraction
+        barRef.current.style.transform = `scaleX(${fill})`
+        // Green (0,220,0) → yellow (255,220,0) → red (255,0,0)
+        // Two-segment lerp but both segments share smooth eased t
+        let r, g
+        if (fill < 0.5) {
+          const t = fill / 0.5
+          const e = t * t * (3 - 2 * t) // smoothstep
+          r = Math.round(e * 255)
+          g = 220
         } else {
-          const t = fraction * 2
-          const g = Math.round(t * 180)
-          barRef.current.style.backgroundColor = `rgb(255, ${g}, 0)`
+          const t = (fill - 0.5) / 0.5
+          const e = t * t * (3 - 2 * t)
+          r = 255
+          g = Math.round((1 - e) * 220)
         }
+        barRef.current.style.backgroundColor = `rgb(${r}, ${g}, 0)`
       }
 
       if (fraction <= 0) {
