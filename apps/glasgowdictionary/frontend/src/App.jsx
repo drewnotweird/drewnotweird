@@ -59,7 +59,7 @@ function SoundButton({ audio }) {
 
   return (
     <>
-      {audio && <audio ref={audioRef} src={audio} />}
+      {audio && <audio ref={audioRef} src={`${import.meta.env.BASE_URL}${audio.replace(/^\//, '')}`} />}
       <button
         className={`sound-btn${!audio ? ' sound-btn--unavailable' : ''}${playing ? ' sound-btn--playing' : ''}`}
         onClick={audio ? handlePlay : undefined}
@@ -120,10 +120,14 @@ function WordSlide({ word }) {
                 </p>
               ))}
 
+              {entry.notes && (
+                <p className="entry-notes">{entry.notes}</p>
+              )}
+
               {entry.examples && entry.examples.length > 0 && (
                 <ul className="examples">
                   {entry.examples.map((ex, xi) => (
-                    <li key={xi} className="example">"{ex}"</li>
+                    <li key={xi} className="example" style={{ whiteSpace: 'pre-line' }}>{ex}</li>
                   ))}
                 </ul>
               )}

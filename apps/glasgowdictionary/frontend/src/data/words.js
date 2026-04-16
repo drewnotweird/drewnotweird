@@ -6,40 +6,37 @@ export const words = [
     entries: [
       {
         partOfSpeech: 'adverb',
-        definitions: ['yes'],
-        examples: [
-          'Ye coming oot the night? — Aye, go on then.',
-          'Aye, that\'ll be right.' /* sarcastic: yeah, sure */,
+        definitions: [
+          'yes',
+          'always',
         ],
-      },
-      {
-        partOfSpeech: 'exclamation',
-        definitions: ['used to express agreement or affirmation'],
+        notes: 'Ubiquitous substitute for "yes", often used to convey enthusiasm or lack of formality. Less commonly used as a substitute for "always", chiefly by those of an older generation.',
         examples: [
-          'Did ye get the messages? — Aye.',
+          '"Want a pint, Gerry?"\n"Aye, Boab."',
+          '"See that Senga, she\'s aye gaun up that toon oan a Seturday."',
         ],
       },
     ],
     photo: '/images/aye.jpg',
-    audio: null,
+    audio: '/sounds/aye.wav',
   },
   {
     letter: 'b',
     word: 'Bawbag',
-    phonetic: 'ˈbɔːbag',
+    phonetic: 'bɔ-bæg',
     plural: 'bawbags',
     entries: [
       {
         partOfSpeech: 'noun',
         plural: 'bawbags',
         definitions: [
-          'scrotum',
-          'a general term of abuse for a stupid, irritating or contemptible person — often used with surprising warmth between friends',
+          'the pouch of skin that contains the testes',
+          'an insult given to someone of piss-poor intelligence',
         ],
+        notes: 'A bawbag is quite literally a bag for your baws. They come in all shapes and sizes, some with less in them than others, but all of them fear a booting.',
         examples: [
-          'Absolute bawbag, that driver.',
-          'Hiya ya bawbag — where\'ve ye been?',
-          'Dinnae be such a bawbag.',
+          '"Hawd on mate, I\'ve just caught mah bawbag in mah zip."',
+          '"See that Pharrell Williams? He\'s a bawbag."',
         ],
       },
     ],
@@ -49,42 +46,46 @@ export const words = [
   {
     letter: 'c',
     word: 'Clatty',
-    phonetic: 'ˈklatɪ',
+    phonetic: 'klæt i',
     entries: [
       {
         partOfSpeech: 'adjective',
-        definitions: ['dirty, filthy, unclean'],
+        comparative: 'clattier',
+        superlative: 'clattiest',
+        definitions: [
+          'not conducive to or promoting health; dirty or unhygienic',
+        ],
+        notes: 'The term can be used to describe a person, their actions or a place.\n\nIn the case of a person this would be used for someone with poor personal hygiene or someone who had performed an unclean act, such as touching something particularly unclean, in spite of otherwise exemplary hygiene. Someone who is well known for clatty behaviour could be described as a "clat".\n\nA place can be described as clatty based on a current observation of uncleanliness or a perceived reputation for such.',
         examples: [
-          'Dinnae touch that, it\'s pure clatty.',
-          'Yer hands are clatty — go and wash them.',
-          'The state ae that kitchen — absolutely clatty.',
+          '"That clatty bugger has been pickin\' his arse again."',
+          '"Ahm no goin\' tae, Drumchapel, it\'s pure clatty!"',
         ],
       },
     ],
     photo: '/images/clatty.jpg',
-    audio: null,
+    audio: '/sounds/clatty.wav',
   },
   {
     letter: 'd',
     word: 'Dobber',
-    phonetic: 'ˈdɒbər',
+    phonetic: 'ˈdɒb ər',
     plural: 'dobbers',
     entries: [
       {
         partOfSpeech: 'noun',
         plural: 'dobbers',
         definitions: [
-          'an idiot, a fool, a stupid or annoying person',
+          'a penis',
+          'a derogatory term for a person',
         ],
+        notes: 'A dobber is a penis, and can be used as an insult instead of \'cock\', \'dick\' and \'knob\' etc.',
         examples: [
-          'Ya absolute dobber!',
-          'Some dobber\'s left the gate open again.',
-          'He\'s a pure dobber, but he\'s our dobber.',
+          '"Man, what a total fucking dobber he is."',
         ],
       },
     ],
     photo: '/images/dobber.jpg',
-    audio: null,
+    audio: '/sounds/dobber.wav',
   },
   {
     letter: 'e',
@@ -95,16 +96,19 @@ export const words = [
       {
         partOfSpeech: 'noun',
         plural: 'eejits',
-        definitions: ['an idiot; a foolish or stupid person'],
+        definitions: [
+          'idiot',
+          'one who is lacking in common sense',
+        ],
+        notes: 'An eejit is often used to not only denote someone of low intelligence, but is often used to describe someone who has recently performed a foolish act. Often paired with the intensifier \'total\'.',
         examples: [
-          'Dinnae be such an eejit!',
-          'Some eejit\'s parked right across ma drive again.',
-          'Absolute eejit, that wan.',
+          '"Whit you dain\' ya fuckin\' eejit?"',
+          '"See that? That bawbag just reversed his car intae that tree. Whit a total eejit."',
         ],
       },
     ],
     photo: '/images/eejit.jpg',
-    audio: null,
+    audio: '/sounds/eejit.wav',
   },
   {
     letter: 'f',
@@ -116,55 +120,53 @@ export const words = [
         partOfSpeech: 'noun',
         plural: 'fuds',
         definitions: [
-          'a fool, an idiot — widely used as a general insult',
-          'vulgar in origin but used freely in everyday Glaswegian speech',
+          'female genitalia',
+          'an insult; abusive term',
         ],
+        notes: 'It is generally used as an insult directed towards a person who has committed an act of stupidity or someone who others find annoying.',
         examples: [
-          'Whit a fud.',
-          'Dinnae be a fud yer whole life.',
-          'He walked intae a lamp post — total fud.',
+          '"Did you hear about Jim? Jumped off the bus when it was moving & broke his ankle"\n"Aye, he\'s a total fud."',
         ],
       },
     ],
     photo: '/images/fud.jpg',
-    audio: null,
+    audio: '/sounds/fud.wav',
   },
   {
     letter: 'g',
     word: 'Glaikit',
-    phonetic: 'ˈɡleɪkɪt',
+    phonetic: 'ˈgleɪ kɪt',
     entries: [
       {
         partOfSpeech: 'adjective',
         definitions: [
-          'stupid, foolish, vacant-looking',
-          'thoughtless or slow-witted; often used for someone staring blankly into space',
+          'foolish; giddy; flighty',
+          'emotionless facial expression of non understanding',
         ],
+        notes: 'Often a look on someone\'s face that expresses almost nothing; devoid of understanding and an inability to grasp anything. This look is usually innocent and child-like and often found on the face of a person with a simple nature i.e a rocket or numpty.',
         examples: [
-          'Stoap staunin there wi a glaikit look on yer face.',
-          'He\'s no bad lookin but pure glaikit.',
-          'Whit are ye lookin so glaikit for?',
+          '"Take that glaikit look aff yer face, ya numpty!"',
         ],
       },
     ],
     photo: '/images/glaikit.jpg',
-    audio: null,
+    audio: '/sounds/glaikit.wav',
   },
   {
     letter: 'h',
     word: 'Hunners',
-    phonetic: 'ˈhʌnərz',
+    phonetic: 'hʌn ərs',
     entries: [
       {
-        partOfSpeech: 'noun / determiner',
+        partOfSpeech: 'noun',
+        notes: 'plural of \'a hunner\'',
         definitions: [
-          'hundreds; a large, uncountable number of something',
-          'loads, masses — used as a general intensifier of quantity',
+          'hundreds',
+          'very many; a great number',
         ],
+        notes: 'Hunners is a great way to say "loads", and is used in Glasgow the same way as the words "tons", "millions" and "shitloads". It is usually combined with the word "of", at which point the final "f" is removed to create the contraction "hunnersa" (see example below).\n\nWhen we use the word hunners, we are trying to create excitement, disbelief and sometimes admiration in the person we are talking to when we tell them of the "hunners" of things we have seen, done or taken part in. It\'s almost always an exaggeration, but that\'s what makes it great!',
         examples: [
-          'There wis hunners ae folk there.',
-          'I\'ve telt ye hunners ae times!',
-          'She\'s got hunners ae shoes.',
+          '"There\'s pure hunnersa polis at George Square!"',
         ],
       },
     ],
@@ -174,40 +176,48 @@ export const words = [
   {
     letter: 'i',
     word: 'Isnae',
-    phonetic: 'ˈɪznɪ',
+    phonetic: 'ɪz neɪ',
     entries: [
       {
-        partOfSpeech: 'verb',
+        partOfSpeech: 'contraction',
+        notes: 'is not',
         definitions: [
-          'is not; isn\'t — the contracted Scots negative form of "is"',
+          'used to express negation, denial, or refusal',
+          'used to negate the sentence, phrase, or word that it modifies',
         ],
+        notes: 'Negation of 3rd person singular present indicative of be. Similar to the contraction "isn\'t", used in definitive statements of fact or opinion in a negative context.',
         examples: [
-          'That isnae right.',
-          'It isnae ma fault.',
-          'He isnae coming — he\'s got work.',
+          '"Twelve pints isnae enuff tae get ye pished, so dinnae act it."',
         ],
       },
     ],
     photo: '/images/isnae.jpg',
-    audio: null,
+    audio: '/sounds/isnae.wav',
   },
   {
     letter: 'j',
     word: 'Jobby',
-    phonetic: 'ˈdʒɒbɪ',
+    phonetic: 'dʒɒb i',
     plural: 'jobbies',
     entries: [
       {
         partOfSpeech: 'noun',
         plural: 'jobbies',
         definitions: [
-          'excrement, faeces',
-          'originally from children\'s vocabulary but used humorously by adults of all ages',
+          'excrement, feces',
+          'non-aggressive insult given to a cheeky individual',
         ],
+        notes: 'A Jobby is the end result of your digestive system\'s journey. It usually can be found in solid form but has on occasion been known to favour the other elements of liquid or gas (in the case of a phantom jobby) or a combination of them.',
         examples: [
-          'There\'s a jobby on the pavement — watch yersel.',
-          'The dug\'s done a jobby in the garden again.',
-          'Some jobby in a suit just cut me up at the lights.',
+          '"See that Brian, he\'s a wee Jobby!"',
+          '"I\'m away tae take a jobby."',
+        ],
+      },
+      {
+        partOfSpeech: 'verb',
+        conjugation: 'jobbying, jobbied',
+        definitions: [
+          'to defecate',
         ],
       },
     ],
@@ -216,68 +226,69 @@ export const words = [
   },
   {
     letter: 'k',
-    word: 'Kerry Oot',
-    phonetic: 'ˈkɛrɪ ʊt',
+    word: 'Kerryoot',
+    phonetic: 'ˈkɛr i ut',
+    plural: 'kerryoots',
     entries: [
       {
         partOfSpeech: 'noun',
+        plural: 'kerryoots',
         definitions: [
-          'a carry-out: takeaway food or drink',
-          'specifically, a carry-out of alcohol from an off-licence to drink elsewhere',
+          'alcoholic beverage(s) not intended for consumption on the premises upon where it was purchased',
         ],
+        notes: 'A kerryoot of alcohol is most commonly consumed in the home, bus stop, street corner or park. Popular as a cheaper alternative to drinking in a bar, and especially with young adults who are not yet of legal age to drink in a public house.',
         examples: [
-          'Gonnae grab a Kerry oot on the way?',
-          'We got a Kerry oot fae the chippy.',
-          'Nae point gaun tae the bar — we\'ll just get a Kerry oot.',
+          '"I canny be bothered wae the pub the night, let\'s just go up the road wae a kerryoot."',
         ],
       },
     ],
     photo: '/images/kerryoot.jpg',
-    audio: null,
+    audio: '/sounds/kerryoot.wav',
   },
   {
     letter: 'l',
     word: 'Lassie',
-    phonetic: 'ˈlasɪ',
+    phonetic: 'ˈlæs i',
     plural: 'lassies',
     entries: [
       {
         partOfSpeech: 'noun',
         plural: 'lassies',
         definitions: [
-          'a girl or young woman',
-          'used affectionately for a female of any age',
+          'a young girl; lass',
+          'a female younger than the person using the term "lassie"',
         ],
+        notes: 'A "lassie" is a female human from birth through childhood and adolescence to attainment of adulthood when she becomes a woman. The term may also be used to mean a young woman.',
         examples: [
-          'She\'s a good lassie, so she is.',
-          'Yer a braw lassie.',
-          'The wee lassie next door wis asking for ye.',
+          '"That wee lassie is waiting for the icey."',
+          '"Those lassies over there are well up for it."',
         ],
       },
     ],
     photo: '/images/lassie.jpg',
-    audio: null,
+    audio: '/sounds/lassie.wav',
   },
   {
     letter: 'm',
     word: 'Maw',
-    phonetic: 'mɔː',
+    phonetic: 'mɔ',
+    plural: 'maws',
     entries: [
       {
         partOfSpeech: 'noun',
+        plural: 'maws',
         definitions: [
-          'mum, mother',
-          'used both as a direct address and when referring to someone\'s mother',
+          'mother',
+          'an insult, an abusive term',
         ],
+        notes: 'The Scottish slang word for \'your mother\'. It can be used as a quick retort or insult. It\'s normally used as a comeback to an insult.\n\n"You\'re a fanny." / "Jus\' like yer maw."\n\nIt can be used in situations where \'mum\' would not be appropriate. Instead of saying, "No, I disagree" a reply could be, "Aye, yer maw" whilst the person is walking away.',
         examples: [
-          'Ma maw made a stoater ae a dinner.',
-          'Yer maw\'s at the door.',
-          'Maw! Whit\'s fur tea?',
+          '"Yer maw wears troosers an\' a belt… an\' drives a tractor."',
         ],
       },
     ],
     photo: '/images/maw.jpg',
-    audio: null,
+    audio: '/sounds/maw.wav',
   },
   {
     letter: 'n',
@@ -289,33 +300,33 @@ export const words = [
         partOfSpeech: 'noun',
         plural: 'numpties',
         definitions: [
-          'a stupid, inept or foolish person',
-          'someone who acts without thinking',
+          'a stupid person',
+          'one possessing diminished levels of common sense; similar to "dafty"',
         ],
+        notes: 'Both utilised in a derogatory manner and often as a term of playful endearment, numpty is a word most commonly used to scathingly refer to another who has demonstrated a lack of good judgement.\n\nYou may use the term as a jocular put-down to a friend who is doing something you deem to be stupid or it could be used in a more aggressive manner should you be dumbfounded by the actions of another person.',
         examples: [
-          'Ya absolute numpty!',
-          'Only a numpty would forget their keys twice in wan day.',
-          'Dinnae be a numpty — read the instructions first.',
+          '"Haw you, aye you, ya numpty; \'at\'s no lemonade yer drinkin\', it\'s dettol."',
         ],
       },
     ],
     photo: '/images/numpty.jpg',
-    audio: null,
+    audio: '/sounds/numpty.wav',
   },
   {
     letter: 'o',
-    word: 'Oan yer sel',
-    phonetic: 'ɒn jər sɛl',
+    word: 'Oanyersel',
+    phonetic: 'oʊn yɛrˈsɛl',
     entries: [
       {
-        partOfSpeech: 'phrase',
+        partOfSpeech: 'contraction',
+        notes: 'on yourself',
         definitions: [
-          'on your own, by yourself, alone',
+          'exclamation of support; encouragement',
+          'congratulations; well done',
         ],
+        notes: 'Exclamation of support and encouragement, especially towards an underdog competitor. Can also be used to observe that a competitive situation has been entered into, or to express that someone has achieved something beyond expectation.',
         examples: [
-          'Ye oan yer sel the night?',
-          'She came tae the party oan her sel — took some guts.',
-          'I\'m oan ma sel aw week — the house is pure empty.',
+          '"You battered the ned that wis keyin\' yer da\'s car? Oanyersel, wee man!"',
         ],
       },
     ],
@@ -328,68 +339,78 @@ export const words = [
     phonetic: 'pɪʃ',
     entries: [
       {
-        partOfSpeech: 'noun',
+        partOfSpeech: 'verb',
+        conjugation: 'pished, pishing',
         definitions: [
-          'urine',
-          'rubbish, nonsense, something of very poor quality',
-        ],
-        examples: [
-          'That film wis pure pish.',
-          'Dinnae talk pish.',
-          'The weather\'s been pish aw week.',
+          'to urinate',
         ],
       },
       {
-        partOfSpeech: 'verb',
-        definitions: ['to urinate'],
-        examples: ['I wis nearly pishin masel laughin.'],
+        partOfSpeech: 'noun',
+        definitions: [
+          'urine',
+          'lies',
+          'childish, silly, or meaningless talk or thinking; nonsense; twaddle',
+          'substitute for \'stuff\' (often unwanted tasks; problems)',
+        ],
+        notes: 'A remarkably versatile word primarily referring to a \'number one\', often with the phrase "gaun fir a pish". It can be used in a multitude of ways, such as calling someone\'s bluff if you think they\'re "talkin\' pish"; seeking an explanation for an unfavourable situation by asking "whit\'s this pish?"; or simply expressing ones annoyance in a single word when unexpected news isn\'t well received, "awww PISH!"\n\nThe past tense can even be a substitute for \'being drunk\' often as a result of being "oot oan the pish" - though not to be confused with "pissed" as that would mean angry (normally referred to as "pissed aff").',
+        examples: [
+          '"The 240 bus wis pure reekin\' a pish the day."',
+        ],
+      },
+      {
+        partOfSpeech: 'interjection',
+        definitions: [
+          'used as an expletive to express anger, annoyance, disgust, etc.',
+        ],
       },
     ],
     photo: '/images/pish.jpg',
-    audio: null,
+    audio: '/sounds/pish.wav',
   },
   {
     letter: 'q',
     word: 'Quality',
-    phonetic: 'ˈkwɒlɪtɪ',
+    phonetic: 'ˈkwɒl ɪ ti',
     entries: [
       {
         partOfSpeech: 'adjective',
-        definitions: ['excellent, first-rate, brilliant'],
+        definitions: [
+          'extremely good; outstanding',
+        ],
+        notes: 'Often used when describing something perceived to be of high quality; though usually to indicate approval upon receipt of an object or information but can be used as a general exclamation of enjoyment.',
         examples: [
-          'That curry wis pure quality.',
-          'Quality motors, those.',
+          '"They eckies wur pure quality"',
+          '"Tickets fur Tall Paul at the Sub Club? Quality!"',
         ],
       },
       {
         partOfSpeech: 'exclamation',
-        definitions: ['used on its own to express delight or approval'],
-        examples: [
-          'We got the tickets! — Quality!',
-          'Payday the morra. — Quality!',
+        definitions: [
+          'used to indicate approval or pleasure',
         ],
       },
     ],
     photo: '/images/quality.jpg',
-    audio: null,
+    audio: '/sounds/quality.wav',
   },
   {
     letter: 'r',
     word: 'Rocket',
-    phonetic: 'ˈrɒkɪt',
+    phonetic: 'ˈrɒk ɪt',
     plural: 'rockets',
     entries: [
       {
         partOfSpeech: 'noun',
         plural: 'rockets',
         definitions: [
-          'an idiot, a maniac, someone who behaves in a wild or stupid manner',
-          'often affectionate, or used to describe eccentric behaviour',
+          'a person who is affected by craziness, madness or insanity',
+          'a person lacking in common sense, perception, or normal intelligence',
         ],
+        notes: 'We use the word Rocket in Glasgow to describe a person with a certain disposition, it can also be used as a way to be rude, insulting and to cause offence especially if the person is not crazy or stupid, the same way you would call someone an arsehole or a tit.',
         examples: [
-          'He\'s an absolute rocket.',
-          'Some rocket on a bike nearly knocked me over.',
-          'She\'s a rocket but I love her.',
+          '"That lassies a pure rocket, she used to go to ma high school."\n"Aye I remember her, her whole family are rockets"',
+          '"Can I buy you a drink?"\n"Bolt, ya rocket! Who d\'ye \'hinkye ur, George-fuckin-Clooney?"',
         ],
       },
     ],
@@ -399,22 +420,26 @@ export const words = [
   {
     letter: 's',
     word: 'Stoater',
-    phonetic: 'ˈstoʊtər',
+    phonetic: 'stoʊ tər',
+    plural: 'stoaters',
     entries: [
       {
         partOfSpeech: 'noun',
+        plural: 'stoaters',
         definitions: [
-          'something or someone outstanding, excellent or particularly impressive',
+          'anything which is outstanding in quality',
+          'referring to someone attractive (normally female)',
+          'a person acting in an idiotic or foolish manner',
+          'a wanderer',
         ],
+        notes: 'Normally in reference to a person or object, attractive in appearance, "Did you see his bird? She\'s a stoater!" It can also be used as an insult towards a person acting inappropriately. "Check out those two stoaters wandering down the middle of the road."',
         examples: [
-          'That goal wis an absolute stoater.',
-          'She\'s a total stoater, so she is.',
-          'Yer ma\'s a stoater ae a baker.',
+          '"Our new motor\'s a stoater!"',
         ],
       },
     ],
     photo: '/images/stoater.jpg',
-    audio: null,
+    audio: '/sounds/stoater.wav',
   },
   {
     letter: 't',
@@ -423,33 +448,48 @@ export const words = [
     entries: [
       {
         partOfSpeech: 'verb',
+        conjugation: 'tell, telling',
         definitions: [
-          'told — past tense of "tell" in Scots',
+          'simple past tense and past participle of tell',
         ],
+        notes: 'A way of demanding someone to do something with no room for manoeuvre or discussion, no matter the circumstances.',
         examples: [
-          'I telt ye so.',
-          'He wis telt no tae come back.',
-          'She telt me everythin — I couldnae believe it.',
+          '"Get that prick telt!"',
+        ],
+      },
+      {
+        partOfSpeech: 'contraction',
+        notes: 'that is you/them told',
+        definitions: [
+          'berating of a loser when significantly defeated in a discussion/debate/conflict',
+        ],
+      },
+      {
+        partOfSpeech: 'adjective',
+        definitions: [
+          'received significant short burst of education',
         ],
       },
     ],
     photo: '/images/telt.jpg',
-    audio: null,
+    audio: '/sounds/telt.wav',
   },
   {
     letter: 'u',
     word: 'Urnae',
-    phonetic: 'ˈɜːnɪ',
+    phonetic: 'ɜr ni',
     entries: [
       {
-        partOfSpeech: 'verb',
+        partOfSpeech: 'contraction',
+        notes: 'are not',
         definitions: [
-          'are not; aren\'t — the contracted Scots negative form of "are"',
+          'reinforcement of a negative outcome or description',
+          'a denial of opportunity',
         ],
+        notes: 'Similar to the contraction "aren\'t", used in definitive statements of fact or opinion in a negative context. Referring to others and not the self.\n\nWhile standard English would use the contraction "aren\'t" in place, they are not always directly transferable, for instance in self referential questions.',
         examples: [
-          'Ye urnae serious.',
-          'They urnae coming — I already asked.',
-          'Urnae ye supposed tae be at work?',
+          '"You urnae old enough to be watching that!"',
+          '"That team urnae any good."',
         ],
       },
     ],
@@ -459,18 +499,19 @@ export const words = [
   {
     letter: 'v',
     word: 'Vicky',
-    phonetic: 'ˈvɪkɪ',
+    phonetic: 'ˈvɪk i',
+    plural: 'vickies',
     entries: [
       {
         partOfSpeech: 'noun',
+        plural: 'vickies',
         definitions: [
-          'the two-fingered V-sign; a rude gesture made by raising the index and middle fingers with the back of the hand facing outward',
-          'to give someone "the vicky" is to tell them where to go in no uncertain terms',
+          'offensive hand gesture',
+          'nickname for The Victoria Infirmary (hospital in Glasgow)',
         ],
+        notes: 'Clenching of the fist and raising of the index and middle fingers to form a \'V\', which is then flipped in an upward motion (often several times) towards another person to symbolise a response such as "Up yours!", "Fuck you!", "Fuck off!", "Fuck up!". Not to be confused with a very similar gesture indicating \'peace\', where the palm faces towards the recipient rather than the forehand.\n\nThe Victoria Infirmary – known locally as the Vicky – is a Glasgow teaching hospital built in 1800\'s and located in the south side of the city. Vickies may also refer to a Glasgow nightclub called Victoria\'s.',
         examples: [
-          'He just gied me the vicky!',
-          'She waved cheerio wi a wee vicky.',
-          'When the ref made that call, the hale crowd gave him the vicky.',
+          '"A wee guy flipped me the vicky so I decked him, noo he\'s spendin\' the night in the Vicky!"',
         ],
       },
     ],
@@ -483,56 +524,69 @@ export const words = [
     phonetic: 'wɪt',
     entries: [
       {
-        partOfSpeech: 'pronoun / determiner',
+        partOfSpeech: 'pronoun',
         definitions: [
-          'what — the Scots pronunciation and spelling of "what"',
+          'asking for information specifying something; not understood',
         ],
+        notes: 'Generally used when information is misheard, confusing or reluctance to believe. When asking someone what they are doing or for general information. Sometimes used when initiating combat with another person.',
         examples: [
-          'Whit ye daein?',
-          'Whit time is it?',
-          'Whit in the name ae the wee man is that?',
+          '"Whit ye up tae?"',
+          '"Whit? Whit d\'ye say?"',
+          '"Awwww... whit man!"',
+        ],
+      },
+      {
+        partOfSpeech: 'adverb',
+        definitions: [
+          'asking to what extent or degree',
+        ],
+      },
+      {
+        partOfSpeech: 'interjection',
+        definitions: [
+          'exclamation of disbelief or surprise',
         ],
       },
     ],
     photo: '/images/whit.jpg',
-    audio: null,
+    audio: '/sounds/whit.wav',
   },
   {
     letter: 'x',
     word: 'X-ratit',
-    phonetic: 'ɛks ˈreɪtɪt',
+    phonetic: 'ˈɛksˌreɪ tɪt',
     entries: [
       {
         partOfSpeech: 'adjective',
         definitions: [
-          'X-rated; obscene, explicit or not suitable for general audiences',
-          'used loosely to describe anything shocking, rude or beyond the pale',
+          'having a rating of X; intended for adults only',
+          'obscene, sexually explicit, or vulgar',
         ],
+        notes: 'Used to describe an act or object which is of adult nature, and is often the cleaner way to refer to such an act or object. It is likely to be used by someone who thinks they are being polite.',
         examples: [
-          'The language in that hoose is pure X-ratit.',
-          'His best man speech wis absolutely X-ratit — brilliant.',
-          'Dinnae open that in public — it\'s X-ratit.',
+          '"Found an X-ratit video in ma da\'s sock drawer the other day."',
+          '"Took this burd hame on Saturday, cannae tell yae aboot it here though, it was pure x-ratit"',
         ],
       },
     ],
     photo: '/images/x-ratit.jpg',
-    audio: null,
+    audio: '/sounds/xratit.wav',
   },
   {
     letter: 'y',
     word: 'Yas',
-    phonetic: 'jas',
+    phonetic: 'yæs',
     entries: [
       {
-        partOfSpeech: 'exclamation',
+        partOfSpeech: 'adverb',
         definitions: [
-          'an emphatic "yes!" — an expression of delight, triumph or strong agreement',
-          'often drawn out or repeated for extra emphasis: "Yas! Yas! Yas!"',
+          'the overwhelming approval of a proposal or item',
+          'a celebratory outburst/acknowledgment of a situation or statement',
         ],
+        notes: 'A celebratory way of saying \'yes\'. Most of the inflection is held within the \'a\'; the longer the inflection is held the more celebratory the term \'yas\' is. When used as an outburst of celebration the term can sound aggressive.',
         examples: [
-          'Yas! We got the tickets!',
-          'She said aye. — Yas!',
-          'Yas queen, absolutely brilliant.',
+          '"Yas! I just found a fiver on the ground!"',
+          '"Tam, remember it\'s a Bank Holiday on Monday, we don\'t need to come into work"\n"Yaass!"',
         ],
       },
     ],
@@ -542,20 +596,19 @@ export const words = [
   {
     letter: 'z',
     word: 'Zoomer',
-    phonetic: 'ˈzuːmər',
+    phonetic: 'zu mər',
     plural: 'zoomers',
     entries: [
       {
         partOfSpeech: 'noun',
         plural: 'zoomers',
         definitions: [
-          'an eccentric, erratic or aggressively stupid person',
-          'someone who says or does unhinged things, often loudly',
+          'a person who appears to be in his or her own world or out of touch with reality',
+          'a person who behaves oddly or seems stupefied or remote because of the influence of drugs; druggie',
         ],
+        notes: 'Adapted from the verb \'zoom\' which was originally imitative of the sound, zoomer has come into use in Glasgow for persons whose thoughts or actions imitate the unpredictable trajectory of objects which themselves zoom.\n\nA zoomer may also extend to a person with whom you cannot reason; for example a gentleman who approaches you to request a negligible sum of money in order to purchase a bus ticket he could otherwise not afford due to an extraordinary set of circumstances, who will become both incredulous and aggressive if you are unable or unwilling to believe and assist him.',
         examples: [
-          'Absolute zoomer, that wan.',
-          'Dinnae listen tae him — he\'s a total zoomer.',
-          'The comments section is full ae zoomers.',
+          '"No, I don\'t think a barbecue in November is a good idea, ya zoomer."',
         ],
       },
     ],

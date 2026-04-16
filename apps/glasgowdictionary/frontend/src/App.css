@@ -293,6 +293,13 @@ button {
   font-weight: 600;
 }
 
+.entry-notes {
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.5;
+  font-style: italic;
+}
+
 .examples {
   list-style: none;
   display: flex;
