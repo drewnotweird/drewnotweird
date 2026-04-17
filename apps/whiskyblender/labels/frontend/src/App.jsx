@@ -177,11 +177,13 @@ function TampaOutput({ formData, onBack }) {
   const accent = TAMPA_COLORS[formData.color] || TAMPA_COLORS.red;
 
   const blendNameRef = useRef(null);
+  const seriesRef = useRef(null);
   useAutoFontSize(blendNameRef, formData.blendName);
+  useAutoFontSize(seriesRef, formData.series);
 
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims} cropsFile="crops50-tampa.png">
+      <LabelPage dims={dims} cropsFile="crops50-tampa.png" pageBackground={`url(${baseUrl}sample50cl.png)`}>
         {/* Background key image (ship / casks) — full-width, bleeds above label top */}
         <div style={{
           position: 'absolute',
@@ -272,8 +274,6 @@ function TampaOutput({ formData, onBack }) {
           zIndex: 4,
           letterSpacing: -0.8,
           color: accent,
-          textShadow: 'none',
-          overflow: 'hidden',
         }}>
           <div ref={blendNameRef}>
             {insertSpaceForLongWords(formData.blendName)}
@@ -289,7 +289,6 @@ function TampaOutput({ formData, onBack }) {
           scale: '2.2',
           zIndex: 3,
           overflow: 'hidden',
-          textShadow: 'none',
         }}>
           <div style={{ fontSize: 12, lineHeight: '10px' }}>
             {formData.customerName}
@@ -303,16 +302,13 @@ function TampaOutput({ formData, onBack }) {
           height: 20, width: 220,
           zIndex: 2,
           fontFamily: '"brothers", sans-serif',
-          fontSize: 9,
-          lineHeight: '20px',
           textAlign: 'right',
-          textShadow: 'none',
           color: '#000',
           overflow: 'hidden',
           textTransform: 'uppercase',
           letterSpacing: 1,
         }}>
-          {formData.series}
+          <div ref={seriesRef}>{formData.series}</div>
         </div>
       </LabelPage>
     </OutputWrapper>
