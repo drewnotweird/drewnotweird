@@ -1,0 +1,134 @@
+name: Deploy Whisky Blender to Fasthosts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/whiskyblender/**'
+      - '.github/workflows/deploy-whiskyblender.yml'
+  workflow_dispatch:
+    inputs:
+      upload_images:
+        description: 'Upload prototype images (slow, only needed on first deploy or when adding new images)'
+        required: false
+        default: 'false'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install launchpad dependencies
+        working-directory: apps/whiskyblender/frontend
+        run: npm install
+
+      - name: Build launchpad
+        working-directory: apps/whiskyblender/frontend
+        env:
+          VITE_BASE_PATH: /whiskyblender/
+        run: npm run build
+
+      - name: Install labels dependencies
+        working-directory: apps/whiskyblender/labels/frontend
+        run: npm install
+
+      - name: Build labels
+        working-directory: apps/whiskyblender/labels/frontend
+        env:
+          VITE_BASE_PATH: /whiskyblender/labels/
+        run: npm run build
+
+      - name: Deploy all to drewnotweird.co.uk via FTP
+        env:
+          FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
+          FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
+          FTP_PASS_COUK: ${{ secrets.FTP_PASS_COUK }}
+          UPLOAD_IMAGES: ${{ github.event.inputs.upload_images || 'false' }}
+        run: |
+          python3 - <<'EOF'
+          import ftplib, os, time
+
+          RECONNECT_EVERY = 20
+          SKIP_EXTS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.webm', '.psd'}
+          upload_images = os.environ.get('UPLOAD_IMAGES', 'false').lower() == 'true'
+
+          def make_ftp(host, user, password):
+              ftp = ftplib.FTP()
+              ftp.connect(host, 21, timeout=60)
+              ftp.login(user, password)
+              ftp.set_pasv(True)
+              return ftp
+
+          def ftp_upload(host, user, password, local_dir, remote_dir, skip_images=False):
+              ftp = make_ftp(host, user, password)
+              print(f"Connected to {host}")
+              count = [0]
+
+              def ensure_dir(path):
+                  try:
+                      ftp.mkd(path)
+                  except ftplib.error_perm:
+                      pass
+
+              def upload_file(local_item, remote_item):
+                  nonlocal ftp
+                  if count[0] > 0 and count[0] % RECONNECT_EVERY == 0:
+                      ftp.quit()
+                      ftp = make_ftp(host, user, password)
+                      print(f"Reconnected after {count[0]} files")
+                  for attempt in range(3):
+                      try:
+                          with open(local_item, 'rb') as f:
+                              ftp.storbinary(f'STOR {remote_item}', f, blocksize=65536)
+                          count[0] += 1
+                          return
+                      except Exception as e:
+                          print(f"  Attempt {attempt+1} failed: {e}")
+                          time.sleep(2)
+                          ftp = make_ftp(host, user, password)
+                  print(f"  GAVE UP on {remote_item}")
+
+              def upload_dir(local_path, remote_path):
+                  ensure_dir(remote_path)
+                  for item in sorted(os.listdir(local_path)):
+                      local_item = os.path.join(local_path, item)
+                      remote_item = f"{remote_path}/{item}"
+                      if os.path.isdir(local_item):
+                          upload_dir(local_item, remote_item)
+                      else:
+                          ext = os.path.splitext(item)[1].lower()
+                          if skip_images and ext in SKIP_EXTS:
+                              print(f"Skipping {remote_item}")
+                              continue
+                          print(f"Uploading {remote_item}")
+                          upload_file(local_item, remote_item)
+
+              upload_dir(local_dir, remote_dir)
+              ftp.quit()
+              print(f"Done. Uploaded {count[0]} files.")
+
+          host = os.environ['FTP_HOST_COUK']
+          user = os.environ['FTP_USER_COUK']
+          password = os.environ['FTP_PASS_COUK']
+
+          print("=== Deploying launchpad ===")
+          ftp_upload(host, user, password,
+              'apps/whiskyblender/frontend/dist',
+              'htdocs/whiskyblender')
+
+          print("=== Deploying labels ===")
+          ftp_upload(host, user, password,
+              'apps/whiskyblender/labels/frontend/dist',
+              'htdocs/whiskyblender/labels')
+
+          print("=== Deploying prototype ===")
+          ftp_upload(host, user, password,
+              'apps/whiskyblender/prototype',
+              'htdocs/whiskyblender/prototype',
+              skip_images=not upload_images)
+          EOF

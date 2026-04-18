@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <title>Whisky Blender | Bottle something special!</title>
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
+            name="desciption" />
+        <meta property="og:title" content="Whisky Blender | Bottle something special!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/" />
+        <meta
+            property="og:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta property="fb:app_id" content="194489270627737" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta
+            name="twitter:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta name="twitter:creator" content="whisky_blender" />
+        <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                /*loop through a collection of all HTML elements:*/
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    /*search for elements with a certain attribute:*/
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        /*make an HTTP request using the attribute value as the file name:*/
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) {
+                                    elmnt.innerHTML = this.responseText;
+                                }
+                                if (this.status == 404) {
+                                    elmnt.innerHTML = "Page not found.";
+                                }
+                                /*remove the attribute, and call this function once more:*/
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        /*exit the function:*/
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main>
+            <section class="wb-first-item">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <product-info>
+                            <div class="wb-page-width">
+                                <div class="wb-product-grid">
+                                    <div class="wb-product-media">
+                                        <media-gallery class="wb-column-sticky">
+                                            <ul class="wb-slider-gallery">
+                                                <li class="wb-slider-slide">
+                                                    <span class="wb-productmedia-icon">
+                                                        <img src="icons/wb-zoomin-black.svg" class="wb-icon-zoom" />
+                                                    </span>
+                                                    <img
+                                                        src="images/products/collaborations/caskslug01.jpg"
+                                                        alt="The Golden Drop" />
+                                                </li>
+                                            </ul>
+                                            <div class="wb-slider-buttons">
+                                                <button
+                                                    type="button"
+                                                    class="wb-slider-button-prev"
+                                                    name="previous"
+                                                    aria-label="Slide left"
+                                                    disabled="disabled">
+                                                    <img src="icons/wb-caret-black.svg" class="wb-icon-caret" />
+                                                </button>
+                                                <div class="slider-counter caption">
+                                                    <span class="slider-counter--current">1</span>
+                                                    <span aria-hidden="true"> / </span>
+                                                    <span class="wb-visually-hidden">of</span>
+                                                    <span class="slider-counter--total">8</span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    class="wb-slider-button-next"
+                                                    name="next"
+                                                    aria-label="Slide right">
+                                                    <img src="icons/wb-caret-black.svg" class="wb-icon-caret" />
+                                                </button>
+                                            </div>
+                                        </media-gallery>
+                                    </div>
+                                    <div class="wb-productinfo">
+                                        <div class="wb-column-sticky">
+                                            <h1 class="wb-producttitle wb-medium-heading">Cask Slug</h1>
+                                            <div class="wb-productdetails">
+                                                <ul class="wb-meta-deetz">
+                                                    <li>Blended malt Scotch whisky</li>
+                                                    <li>500ml</li>
+                                                    <li>46% abv.</li>
+                                                </ul>
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-price">£35.00</div>
+                                                    <div class="wb-productbadge">
+                                                        <div class="wb-soldoutbadge">Sold out</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <form class="wb-bottle-form">
+                                                <label for="quantity">Quantity</label>
+                                                <div class="wb-price-per-item">
+                                                    <quantity-input class="wb-quantity">
+                                                        <button
+                                                            class="wb-quantity-button disabled"
+                                                            name="minus"
+                                                            type="button">
+                                                            -
+                                                        </button>
+                                                        <input
+                                                            class="wb-quantity-input"
+                                                            type="number"
+                                                            name="quantity"
+                                                            data-cart-quantity="0"
+                                                            data-min="1"
+                                                            min="1"
+                                                            step="1"
+                                                            value="1" />
+                                                        <button class="wb-quantity-button" name="plus" type="button">
+                                                            +
+                                                        </button>
+                                                    </quantity-input>
+                                                </div>
+                                                <div class="wb-buttons">
+                                                    <button
+                                                        class="wb-button wb-primary-button wb-button-disabled"
+                                                        type="submit"
+                                                        name="buy">
+                                                        Not available
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            <div class="wb-product-description">
+                                                <p>
+                                                    Cask Slug is a limited Edition bottle of Blended Malt Scotch Whisky
+                                                    from Norwich Grindcore band, Vast Slug. The label is designed by the
+                                                    awesome Corvidae.
+                                                </p>
+                                                <p>
+                                                    Soft gold in colour and bottled at a bold 46% ABV, it’s crafted to
+                                                    ignite even the darkest soul. On the nose, expect fresh, zesty
+                                                    aromas - green barley, beeswax, and a subtle touch of lime. The
+                                                    palate delivers a creamy texture with malty depth and hints of
+                                                    leather. It finishes smooth and refreshing, leaving you ready for
+                                                    the next sip. A light, spirit-forward whisky perfect for sipping -
+                                                    beautifully balanced, not overpowered by wood and absolutely
+                                                    slug-free.
+                                                </p>
+                                                <p class="wb-collection-ref">
+                                                    Part of the
+                                                    <a href="collaborations.html">Collaborations</a> collection.
+                                                </p>
+                                                <!--<ul class="wb-product-drawers">
+                                                    <li>
+                                                        <a class="wb-drawer">Tasting notes</a>
+                                                        <div class="wb-drawer-content">
+                                                            <p>
+                                                                <strong>Appearance:</strong> pale straw colour with fat
+                                                                and fast forming legs! Nose: Wet cut grass and spicy
+                                                                liquorice, with a wee hint of lime juice.
+                                                                <strong>Palate:</strong> Lush!!! Light and
+                                                                mouth-watering green fruit flavours like granny smith
+                                                                apples, pear drops, and fresh squeezed lime juice.
+                                                                <strong>Finish:</strong> warming but short on intensity,
+                                                                though the soft citric fruit flavour lingers pleasantly
+                                                                long!
+                                                            </p>
+                                                        </div>
+                                                    </li>
+                                                </ul>-->
+                                                <button class="wb-share-button">
+                                                    <img src="icons/wb-share-black.svg" class="wb-icon-share" />
+                                                    Share
+                                                </button>
+                                                <script>
+                                                    var coll = document.getElementsByClassName("wb-drawer");
+                                                    var i;
+
+                                                    for (i = 0; i < coll.length; i++) {
+                                                        coll[i].addEventListener("click", function () {
+                                                            this.classList.toggle("active");
+                                                            var content = this.nextElementSibling;
+                                                            if (content.style.display === "block") {
+                                                                content.style.display = "none";
+                                                            } else {
+                                                                content.style.display = "block";
+                                                            }
+                                                        });
+                                                    }
+                                                </script>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </product-info>
+                    </div>
+                </div>
+            </section>
+            <section class="wb-banded">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <div class="wb-collection-header">
+                            <h3 class="wb-subtle-heading">You may also like</h3>
+                            <a class="wb-float-right" href="shop.html">See more</a>
+                        </div>
+                        <div w3-include-html="wb-related.html"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div w3-include-html="wb-footer.html"></div>
+        <script>
+            includeHTML();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>Whisky Blender | Bottle something special!</title>
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+
+        <!--
+            CSS — keep unchanged. Dawn asset mapping:
+            wb-base.css      → base.css            (resets, container, banding)
+            wb-global.css    → global.css           (buttons, cards, video, panels)
+            wb-fonts.css     → base.css/fonts       (heading sizes, TrimPoster @font-face)
+            wb-header.css    → header.css
+            wb-footer.css    → footer.css
+            wb-home.css      → section-image-banner.css, section-multicolumn.css
+            wb-products.css  → component-card.css, section-featured-collection.css
+            glide.core.css   → vendor asset
+            glide.custom.css → custom carousel overrides
+        -->
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-home.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="stylesheet" type="text/css" href="css/glide.core.css" />
+        <link rel="stylesheet" type="text/css" href="css/glide.custom.css" />
+
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <!-- SEO / OG -->
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta name="description" content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta property="og:title" content="Whisky Blender | Bottle something special!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/" />
+        <meta property="og:description" content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta name="twitter:description" content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+    </head>
+    <body>
+
+        <!--
+        ════════════════════════════════════════════════════════════════
+         DAWN SECTION: announcement-bar
+         Dawn file:    sections/announcement-bar.liquid
+         Schema name:  "Announcement bar"
+         Settings:     text (richtext), color_scheme, show_line_separator
+        ════════════════════════════════════════════════════════════════
+        -->
+        <div class="shopify-section">
+            <div id="wb-banner" style="display: none">
+                <div class="wb-banner-buttons">
+                    <button type="button" class="wb-banner-button-prev" name="previous" aria-label="Slide left" disabled>
+                        <img src="icons/wb-caret-white.svg" class="wb-icon-caret" alt="" />
+                    </button>
+                    <div class="wb-banner-content">
+                        We close for Christmas 20 December ❄️ Place orders before then or they'll be sent out in the New Year 🎁
+                    </div>
+                    <button type="button" class="wb-banner-button-next" name="next" aria-label="Slide right">
+                        <img src="icons/wb-caret-white.svg" class="wb-icon-caret" alt="" />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--
+        ════════════════════════════════════════════════════════════════
+         DAWN SECTION: header
+         Dawn file:    sections/header.liquid
+         Schema name:  "Header"
+         Settings:     logo (image_picker), logo_width (range),
+                       menu (link_list), enable_sticky_header (checkbox),
+                       show_cart_icon (checkbox), show_account_icon (checkbox)
+         Notes:        .wb-byline (Scotland / Est 2011) is decorative — map to
+                       a custom "subtext" setting or hardcode in the section.
+                       .wb-texture.jpg background maps to an asset URL in liquid.
+        ════════════════════════════════════════════════════════════════
+        -->
+        <div class="shopify-section">
+            <header id="wb-header">
+                <div class="wb-container" style="background-image: url(images/wb-texture.jpg)">
+                    <a href="index.html" id="wb-logo" style="background-image: url(images/wb-logo-white.svg)">Whisky Blender</a>
+                    <div class="wb-byline">
+                        <div class="wb-left-byline"><span class="wb-hide-onmobile">Bothwell, </span>Scotland</div>
+                        <div class="wb-right-byline">Est<span class="wb-hide-onmobile">ablished</span> 2011</div>
+                    </div>
+                </div>
+            </header>
+            <nav id="wb-nav" aria-label="Main navigation">
+                <ul class="wb-topnav">
+                    <li><a href="create.html">Create</a></li>
+                    <li><a href="gift.html">Gift</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li>
+                        <ul class="wb-navicons">
+                            <li>
+                                <a href="/cart" aria-label="Basket">
+                                    <img src="icons/wb-basket-white.svg" alt="" />
+                                    <div class="wb-cart-count-bubble wb-background-red wb-darker">
+                                        <span>2</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/account" aria-label="Account">
+                                    <img src="icons/wb-account-white.svg" alt="" />
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <main class="wb-overflow-hidden-x">
+
+            <!--
+            ════════════════════════════════════════════════════════════════
+             DAWN SECTION: image-banner (Hero video)
+             Dawn file:    sections/image-banner.liquid
+             Schema name:  "Image banner"
+             Settings:     image (image_picker), video (video_url),
+                           heading (text), subheading (richtext),
+                           button_label_1/2 (text), button_link_1/2 (url),
+                           image_height (select: small/medium/large/adapt)
+             Notes:        Dawn's image-banner supports a video setting.
+                           .wb-videobg → media container with video fallback.
+                           .wb-overvideo → content overlay, white card that
+                           drops below the video on mobile.
+            ════════════════════════════════════════════════════════════════
+            -->
+            <div class="shopify-section">
+                <section>
+                    <div class="wb-container">
+                        <div class="wb-videobg" style="background-image: url(video/wb-index.jpg)">
+                            <div class="wb-videograin"></div>
+                            <video autoplay muted loop playsinline id="wb-video">
+                                <source src="video/wb-index.mp4" type="video/mp4" />
+                            </video>
+                        </div>
+                        <div class="wb-overvideo">
+                            <div class="wb-padding">
+                                <h1 class="wb-large-heading">Great Scotch!</h1>
+                                <p>When you're looking for that bottle of whisky nobody else has.</p>
+                                <div class="wb-buttons">
+                                    <a href="create.html" class="wb-button wb-primary-button">Create something</a>
+                                    <a href="vouchers.html" class="wb-button">Get a voucher</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!--
+            ════════════════════════════════════════════════════════════════
+             DAWN SECTION: testimonials (Reviews carousel)
+             Dawn file:    sections/multicolumn.liquid  (or custom)
+             Schema name:  "Testimonials"
+             Blocks:       quote — text (textarea)  [repeatable, up to 12]
+             Settings:     swipe_on_mobile (checkbox)
+             Notes:        Uses Glide.js. In Shopify, loop section.blocks to
+                           render .glide__slide elements. The star background
+                           image maps to a section asset.
+            ════════════════════════════════════════════════════════════════
+            -->
+            <div class="shopify-section">
+                <section class="wb-banded">
+                    <div class="wb-container">
+                        <div class="wb-padding">
+                            <div class="glide wb-testimonials">
+                                <div class="glide__track" data-glide-el="track">
+                                    <ul class="glide__slides wb-reviews">
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">They are worth more than 5stars...</li>
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">Brilliant idea getting to blend your own...</li>
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">I will definitely be ordering again and after tasting my own bottle...</li>
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">My Dad absolutely loved his bottle...</li>
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">The taste and quality is absolutely excellent...</li>
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">Everything about this company is just perfection...</li>
+                                        <li class="glide__slide wb-review" style="background-image: url(images/wb-stars.gif)">Great service, speedy delivery...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!--
+            ════════════════════════════════════════════════════════════════
+             DAWN SECTION: featured-collection
+             Dawn file:    sections/featured-collection.liquid
+             Schema name:  "Featured collection"
+             Settings:     title (text), collection (collection),
+                           products_to_show (range 2–12),
+                           columns_desktop (range 1–5),
+                           show_view_all (checkbox)
+             Notes:        Each .wb-productcell = one product card
+                           (component-card.liquid in Dawn).
+                           onclick navigation replaced with semantic <a> wrapper.
+                           .wb-productbadge maps to Dawn's product badge
+                           (sale, sold-out) rendered via Liquid conditionals.
+            ════════════════════════════════════════════════════════════════
+            -->
+            <div class="shopify-section">
+                <section class="wb-banded wb-first-item">
+                    <div class="wb-container">
+                        <div class="wb-padding">
+                            <ul class="wb-productsgrid wb-tightergrid">
+                                <li class="wb-productcell">
+                                    <a href="custom-500-flat.html" class="wb-productitem">
+                                        <div class="wb-productmedia">
+                                            <div class="wb-productimage">
+                                                <img src="images/custom/custom-500-flat.jpg" alt="Custom label whisky" loading="lazy" />
+                                            </div>
+                                            <div class="wb-productbadge"></div>
+                                        </div>
+                                        <div class="wb-productcontent">
+                                            <div class="wb-productinfo">
+                                                <h3 class="wb-producttitle wb-tiny-heading">Custom whisky 500ml flat</h3>
+                                                <div class="wb-productdetails">
+                                                    <div class="wb-productcosts">
+                                                        <div class="wb-product-price">From £54.00</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="wb-productcell">
+                                    <a href="custom-500-round-black.html" class="wb-productitem">
+                                        <div class="wb-productmedia">
+                                            <div class="wb-productimage">
+                                                <img src="images/custom/custom-500-round-black.jpg" alt="Custom label single cask whisky" loading="lazy" />
+                                            </div>
+                                            <div class="wb-productbadge"></div>
+                                        </div>
+                                        <div class="wb-productcontent">
+                                            <div class="wb-productinfo">
+                                                <h3 class="wb-producttitle wb-tiny-heading">Custom whisky 500ml round (black)</h3>
+                                                <div class="wb-productdetails">
+                                                    <div class="wb-productcosts">
+                                                        <div class="wb-product-price">From £64.00</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="wb-productcell">
+                                    <a href="custom-12-miniatures.html" class="wb-productitem">
+                                        <div class="wb-productmedia">
+                                            <div class="wb-productimage">
+                                                <img src="images/custom/custom-12-miniatures.jpg" alt="12 custom whisky miniatures" loading="lazy" />
+                                            </div>
+                                            <div class="wb-productbadge"></div>
+                                        </div>
+                                        <div class="wb-productcontent">
+                                            <div class="wb-productinfo">
+                                                <h3 class="wb-producttitle wb-tiny-heading">12 custom whisky miniatures</h3>
+                                                <div class="wb-productdetails">
+                                                    <div class="wb-productcosts">
+                                                        <div class="wb-product-price">£100.00</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="wb-productcell">
+                                    <a href="vouchers.html" class="wb-productitem">
+                                        <div class="wb-productmedia">
+                                            <div class="wb-productimage">
+                                                <img src="images/vouchers/voucher-standard.jpg" alt="Gift voucher" loading="lazy" />
+                                            </div>
+                                            <div class="wb-productbadge"></div>
+                                        </div>
+                                        <div class="wb-productcontent">
+                                            <div class="wb-productinfo">
+                                                <h3 class="wb-producttitle wb-tiny-heading">Gift voucher</h3>
+                                                <div class="wb-productdetails">
+                                                    <div class="wb-productcosts">
+                                                        <div class="wb-product-price">£60.00</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!--
+            ════════════════════════════════════════════════════════════════
+             DAWN SECTION: multicolumn (Occasions)
+             Dawn file:    sections/multicolumn.liquid
+             Schema name:  "Occasions"
+             Blocks:       card — image (image_picker), heading (text),
+                           link (url), emoji (text)  [repeatable]
+             Settings:     heading (text), subheading (richtext),
+                           columns_desktop (range 3–6),
+                           swipe_on_mobile (checkbox)
+             Notes:        .wb-cards li maps to multicolumn blocks.
+                           .wb-emoji is absolutely positioned inside
+                           .wb-card-details — keep in block markup.
+                           onclick navigation replaced with <a> wrapper.
+            ════════════════════════════════════════════════════════════════
+            -->
+            <div class="shopify-section">
+                <section class="wb-banded">
+                    <div class="wb-container">
+                        <div class="wb-padding">
+                            <h2 class="wb-medium-heading">For special occasions</h2>
+                            <p>Our Scotch whisky is the perfect way to commemorate, appreciate, or celebrate in a truly unique and personal way.</p>
+                            <ul class="wb-cards wb-main-cards">
+                                <li>
+                                    <a href="weddings.html">
+                                        <div class="wb-card-image">
+                                            <img src="images/occassions/weddings.png" alt="Wedding whisky" loading="lazy" />
+                                        </div>
+                                        <div class="wb-card-details">
+                                            <h3 class="wb-small-heading">Weddings</h3>
+                                            <span class="wb-emoji" aria-hidden="true">🎩</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="birthdays.html">
+                                        <div class="wb-card-image">
+                                            <img src="images/occassions/birthdays.png" alt="Birthday whisky" loading="lazy" />
+                                        </div>
+                                        <div class="wb-card-details">
+                                            <h3 class="wb-small-heading">Birthdays</h3>
+                                            <span class="wb-emoji" aria-hidden="true">🎁</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="anniversaries.html">
+                                        <div class="wb-card-image">
+                                            <img src="images/occassions/anniversaries.png" alt="Anniversary whisky" loading="lazy" />
+                                        </div>
+                                        <div class="wb-card-details">
+                                            <h3 class="wb-small-heading">Anniversaries</h3>
+                                            <span class="wb-emoji" aria-hidden="true">💝</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="christmas.html">
+                                        <div class="wb-card-image">
+                                            <img src="images/occassions/christmas.png" alt="Whisky for Christmas" loading="lazy" />
+                                        </div>
+                                        <div class="wb-card-details">
+                                            <h3 class="wb-small-heading">Christmas</h3>
+                                            <span class="wb-emoji" aria-hidden="true">🎅🏽</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="thankyous.html">
+                                        <div class="wb-card-image">
+                                            <img src="images/occassions/thankyous.png" alt="Say thanks with whisky" loading="lazy" />
+                                        </div>
+                                        <div class="wb-card-details">
+                                            <h3 class="wb-small-heading">Thankyous</h3>
+                                            <span class="wb-emoji" aria-hidden="true">🙏</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="celebrations.html">
+                                        <div class="wb-card-image">
+                                            <img src="images/occassions/celebrations.png" alt="Whisky to celebrate" loading="lazy" />
+                                        </div>
+                                        <div class="wb-card-details">
+                                            <h3 class="wb-small-heading">Celebrations</h3>
+                                            <span class="wb-emoji" aria-hidden="true">🎉</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!--
+            ════════════════════════════════════════════════════════════════
+             DAWN SECTION: image-with-text (For yersel')
+             Dawn file:    sections/image-with-text.liquid
+             Schema name:  "Image with text"
+             Settings:     image (image_picker), image_position (select left/right),
+                           heading (text), text (richtext),
+                           button_label (text), button_link (url),
+                           color_scheme
+             Notes:        .wb-right-image hides on mobile, floats absolute on
+                           desktop (left: 840px). In Dawn this becomes the media
+                           column in a two-column layout. The text+CTA is the
+                           content column.
+            ════════════════════════════════════════════════════════════════
+            -->
+            <div class="shopify-section">
+                <section class="wb-banded">
+                    <div class="wb-container">
+                        <div class="wb-padding">
+                            <div class="wb-right-image">
+                                <img class="wb-foryersel" src="images/home/wb-foryersel.png" alt="" loading="lazy" />
+                            </div>
+                            <h2 class="wb-medium-heading">For yersel'</h2>
+                            <p>You don't need an excuse to treat yourself. So take a look at the different ways you can create something you can enjoy, share and show off.</p>
+                            <div class="wb-buttons">
+                                <a href="create.html" class="wb-button">Create something</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!--
+            ════════════════════════════════════════════════════════════════
+             DAWN SECTION: custom-collabs (Collaborations CTA)
+             Dawn file:    sections/custom-collabs.liquid  (bespoke section)
+             Schema name:  "Collaborations CTA"
+             Settings:     heading (text), subheading (richtext),
+                           button_label_1/2 (text), button_link_1/2 (url)
+             Notes:        No direct Dawn equivalent — implement as a custom
+                           section. Content sourced from wb-letscollab.html.
+            ════════════════════════════════════════════════════════════════
+            -->
+            <div class="shopify-section">
+                <section class="wb-banded">
+                    <div class="wb-container">
+                        <div class="wb-padding">
+                            <h2 class="wb-medium-heading">Let's collaborate</h2>
+                            <p>Got a brand or an event and fancy your own bottle of whisky? We'd love to work with you.</p>
+                            <div class="wb-buttons">
+                                <a href="collaborate.html" class="wb-button wb-primary-button">Get in touch</a>
+                                <a href="collaborations.html" class="wb-button">See collaborations</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+        </main>
+
+        <!--
+        ════════════════════════════════════════════════════════════════
+         DAWN SECTION: footer
+         Dawn file:    sections/footer.liquid
+         Schema name:  "Footer"
+         Blocks:       link_list — menu (link_list), heading (text)
+                       text      — subtext (richtext)
+                       image     — image (image_picker), image_width (range)
+         Settings:     color_scheme, show_social, enable_follow_on_shop
+         Notes:        Each .wb-footercolumn = one footer block.
+                       Social icons map to Dawn's built-in social link settings
+                       (configured in theme settings, not section settings).
+                       .wb-signed SVG maps to an image block.
+                       .wb-texture.jpg background → asset_url in liquid.
+        ════════════════════════════════════════════════════════════════
+        -->
+        <div class="shopify-section">
+            <footer id="wb-footer">
+                <div class="wb-container" style="background-image: url(images/wb-texture.jpg)">
+                    <div class="wb-footercolumn">
+                        <h5 class="wb-tiny-heading">Quick links</h5>
+                        <ul>
+                            <li><a href="thelab.html">Create your own</a></li>
+                            <li><a href="vouchers.html">Vouchers</a></li>
+                            <li><a href="perfectdrams.html">Perfect drams</a></li>
+                            <li><a href="miniatures.html">Whisky miniatures</a></li>
+                            <li><a href="singlemalts.html">Single malts</a></li>
+                            <li><a href="collaborate.html">Your own brand</a></li>
+                        </ul>
+                    </div>
+                    <div class="wb-footercolumn">
+                        <h5 class="wb-tiny-heading">Info</h5>
+                        <ul>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="/account">Your account</a></li>
+                            <li><a href="/contact">Contact</a></li>
+                            <li><a href="help.html">Help</a></li>
+                            <li><a href="legal.html">Legal</a></li>
+                            <li><a href="https://www.drinkaware.co.uk/" target="_blank" rel="noopener">Drinkaware &#8599;</a></li>
+                        </ul>
+                    </div>
+                    <div class="wb-footercolumn wb-footerblurb">
+                        <h5 class="wb-tiny-heading">How's it gaun?</h5>
+                        <p>We love Scotch and we want you to love it too! So we've hand-selected some well-aged casks for you to blend, bottle and label as you see fit. Personalised gifts for someone special, even if that special someone is yersel!</p>
+                        <img src="images/wb-signed-white.svg" alt="Andy &amp; Drew" class="wb-signed" />
+                    </div>
+                    <div class="wb-footercolumn wb-footerblurb">
+                        <p><strong>Please enjoy responsibly&mdash;or no at aw!</strong></p>
+                    </div>
+                    <div class="wb-footercolumn">
+                        <ul class="wb-socials">
+                            <li><a href="https://www.instagram.com/whiskyblender" target="_blank" rel="noopener" aria-label="Instagram"><img src="icons/wb-instagram-white.svg" alt="" /></a></li>
+                            <li><a href="https://twitter.com/whisky_blender" target="_blank" rel="noopener" aria-label="Twitter / X"><img src="icons/wb-twitter-white.svg" alt="" /></a></li>
+                            <li><a href="https://www.facebook.com/whiskyblender" target="_blank" rel="noopener" aria-label="Facebook"><img src="icons/wb-facebook-white.svg" alt="" /></a></li>
+                            <li><a href="https://www.youtube.com/@Whiskyblender" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/wb-youtube-white.svg" alt="" /></a></li>
+                            <li><a href="https://uk.trustpilot.com/review/whiskyblender.com" target="_blank" rel="noopener" aria-label="Trustpilot"><img src="icons/wb-trustpilot-white.svg" alt="" /></a></li>
+                        </ul>
+                    </div>
+                    <div class="wb-footercolumn wb-copyright">
+                        <p>&copy; <span id="wb-year"></span> Whisky Blender is a trademark product of Andrews of Bothwell Ltd. All rights reserved. Company No. SC407498. VAT Reg. 151 8243 24</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <script src="js/glide.js"></script>
+        <script>
+            new Glide(".wb-testimonials", {
+                type: "carousel",
+                gap: 60,
+                perView: 3,
+                autoplay: 1,
+                animationDuration: 4000,
+                animationTimingFunc: "linear",
+                hoverpause: true,
+                breakpoints: {
+                    600: { perView: 1, gap: 20 },
+                    768: { perView: 2, gap: 30 }
+                }
+            }).mount();
+
+            document.getElementById("wb-year").textContent = new Date().getFullYear();
+        </script>
+    </body>
+</html>

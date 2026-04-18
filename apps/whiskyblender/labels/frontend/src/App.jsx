@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { Routes, Route, useParams, useNavigate, useSearchParams, Navigate } from 'react-router-dom';
 import { BASE_LABELS, ALL_TEMPLATES, getTemplatesForBase, LABEL_DIMS } from './data/labels';
 
 // ─── URL encoding / decoding ──────────────────────────────────────────────────
@@ -16,51 +17,34 @@ const FIELD_TO_PARAM = {
   customerName: 'customer-name',
   description:  'description',
   keyImage:     'key-image',
-  website:      'website',
   // 'image' (file blob) is intentionally excluded
 };
 const PARAM_TO_FIELD = Object.fromEntries(Object.entries(FIELD_TO_PARAM).map(([k, v]) => [v, k]));
 
-function encodeToUrl(base, template, formData) {
-  const params = new URLSearchParams();
-  params.set('base', base.id);
-  params.set('tmpl', template.id);
+function encodeFormData(formData) {
+  const params = {};
   Object.entries(formData).forEach(([key, value]) => {
     if (key === 'image') return;
     const param = FIELD_TO_PARAM[key] || key;
     if (value !== null && value !== undefined && value !== '' && value !== false) {
-      params.set(param, String(value));
+      params[param] = String(value);
     }
   });
-  return params.toString();
+  return params;
 }
 
-function decodeFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const baseId = params.get('base');
-  const tmplId = params.get('tmpl');
-  if (!baseId || !tmplId) return null;
-
-  const base = BASE_LABELS.find(b => b.id === baseId);
-  const template = ALL_TEMPLATES[tmplId];
-  if (!base || !template) return null;
-
-  // Start with field defaults
+function decodeFormData(template, searchParams) {
   const formData = {};
   template.fields.forEach(f => {
     if (f.type === 'select') formData[f.key] = f.options[0].value;
     else if (f.type === 'checkbox') formData[f.key] = false;
     else formData[f.key] = '';
   });
-
-  // Override with URL values
-  params.forEach((value, param) => {
-    if (param === 'base' || param === 'tmpl') return;
+  searchParams.forEach((value, param) => {
     const key = PARAM_TO_FIELD[param] || param;
     formData[key] = key === 'singleCask' ? value === 'true' : value;
   });
-
-  return { base, template, formData };
+  return formData;
 }
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
@@ -413,25 +397,13 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
 
 // ─── Single image label ───────────────────────────────────────────────────────
 
-const PRINT_COLORS = {
-  black: { color: '#000000', textShadow: '1px 1px #ffffff' },
-  green: { color: '#006858', textShadow: '1px 1px #ffffff' },
-  blue:  { color: '#27468f', textShadow: '1px 1px #ffffff' },
-  red:   { color: '#9d0500', textShadow: '1px 1px #ffffff' },
-  white: { color: '#ffffff', textShadow: '1px 1px #000000' },
-};
 
 function SingleImageOutput({ baseLabel, formData, onBack }) {
   const dims = LABEL_DIMS[baseLabel.size];
-  const style = PRINT_COLORS[formData.color] || PRINT_COLORS.black;
-
-  const blendNameRef = useRef(null);
-  useAutoFontSize(blendNameRef, formData.blendName);
 
   return (
     <OutputWrapper onBack={onBack}>
       <LabelPage dims={dims}>
-        {/* Background image */}
         {formData.image && (
           <div style={{
             position: 'absolute',
@@ -442,68 +414,6 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
             backgroundSize: 'cover',
             zIndex: 1,
           }} />
-        )}
-
-        {/* Blend name */}
-        <div style={{
-          fontFamily: '"trimPosterCompressed", sans-serif',
-          fontWeight: 400,
-          position: 'absolute',
-          top: dims.outerTop, left: dims.outerLeft,
-          width: dims.outerW, height: dims.outerH,
-          textTransform: 'uppercase',
-          display: 'grid',
-          placeContent: 'center',
-          justifyContent: 'start',
-          scale: String(dims.scale),
-          zIndex: 4,
-          color: style.color,
-          textShadow: style.textShadow,
-          overflow: 'hidden',
-        }}>
-          <div ref={blendNameRef}>
-            {insertSpaceForLongWords(formData.blendName)}
-          </div>
-        </div>
-
-        {/* Creator name */}
-        {formData.createdBy && (
-          <div style={{
-            fontFamily: '"Raleway", sans-serif',
-            position: 'absolute',
-            top: dims.sideTop, left: dims.sideLeft,
-            width: dims.sideW, height: dims.sideH,
-            scale: String(dims.scale),
-            zIndex: 3,
-            overflow: 'hidden',
-          }}>
-            <div style={{ fontSize: 7, lineHeight: '10px', fontWeight: 700, color: style.color, textShadow: style.textShadow }}>
-              {formData.createdBy}
-            </div>
-          </div>
-        )}
-
-        {/* Reference — rotated */}
-        {formData.reference && (
-          <div style={{
-            position: 'absolute',
-            transform: 'rotate(-90deg)',
-            right: dims.refRight, top: dims.refTop,
-            height: 20, width: 80,
-            zIndex: 2,
-            textAlign: 'right',
-          }}>
-            <div style={{
-              fontFamily: '"Roboto Mono", monospace',
-              fontSize: dims.refFontSize,
-              lineHeight: `${dims.refFontSize + 2}px`,
-              opacity: 0.6,
-              color: style.color,
-              textShadow: style.textShadow,
-            }}>
-              {formData.reference}
-            </div>
-          </div>
         )}
       </LabelPage>
     </OutputWrapper>
@@ -552,48 +462,73 @@ function LabelOutput({ baseLabel, template, formData, onBack }) {
   return <GenericOutput baseLabel={baseLabel} template={template} onBack={onBack} />;
 }
 
+// ─── App shell ────────────────────────────────────────────────────────────────
+
+function AppShell({ children }) {
+  return (
+    <div className="app">
+      <header className="app-header">
+        <div className="app-header__inner">
+          <a className="app-header__brand" href="../">Whisky Blender</a>
+          <span className="app-header__title">Label Generator</span>
+        </div>
+      </header>
+      <main className="app-main">{children}</main>
+    </div>
+  );
+}
+
 // ─── Step 1: Choose base label ────────────────────────────────────────────────
 
-function StepOne({ onSelect }) {
+function StepOne() {
+  const navigate = useNavigate();
   return (
-    <div className="step-shell">
-      <div className="step-header">
-        <div className="step-eyebrow">Step 1 of 3</div>
-        <h1 className="step-title">Choose label</h1>
-        <p className="step-desc">Select the base label format for your bottle.</p>
+    <AppShell>
+      <div className="step-shell">
+        <div className="step-header">
+          <div className="step-eyebrow">Step 1 of 3</div>
+          <h1 className="step-title">Choose label</h1>
+          <p className="step-desc">Select the base label format for your bottle.</p>
+        </div>
+        <div className="base-grid">
+          {BASE_LABELS.map(base => (
+            <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
+              <span className="base-card__size">{base.size}</span>
+              <span className="base-card__name">{base.name}</span>
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="base-grid">
-        {BASE_LABELS.map(base => (
-          <button key={base.id} className="base-card" onClick={() => onSelect(base)}>
-            <span className="base-card__size">{base.size}</span>
-            <span className="base-card__name">{base.name}</span>
-          </button>
-        ))}
-      </div>
-    </div>
+    </AppShell>
   );
 }
 
 // ─── Step 2: Choose template ──────────────────────────────────────────────────
 
-function StepTwo({ baseLabel, onSelect, onBack }) {
-  const templates = getTemplatesForBase(baseLabel.id);
+function StepTwo() {
+  const { baseId } = useParams();
+  const navigate = useNavigate();
+  const base = BASE_LABELS.find(b => b.id === baseId);
+  if (!base) return <Navigate to="/" replace />;
+  const templates = getTemplatesForBase(base.id);
   return (
-    <div className="step-shell">
-      <div className="step-header">
-        <div className="step-eyebrow">Step 2 of 3</div>
-        <h1 className="step-title">Choose template</h1>
-        <p className="step-desc"><span className="step-desc__label">{baseLabel.name}</span></p>
+    <AppShell>
+      <div className="step-shell">
+        <div className="step-header">
+          <div className="step-eyebrow">Step 2 of 3</div>
+          <h1 className="step-title">Choose template</h1>
+          <p className="step-desc"><span className="step-desc__label">{base.name}</span></p>
+        </div>
+        <div className="template-grid">
+          {templates.map(tmpl => (
+            <button key={tmpl.id} className="template-card" onClick={() => navigate(`/${baseId}/${tmpl.id}/`)}>
+              <span className="template-card__name">{tmpl.name}</span>
+            </button>
+          ))}
+        </div>
+        <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
       </div>
-      <div className="template-grid">
-        {templates.map(tmpl => (
-          <button key={tmpl.id} className="template-card" onClick={() => onSelect(tmpl)}>
-            <span className="template-card__name">{tmpl.name}</span>
-          </button>
-        ))}
-      </div>
-      <button className="back-btn" onClick={onBack}>← Back</button>
-    </div>
+    </AppShell>
   );
 }
 
@@ -626,149 +561,123 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
   };
 
   return (
-    <div className="step-shell">
-      <div className="step-header">
-        <div className="step-eyebrow">Step 3 of 3</div>
-        <h1 className="step-title">{template.name}</h1>
-        <p className="step-desc"><span className="step-desc__label">{baseLabel.name}</span></p>
-      </div>
-      <form className="label-form" onSubmit={handleSubmit}>
-        {template.fields.map(field => (
-          <div key={field.key} className="form-field">
-            <label className="form-label" htmlFor={field.key}>{field.label}</label>
-
-            {field.type === 'select' ? (
-              <select id={field.key} className="form-select" value={values[field.key]}
-                onChange={e => handleChange(field.key, e.target.value)}>
-                {field.options.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            ) : field.type === 'checkbox' ? (
-              <label className="form-checkbox">
-                <input
-                  type="checkbox"
-                  checked={values[field.key]}
-                  onChange={e => handleChange(field.key, e.target.checked)}
-                />
-                <span>Yes</span>
-              </label>
-            ) : field.type === 'file' ? (
-              <div className="file-field">
-                <input id={field.key} type="file" accept={field.accept}
-                  className="form-file-input"
-                  onChange={e => handleFile(field.key, e.target.files[0])} />
-                <label htmlFor={field.key} className="form-file-btn">
-                  {imageUrl ? 'Change image' : 'Choose image'}
-                </label>
-                {imageUrl && (
-                  <div className="file-preview">
-                    <img src={imageUrl} alt="Preview" className="file-preview__img" />
-                  </div>
-                )}
-              </div>
-            ) : (
-              <input id={field.key} type="text" className="form-input"
-                placeholder={field.placeholder} value={values[field.key]}
-                onChange={e => handleChange(field.key, e.target.value)} />
-            )}
-          </div>
-        ))}
-        <div className="form-actions">
-          <button type="submit" className="generate-btn">Generate label →</button>
-          {template.sample && (
-            <button type="button" className="sample-btn" onClick={() => onGenerate(template.sample)}>
-              Try a sample
-            </button>
-          )}
-          <button type="button" className="back-btn" onClick={onBack}>← Back</button>
+    <AppShell>
+      <div className="step-shell">
+        <div className="step-header">
+          <div className="step-eyebrow">Step 3 of 3</div>
+          <h1 className="step-title">{template.name}</h1>
+          <p className="step-desc"><span className="step-desc__label">{baseLabel.name}</span></p>
         </div>
-      </form>
-    </div>
+        <form className="label-form" onSubmit={handleSubmit}>
+          {template.fields.map(field => (
+            <div key={field.key} className="form-field">
+              <label className="form-label" htmlFor={field.key}>{field.label}</label>
+
+              {field.type === 'select' ? (
+                <select id={field.key} className="form-select" value={values[field.key]}
+                  onChange={e => handleChange(field.key, e.target.value)}>
+                  {field.options.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              ) : field.type === 'checkbox' ? (
+                <label className="form-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={values[field.key]}
+                    onChange={e => handleChange(field.key, e.target.checked)}
+                  />
+                  <span>Yes</span>
+                </label>
+              ) : field.type === 'file' ? (
+                <div className="file-field">
+                  <input id={field.key} type="file" accept={field.accept}
+                    className="form-file-input"
+                    onChange={e => handleFile(field.key, e.target.files[0])} />
+                  <label htmlFor={field.key} className="form-file-btn">
+                    {imageUrl ? 'Change image' : 'Choose image'}
+                  </label>
+                  {imageUrl && (
+                    <div className="file-preview">
+                      <img src={imageUrl} alt="Preview" className="file-preview__img" />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <input id={field.key} type="text" className="form-input"
+                  placeholder={field.placeholder} value={values[field.key]}
+                  onChange={e => handleChange(field.key, e.target.value)} />
+              )}
+            </div>
+          ))}
+          <div className="form-actions">
+            <button type="submit" className="generate-btn">Generate label →</button>
+            {template.sample && (
+              <button type="button" className="sample-btn" onClick={() => onGenerate(template.sample)}>
+                Try a sample
+              </button>
+            )}
+            <button type="button" className="back-btn" onClick={onBack}>← Back</button>
+          </div>
+        </form>
+      </div>
+    </AppShell>
+  );
+}
+
+// ─── Step 3 + output route ────────────────────────────────────────────────────
+
+function StepThreeOrOutput() {
+  const { baseId, templateId } = useParams();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const base = BASE_LABELS.find(b => b.id === baseId);
+  const template = ALL_TEMPLATES[templateId];
+  if (!base || !template) return <Navigate to="/" replace />;
+
+  const hasOutput = searchParams.toString() !== '';
+  const decodedData = useMemo(
+    () => hasOutput ? decodeFormData(template, searchParams) : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchParams.toString()],
+  );
+
+  // Persist last generated values so the form stays pre-populated on Edit
+  const lastDataRef = useRef(null);
+  if (decodedData) lastDataRef.current = decodedData;
+
+  const handleGenerate = (data) => setSearchParams(encodeFormData(data));
+  const handleEdit = () => setSearchParams({});
+
+  if (hasOutput && decodedData) {
+    return (
+      <div className="app app--output">
+        <LabelOutput baseLabel={base} template={template} formData={decodedData} onBack={handleEdit} />
+      </div>
+    );
+  }
+
+  return (
+    <StepThree
+      baseLabel={base}
+      template={template}
+      initialValues={lastDataRef.current}
+      onGenerate={handleGenerate}
+      onBack={() => navigate(`/${baseId}/`)}
+    />
   );
 }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  // Initialise from URL params if present (direct/shared link to a label)
-  const initial = useMemo(() => {
-    const decoded = decodeFromUrl();
-    if (decoded) return { step: 4, ...decoded };
-    return { step: 1, base: null, template: null, formData: null };
-  }, []);
-
-  const [step, setStep] = useState(initial.step);
-  const [selectedBase, setSelectedBase] = useState(initial.base || null);
-  const [selectedTemplate, setSelectedTemplate] = useState(initial.template || null);
-  const [formData, setFormData] = useState(initial.formData || null);
-
-  // Handle browser back/forward while on the label output view
-  useEffect(() => {
-    const onPopState = () => {
-      const decoded = decodeFromUrl();
-      if (decoded) {
-        setSelectedBase(decoded.base);
-        setSelectedTemplate(decoded.template);
-        setFormData(decoded.formData);
-        setStep(4);
-      } else {
-        setFormData(null);
-        setStep(prev => (prev === 4 ? 3 : prev));
-      }
-    };
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
-
-  const handleBaseSelect = (base) => { setSelectedBase(base); setStep(2); };
-  const handleTemplateSelect = (tmpl) => { setSelectedTemplate(tmpl); setStep(3); };
-
-  const handleGenerate = (data) => {
-    setFormData(data);
-    setStep(4);
-    const qs = encodeToUrl(selectedBase, selectedTemplate, data);
-    window.history.pushState({}, '', `?${qs}`);
-  };
-
-  const handleBackToStep1 = () => {
-    setSelectedBase(null); setSelectedTemplate(null); setFormData(null); setStep(1);
-    window.history.pushState({}, '', window.location.pathname);
-  };
-  const handleBackToStep2 = () => {
-    setSelectedTemplate(null); setFormData(null); setStep(2);
-    window.history.pushState({}, '', window.location.pathname);
-  };
-  const handleBackToStep3 = () => {
-    setStep(3);
-    window.history.pushState({}, '', window.location.pathname);
-  };
-
   return (
-    <div className={`app${step === 4 ? ' app--output' : ''}`}>
-      {step !== 4 && (
-        <header className="app-header">
-          <div className="app-header__inner">
-            <span className="app-header__brand">Whisky Blender</span>
-            <span className="app-header__title">Label Generator</span>
-          </div>
-        </header>
-      )}
-      <main className="app-main">
-        {step === 1 && <StepOne onSelect={handleBaseSelect} />}
-        {step === 2 && selectedBase && (
-          <StepTwo baseLabel={selectedBase} onSelect={handleTemplateSelect} onBack={handleBackToStep1} />
-        )}
-        {step === 3 && selectedBase && selectedTemplate && (
-          <StepThree baseLabel={selectedBase} template={selectedTemplate}
-            initialValues={formData}
-            onGenerate={handleGenerate} onBack={handleBackToStep2} />
-        )}
-        {step === 4 && selectedBase && selectedTemplate && formData && (
-          <LabelOutput baseLabel={selectedBase} template={selectedTemplate}
-            formData={formData} onBack={handleBackToStep3} />
-        )}
-      </main>
-    </div>
+    <Routes>
+      <Route path="/" element={<StepOne />} />
+      <Route path="/:baseId/" element={<StepTwo />} />
+      <Route path="/:baseId/:templateId/" element={<StepThreeOrOutput />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

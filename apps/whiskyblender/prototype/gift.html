@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <title>Whisky Blender | Bottle something special!</title>
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="stylesheet" type="text/css" href="css/glide.core.css" />
+        <link rel="stylesheet" type="text/css" href="css/glide.custom.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
+            name="desciption" />
+        <meta property="og:title" content="Whisky Blender | Bottle something special!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/" />
+        <meta
+            property="og:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta property="fb:app_id" content="194489270627737" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta
+            name="twitter:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta name="twitter:creator" content="whisky_blender" />
+        <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                /*loop through a collection of all HTML elements:*/
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    /*search for elements with a certain attribute:*/
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        /*make an HTTP request using the attribute value as the file name:*/
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) {
+                                    elmnt.innerHTML = this.responseText;
+                                }
+                                if (this.status == 404) {
+                                    elmnt.innerHTML = "Page not found.";
+                                }
+                                /*remove the attribute, and call this function once more:*/
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        /*exit the function:*/
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main class="wb-overflow-hidden-x">
+            <section>
+                <div class="wb-container">
+                    <div class="wb-videobg" style="background-image: url(video/wb-whisky-bow.jpg)">
+                        <div class="wb-videograin"></div>
+                        <video autoplay muted loop id="wb-video">
+                            <source src="video/wb-whisky-bow.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                    <div class="wb-overvideo">
+                        <div class="wb-padding">
+                            <h1 class="wb-large-heading">Give the gift of whisky</h1>
+                            <p>That's certaintly the kind of gifts that we like to get from people.</p>
+                            <div class="wb-buttons">
+                                <a href="create.html" class="wb-button wb-primary-button">Create something</a>
+                                <!-- <a href="vouchers.html" class="wb-button">Get a voucher</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wb-container">
+                    <div class="glide wb-gifts">
+                        <div class="glide__track" data-glide-el="track">
+                            <ul class="glide__slides wb-giftphotos">
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/01_joker.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/02_nox.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/03_lockstock.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/04_burt.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/05_bollocks.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/06_orson.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/07_rhino.jpg" />
+                                </li>
+                                <li class="glide__slide wb-giftphoto">
+                                    <img src="images/customers/08_dad.jpg" />
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="wb-banded">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <h2 class="wb-medium-heading">For special occassions</h2>
+                        <p>
+                            Our Scotch whisky is the perfect way to commemorate, appreciate, or celebrate in a truly
+                            unique and personal way.
+                        </p>
+                        <ul class="wb-cards wb-main-cards">
+                            <li onclick="location.href='weddings.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/occassions/weddings.png" alt="Wedding whisky" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="weddings.html">Weddings</a></h3>
+                                    <span class="wb-emoji">🎩</span>
+                                    <p>
+                                        The best man, father of the bride, heck, even the bride herself, weddings are
+                                        full of folk deserving of a great dram!
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='birthdays.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/occassions/birthdays.png" alt="Birthday whisky" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="birthdays.html">Birthdays</a></h3>
+                                    <span class="wb-emoji">🎁</span>
+                                    <p>
+                                        There's nothing better than gifting something at a party only for it to
+                                        immediately get cracked open for you to enjoy too!
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='anniversaries.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/occassions/anniversaries.png" alt="Anniversary whisky" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="weddings.html">Anniversaries</a></h3>
+                                    <span class="wb-emoji">💝</span>
+                                    <p>
+                                        Mark those milestones with something special. There's nothing like the time
+                                        you've shared together, so why not have a bottle just as unique?
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='christmas.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/occassions/christmas.png" alt="Whisky for Christmas" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="christmas.html">Christmas</a></h3>
+                                    <span class="wb-emoji">🎅🏽</span>
+                                    <p>
+                                        The ultimate Christmas gift. They definitely don't already have it, they aren't
+                                        expecting it, and it'll keep them warmer than a new pair of socks.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='thankyous.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/occassions/thankyous.png" alt="Say thanks with whisky" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="thankyous.html">Thankyous</a></h3>
+                                    <span class="wb-emoji">🙏</span>
+                                    <p>
+                                        Neighbour been cutting your grass all year? A friend help you move house, or
+                                        paint your gaff? You know what to do to show your appreciation.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='celebrations.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/occassions/celebrations.png" alt="Whisky to celebrate" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="celebrations.html">Celebrations</a></h3>
+                                    <span class="wb-emoji">🎉</span>
+                                    <p>
+                                        Sometimes special occassions happen when you least expect them, and it can be
+                                        great to have your own special bottle of whisky ready to crack open and savour
+                                        the moment.
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section class="wb-banded">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <div class="wb-collection-header">
+                            <h3 class="wb-subtle-heading">Exclusive bottles</h3>
+                            <a class="wb-float-right" href="shop.html">See more</a>
+                        </div>
+                        <div w3-include-html="wb-related.html"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div w3-include-html="wb-footer.html"></div>
+        <script src="js/glide.js"></script>
+        <script>
+            new Glide(".wb-gifts", {
+                type: "carousel",
+                gap: 40,
+                perView: 5,
+                autoplay: 1,
+                animationDuration: 5000,
+                animationTimingFunc: "linear",
+                hoverpause: true,
+                breakpoints: {
+                    600: {
+                        perView: 3,
+                        gap: 20
+                    },
+                    768: {
+                        perView: 4,
+                        gap: 30
+                    }
+                }
+            }).mount();
+        </script>
+        <script>
+            includeHTML();
+        </script>
+    </body>
+</html>

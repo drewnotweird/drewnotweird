@@ -4,6 +4,12 @@ export const BASE_LABELS = [
     name: '500ml single malt blank',
     size: '500ml',
     extraTemplates: ['tampa-whisky-club'],
+  },
+  {
+    id: '500ml-single-malt-roundel',
+    name: '500ml single malt with roundel',
+    size: '500ml',
+    extraTemplates: [],
     websiteTemplate: 'website-options-singlemalt',
   },
   {
@@ -73,7 +79,7 @@ export const ALL_TEMPLATES = {
       series: "Gaspar's Stash Series",
       blendName: 'Orchard Galore',
       customerName: 'Andy Davidson',
-      description: 'Inchmurrin / First Fill Bourbon / Cask No.66 / Distilled Jan 2014 / Bottled Mar 2026',
+      description: 'Inchmurrin Distilled at Loch Lomond Distillery / First Fill Bourbon / Cask No.66 / Distilled January 6th, 2014 / Bottled March 20th 2026',
       color: 'red',
       keyImage: 'ship',
     },
@@ -126,18 +132,9 @@ export const ALL_TEMPLATES = {
   'single-image': {
     id: 'single-image',
     name: 'Single image',
-    sample: {
-      blendName: 'My Blend',
-      createdBy: 'A. Nicolson',
-      reference: '09374658G27',
-      color: 'black',
-    },
+    sample: null,
     fields: [
-      { key: 'blendName',  label: 'Blend name',        type: 'text',   placeholder: 'Name of the blend' },
-      { key: 'createdBy',  label: 'Created by',        type: 'text',   placeholder: 'Blender name' },
-      { key: 'reference',  label: 'Reference',         type: 'text',   placeholder: 'e.g. 09374658g27' },
-      { key: 'image',      label: 'Background image',  type: 'file',   accept: 'image/*' },
-      { key: 'color',      label: 'Print color',       type: 'select', options: PRINT_COLOR_OPTIONS },
+      { key: 'image', label: 'Background image', type: 'file', accept: 'image/*' },
     ],
   },
 };
@@ -147,7 +144,7 @@ export function getTemplatesForBase(baseId) {
   if (!base) return [];
   const ids = [
     ...(base.extraTemplates || []),
-    base.websiteTemplate,
+    ...(base.websiteTemplate ? [base.websiteTemplate] : []),
     'single-image',
   ];
   return ids.map(id => ALL_TEMPLATES[id]);

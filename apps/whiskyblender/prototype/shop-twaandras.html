@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <title>Whisky Blender | Bottle something special!</title>
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
+            name="desciption" />
+        <meta property="og:title" content="Whisky Blender | Bottle something special!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/" />
+        <meta
+            property="og:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta property="fb:app_id" content="194489270627737" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta
+            name="twitter:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta name="twitter:creator" content="whisky_blender" />
+        <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                /*loop through a collection of all HTML elements:*/
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    /*search for elements with a certain attribute:*/
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        /*make an HTTP request using the attribute value as the file name:*/
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) {
+                                    elmnt.innerHTML = this.responseText;
+                                }
+                                if (this.status == 404) {
+                                    elmnt.innerHTML = "Page not found.";
+                                }
+                                /*remove the attribute, and call this function once more:*/
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        /*exit the function:*/
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main>
+            <section class="wb-first-item">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <h1 class="wb-medium-heading">Shop</h1>
+                        <form class="wb-bottle-form">
+                            <!--<label for="wb-filter">Filter</label>-->
+                            <span class="wb-radio">
+                                <input type="radio" name="wb-filter" value="Featured" id="featured" />
+                                <label for="featured" onclick="location.href='shop.html';">Featured</label>
+                            </span>
+                            <span class="wb-radio">
+                                <input type="radio" name="wb-filter" value="Collaborations" id="twa-andras" checked />
+                                <label for="twa-andras" onclick="location.href='shop-twaandras.html';"
+                                    >Twa Andras</label
+                                >
+                            </span>
+                            <span class="wb-radio">
+                                <input type="radio" name="wb-filter" value="Collaborations" id="wee-bits" />
+                                <label for="wee-bits" onclick="location.href='shop-weebits.html';">Wee bits</label>
+                            </span>
+                            <span class="wb-radio">
+                                <input type="radio" name="wb-filter" value="Collaborations" id="collaborations" />
+                                <label for="collaborations" onclick="location.href='shop-collaborations.html';"
+                                    >Collaborations</label
+                                >
+                            </span>
+                            <span class="wb-radio">
+                                <input type="radio" name="wb-filter" value="Sale" id="sale" />
+                                <label for="sale" onclick="location.href='shop-sale.html';">Sale</label>
+                            </span>
+                            <!--<span class="wb-radio">
+                                <input type="radio" name="wb-filter" value="Your blends" id="your-blends" />
+                                <label for="your-blends">Your blends</label>
+                            </span>-->
+                        </form>
+                        <ul class="wb-productsgrid wb-tightergrid">
+                            <li class="wb-productcell">
+                                <div class="wb-productitem" onclick="location.href='yerauntfannys.html';">
+                                    <div class="wb-productmedia">
+                                        <div class="wb-productimage">
+                                            <img
+                                                src="images/products/yerauntfannys/yerauntfannys01.jpg"
+                                                alt="Yer Aunt Fannys" />
+                                        </div>
+                                        <div class="wb-productbadge"></div>
+                                    </div>
+                                    <div class="wb-productcontent">
+                                        <div class="wb-productinfo">
+                                            <h3 class="wb-producttitle wb-tiny-heading">
+                                                <a href="yerauntfannys.html">Yer Aunt Fannys</a>
+                                            </h3>
+                                            <div class="wb-productdetails">
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-price">£36.00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wb-productcell">
+                                <div class="wb-productitem" onclick="location.href='scotsenglishman.html';">
+                                    <div class="wb-productmedia">
+                                        <div class="wb-productimage">
+                                            <img
+                                                src="images/products/scotsenglishman/scotsenglishman01.jpg"
+                                                alt="Scotsman & Englishman" />
+                                        </div>
+                                        <div class="wb-productbadge">
+                                            <div class="wb-salebadge">Sale</div>
+                                        </div>
+                                    </div>
+                                    <div class="wb-productcontent">
+                                        <div class="wb-productinfo">
+                                            <h3 class="wb-producttitle wb-tiny-heading">
+                                                <a href="scotsenglishman.html">Scotsman &amp; Englishman</a>
+                                            </h3>
+                                            <div class="wb-productdetails">
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-notprice">
+                                                        <s>£80.00</s>
+                                                    </div>
+                                                    <div class="wb-product-price">£70.00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wb-productcell">
+                                <div class="wb-productitem" onclick="location.href='weemansblend.html';">
+                                    <div class="wb-productmedia">
+                                        <div class="wb-productimage">
+                                            <img
+                                                src="images/products/weemansblend/weemansblend01.jpg"
+                                                alt="The Wee Man's Blend" />
+                                        </div>
+                                        <div class="wb-productbadge"></div>
+                                    </div>
+                                    <div class="wb-productcontent">
+                                        <div class="wb-productinfo">
+                                            <h3 class="wb-producttitle wb-tiny-heading">
+                                                <a href="weemansblend.html">The Wee Man's Blend</a>
+                                            </h3>
+                                            <div class="wb-productdetails">
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-price">£36.00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wb-productcell">
+                                <div class="wb-productitem" onclick="location.href='doctorsspecial.html';">
+                                    <div class="wb-productmedia">
+                                        <div class="wb-productimage">
+                                            <img
+                                                src="images/products/doctorsspecial/doctorsspecial01.jpg"
+                                                alt="Doctors' Special" />
+                                        </div>
+                                        <div class="wb-productbadge"></div>
+                                    </div>
+                                    <div class="wb-productcontent">
+                                        <div class="wb-productinfo">
+                                            <h3 class="wb-producttitle wb-tiny-heading">
+                                                <a href="doctorsspecial.html">Doctors' Special</a>
+                                            </h3>
+                                            <div class="wb-productdetails">
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-price">£90.00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wb-productcell">
+                                <div class="wb-productitem" onclick="location.href='braxtoncrackers.html';">
+                                    <div class="wb-productmedia">
+                                        <div class="wb-productimage">
+                                            <img
+                                                src="images/products/braxtoncrackers/braxtoncrackers01.jpg"
+                                                alt="Braxton Cracker's Attack & Die" />
+                                        </div>
+                                        <div class="wb-productbadge"></div>
+                                    </div>
+                                    <div class="wb-productcontent">
+                                        <div class="wb-productinfo">
+                                            <h3 class="wb-producttitle wb-tiny-heading">
+                                                <a href="braxtoncrackers.html">Braxton Cracker's Attack &amp; Die</a>
+                                            </h3>
+                                            <div class="wb-productdetails">
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-price">£40.00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div w3-include-html="wb-footer.html"></div>
+        <script>
+            includeHTML();
+        </script>
+    </body>
+</html>

@@ -7,8 +7,8 @@
 }
 
 :root {
-  --gold: #c8a04a;
-  --gold-light: #e8c870;
+  --gold: #b88d60;
+  --gold-light: #d4a878;
   --dark: #111111;
   --dark-2: #1e1e1e;
   --dark-3: #2a2a2a;
@@ -16,7 +16,7 @@
   --light: #f5f0e8;
   --text: #e8e0d0;
   --text-dim: rgba(232, 224, 208, 0.55);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Raleway', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -71,6 +71,11 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--gold);
+  text-decoration: none;
+}
+
+.app-header__brand:hover {
+  color: var(--gold-light);
 }
 
 .app-header__title {

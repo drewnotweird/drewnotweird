@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <title>Whisky Blender | Bottle something special!</title>
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-perfectdrams.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
+            name="desciption" />
+        <meta property="og:title" content="Whisky Blender | Bottle something special!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/" />
+        <meta
+            property="og:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta property="fb:app_id" content="194489270627737" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta
+            name="twitter:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta name="twitter:creator" content="whisky_blender" />
+        <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                /*loop through a collection of all HTML elements:*/
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    /*search for elements with a certain attribute:*/
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        /*make an HTTP request using the attribute value as the file name:*/
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) {
+                                    elmnt.innerHTML = this.responseText;
+                                }
+                                if (this.status == 404) {
+                                    elmnt.innerHTML = "Page not found.";
+                                }
+                                /*remove the attribute, and call this function once more:*/
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        /*exit the function:*/
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main>
+            <section class="wb-first-item">
+                <div class="wb-container">
+                    <div class="wb-padding wb-collection-copy">
+                        <h1 class="wb-large-heading">Perfect drams</h1>
+                        <p>
+                            Forget about what they like, and think about what THEY'RE like. Different whiskies have
+                            different characteristics, just like people. Find one that sounds perfect for the person
+                            you're buying for and label it up for them.
+                        </p>
+                        <ul class="wb-cards wb-main-cards">
+                            <li onclick="location.href='customblend.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/perfect/wb-richandbold.png" alt="Rich and bold" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="customblend.html">Rich and bold</a></h3>
+                                    <p>
+                                        A whisky with presence. Deep flavours, often full of oak, spice, or smoke, it
+                                        makes a statement from the first sip. Confident and uncompromising, this is the
+                                        dram that likes to take center stage.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='customblend.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/perfect/wb-littlesweetie.png" alt="Little sweetie" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="customblend.html">Little sweetie</a></h3>
+                                    <p>
+                                        Soft, gentle, and welcoming. Think honeyed notes, vanilla, or ripe fruits. This
+                                        whisky is a hug in a glass, perfect for someone who brings sweetness wherever
+                                        they go.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='customblend.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/perfect/wb-wellbalanced.png" alt="Well balanced" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="customblend.html">Well balanced</a></h3>
+                                    <p>
+                                        Harmony in liquid form. Smooth layers of fruit, malt, and spice come together in
+                                        a whisky that feels effortless. Reliable and composed, it never tries too hard,
+                                        but always delivers.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='customblend.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/perfect/wb-lovelybutweird.png" alt="Lovely but weird" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="customblend.html">Lovely but weird</a></h3>
+                                    <p>
+                                        Fiery and untamed. Whether it’s a burst of smoke, a punch of spice, or a
+                                        high-strength kick, this whisky has an adventurous edge that refuses to be
+                                        tamed.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='customblend.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/perfect/wb-quietlypowerful.png" alt="Quietly powerful" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="customblend.html">Quietly powerful</a></h3>
+                                    <p>
+                                        Understated at first, but with a depth that reveals itself slowly. A whisky with
+                                        quiet confidence: refined, layered, and lasting long after the glass is empty.
+                                    </p>
+                                </div>
+                            </li>
+                            <li onclick="location.href='customblend.html';">
+                                <div class="wb-card-image">
+                                    <img src="images/perfect/wb-wildatheart.png" alt="Wild at heart" />
+                                </div>
+                                <div class="wb-card-details">
+                                    <h3 class="wb-small-heading"><a href="customblend.html">Wild at heart</a></h3>
+                                    <p>
+                                        Unexpected and quirky. Flavors you might not see coming — floral, herbal, or a
+                                        little eccentric — make this whisky as surprising as it is endearing. For those
+                                        who delight in the unusual.
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section class="wb-banded">
+                <div w3-include-html="wb-createunique.html"></div>
+            </section>
+        </main>
+        <div w3-include-html="wb-footer.html"></div>
+        <script>
+            includeHTML();
+        </script>
+    </body>
+</html>
