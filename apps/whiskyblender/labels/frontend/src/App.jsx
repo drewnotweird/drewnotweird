@@ -137,6 +137,8 @@ function LabelPage({ dims, cropsFile, pageBackground, children }) {
       margin: '0 auto',
       color: '#000',
       textShadow: '1px 1px #ffffff',
+      WebkitFontSmoothing: 'auto',
+      MozOsxFontSmoothing: 'auto',
     }}>
       {/* Crop marks overlay — extends to cropsH which equals total page height */}
       <div style={{
@@ -300,7 +302,6 @@ function TampaOutput({ formData, onBack }) {
           fontFamily: '"brothers", sans-serif',
           color: '#000',
           overflow: 'hidden',
-          letterSpacing: 1,
         }}>
           <div ref={seriesRef}>{formData.series}</div>
         </div>
