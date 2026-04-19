@@ -113,9 +113,9 @@
                                             <div class="wb-info wb-largepanel" id="product-no-blend" style="display:none">
                                                 <h3>Choose how to fill it...</h3>
                                                 <ul>
-                                                    <li>Craft your own whisky in <a href="thelab.html">the lab</a></li>
-                                                    <li>Label an exclusive <a href="singlemalts.html">single malt</a></li>
-                                                    <li>Pick one of our <a href="perfectdrams.html">perfect drams</a></li>
+                                                    <li>Craft <a href="thelab.html">your own whisky</a></li>
+                                                    <li>Label a <a href="singlemalts.html">single malt</a></li>
+                                                    <li>Check our <a href="perfectdrams.html">perfect drams</a></li>
                                                 </ul>
                                                 <div class="wb-noblend-divider">
                                                     <span>or</span>
@@ -123,7 +123,7 @@
                                                 <p class="wb-noblend-codelabel">Already have a blend code?</p>
                                                 <form class="wb-noblend-form" id="blend-code-entry">
                                                     <input type="text" placeholder="e.g. WB4F2A91C3" maxlength="12" autocomplete="off" spellcheck="false" />
-                                                    <button type="submit" class="wb-button wb-primary-button">→</button>
+                                                    <button type="submit" class="wb-button wb-primary-button" disabled title="Enter a valid blend code">→</button>
                                                 </form>
                                             </div>
 
@@ -287,10 +287,21 @@
                 // ── Blend code entry form ──
                 var codeEntry = document.getElementById('blend-code-entry');
                 if (codeEntry) {
+                    var codeInput  = codeEntry.querySelector('input');
+                    var codeSubmit = codeEntry.querySelector('button[type="submit"]');
+
+                    function isValidCode(val) {
+                        return /^WB[A-Z0-9]{6,10}$/i.test(val.trim());
+                    }
+
+                    codeInput.addEventListener('input', function () {
+                        codeSubmit.disabled = !isValidCode(codeInput.value);
+                    });
+
                     codeEntry.addEventListener('submit', function (e) {
                         e.preventDefault();
-                        var code = codeEntry.querySelector('input').value.trim().toUpperCase();
-                        if (code) {
+                        var code = codeInput.value.trim().toUpperCase();
+                        if (isValidCode(code)) {
                             location.href = 'custom-product.html?handle=' + handle + '&blend=' + code;
                         }
                     });

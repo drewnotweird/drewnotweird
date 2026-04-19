@@ -51,6 +51,12 @@
     border-color: rgba(0, 0, 0, 0.4);
 }
 
+.wb-noblend-form .wb-button:disabled {
+    border-color: #999999;
+    background-color: #999999;
+    color: #ffffff;
+}
+
 .wb-noblend-form .wb-button {
     margin: 0;
     flex-shrink: 0;
