@@ -16,6 +16,13 @@ const TOOLS = [
     available: true,
   },
   {
+    id: 'reference',
+    title: 'Website Reference',
+    description: 'Rules, logic and decisions behind the prototype — blend codes, animations, page flows.',
+    href: `${BASE_URL}prototype/wb-reference.html`,
+    available: true,
+  },
+  {
     id: 'github',
     title: 'Prototype on GitHub',
     description: 'Source files for the prototype — HTML, CSS, data, and assets.',

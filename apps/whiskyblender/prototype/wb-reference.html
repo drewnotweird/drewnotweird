@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        <title>Whisky Blender | Website Reference</title>
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <style>
+            .wb-reference {
+                max-width: 760px;
+            }
+
+            .wb-reference h1 {
+                font-size: clamp(24px, 4vw, 36px);
+                font-weight: 700;
+                margin: 0 0 32px;
+                line-height: 1.2;
+            }
+
+            .wb-reference h2 {
+                font-size: clamp(18px, 3vw, 24px);
+                font-weight: 700;
+                margin: 48px 0 16px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #eeeeee;
+            }
+
+            .wb-reference h3 {
+                font-size: clamp(15px, 2.5vw, 18px);
+                font-weight: 700;
+                margin: 28px 0 10px;
+                color: #444444;
+            }
+
+            .wb-reference p {
+                margin: 0 0 16px;
+                color: #444444;
+                line-height: 1.7;
+            }
+
+            .wb-reference ul,
+            .wb-reference ol {
+                margin: 0 0 16px;
+                padding-left: 24px;
+                color: #444444;
+                line-height: 1.7;
+            }
+
+            .wb-reference li {
+                margin-bottom: 6px;
+            }
+
+            .wb-reference table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 0 0 24px;
+                font-size: 14px;
+            }
+
+            .wb-reference th {
+                background-color: #f5f5f5;
+                text-align: left;
+                padding: 10px 14px;
+                font-weight: 700;
+                border-bottom: 2px solid #dddddd;
+            }
+
+            .wb-reference td {
+                padding: 10px 14px;
+                border-bottom: 1px solid #eeeeee;
+                color: #444444;
+                vertical-align: top;
+            }
+
+            .wb-reference tr:last-child td {
+                border-bottom: none;
+            }
+
+            .wb-reference code {
+                background-color: #f5f5f5;
+                border-radius: 4px;
+                padding: 2px 6px;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 13px;
+                color: #333333;
+            }
+
+            .wb-reference pre {
+                background-color: #f5f5f5;
+                border-radius: 8px;
+                padding: 16px 20px;
+                overflow-x: auto;
+                margin: 0 0 24px;
+            }
+
+            .wb-reference pre code {
+                background: none;
+                padding: 0;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .wb-reference hr {
+                border: none;
+                border-top: 2px solid #eeeeee;
+                margin: 48px 0;
+            }
+
+            .wb-reference-error {
+                color: #999999;
+                font-style: italic;
+            }
+        </style>
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) { elmnt.innerHTML = this.responseText; }
+                                if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main>
+            <section class="wb-first-item">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <div class="wb-reference" id="wb-reference-content">
+                            <p class="wb-reference-error">Loading…</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div w3-include-html="wb-footer.html"></div>
+        <script>
+            includeHTML();
+        </script>
+        <script>
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'WB-LOGIC.md', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    var el = document.getElementById('wb-reference-content');
+                    if (xhr.status === 200) {
+                        el.innerHTML = marked.parse(xhr.responseText);
+                    } else {
+                        el.innerHTML = '<p class="wb-reference-error">Could not load reference document.</p>';
+                    }
+                }
+            };
+            xhr.send();
+        </script>
+    </body>
+</html>
