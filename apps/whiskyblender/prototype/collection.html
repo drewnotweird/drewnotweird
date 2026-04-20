@@ -13,7 +13,6 @@
         <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
-        <link rel="stylesheet" type="text/css" href="css/wb-home.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
         <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
 
@@ -77,7 +76,7 @@
     <body>
         <div w3-include-html="wb-header.html"></div>
         <main id="collection-main" style="display:none">
-            <section>
+            <section class="wb-banded">
                 <div class="wb-container">
                     <div class="wb-imagebg" id="collection-hero">
                         <div class="wb-padding">
@@ -91,8 +90,8 @@
                     </div>
                 </div>
             </section>
-            <section class="wb-banded" id="collab-cta" style="display:none">
-                <div w3-include-html="wb-letscollab.html"></div>
+            <section class="wb-banded" id="collection-cta" style="display:none">
+                <div id="collection-cta-inner" w3-include-html="wb-cta.html"></div>
             </section>
         </main>
         <div id="collection-not-found" style="display:none; padding: 60px 24px; text-align:center;">
@@ -133,7 +132,7 @@
                     var priceHtml = product.comparePrice
                         ? '<div class="wb-product-notprice"><s>' + product.comparePrice + '</s></div><div class="wb-product-price">' + product.price + '</div>'
                         : '<div class="wb-product-price">' + product.price + '</div>';
-                    var href = 'product.html?handle=' + product.handle;
+                    var href = product.href || ('product.html?handle=' + product.handle);
 
                     var li = document.createElement('li');
                     li.className = 'wb-productcell';
@@ -152,9 +151,10 @@
                     grid.appendChild(li);
                 });
 
-                // Optional collab CTA band
-                if (collection.showCollabCta) {
-                    document.getElementById('collab-cta').style.display = '';
+                // Optional CTA band
+                if (collection.cta) {
+                    document.getElementById('collection-cta-inner').setAttribute('data-cta', collection.cta);
+                    document.getElementById('collection-cta').style.display = '';
                 }
 
                 document.getElementById('collection-main').style.display = '';

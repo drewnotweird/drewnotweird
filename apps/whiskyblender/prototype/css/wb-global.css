@@ -2,6 +2,16 @@ p {
     max-width: 768px;
 }
 
+/* ── CTA component ───────────────────────────────────────────────────────────
+   wb-cta.html contains all variants. The [data-cta] attribute on the wrapper
+   selects which variant to show; all others are hidden.
+*/
+[data-cta] .wb-cta-variant { display: none; }
+[data-cta="createunique"] .wb-cta-variant[data-variant="createunique"],
+[data-cta="foryersel"]    .wb-cta-variant[data-variant="foryersel"],
+[data-cta="yourownbrand"] .wb-cta-variant[data-variant="yourownbrand"],
+[data-cta="letscollab"]   .wb-cta-variant[data-variant="letscollab"] { display: block; }
+
 h1 a,
 h2 a,
 h3 a {
@@ -454,17 +464,6 @@ input.wb-primary-button.wb-button-disabled {
     padding: 6px;
 }
 
-.wb-right-image {
-    position: relative;
-    display: block;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.wb-right-image img {
-    width: 90%;
-}
-
 @media screen and (min-width: 400px) {
     #wb-video {
         top: 0;
@@ -500,9 +499,6 @@ input.wb-primary-button.wb-button-disabled {
 }
 
 @media screen and (min-width: 600px) {
-    .wb-right-image {
-        display: none;
-    }
     .wb-button,
     input.wb-button,
     .wb-buttons input.wb-button {
@@ -623,20 +619,6 @@ input.wb-primary-button.wb-button-disabled {
 }
 
 @media screen and (min-width: 1024px) {
-    .wb-right-image {
-        position: absolute;
-        pointer-events: none;
-        left: 840px;
-        top: 0;
-        display: block;
-        margin: 0;
-        width: 380px;
-    }
-
-    .wb-right-image img {
-        width: 100%;
-    }
-
     .wb-photo-holder {
         top: 0;
         right: 0;
@@ -707,5 +689,68 @@ input.wb-primary-button.wb-button-disabled {
 
     #wb-video {
         top: -80px;
+    }
+}
+
+/* ── Right-image (CTA panels) ────────────────────────────────────────────────
+   Decorative image that floats beside banded CTA copy on wide screens.
+   Hidden between 600px–1023px; shown as mobile thumbnail below 600px
+   and as absolute float from 1024px up.
+*/
+img.wb-unique {
+    transform: rotate(-3deg);
+}
+
+img.wb-foryersel {
+    transform: rotate(-4deg);
+}
+
+img.wb-yourownbrand {
+    transform: rotate(4deg);
+}
+
+.wb-right-image {
+    position: relative;
+    display: block;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.wb-right-image img {
+    width: 90%;
+}
+
+@media screen and (min-width: 600px) {
+    .wb-right-image {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    img.wb-unique {
+        transform: rotate(-5deg);
+    }
+
+    img.wb-foryersel {
+        transform: rotate(-6deg);
+    }
+
+    img.wb-yourownbrand {
+        transform: rotate(6deg);
+        margin-left: 40px;
+    }
+
+    .wb-right-image {
+        position: absolute;
+        pointer-events: none;
+        left: 840px;
+        top: 0;
+        display: block;
+        margin: 0;
+        width: 380px;
+    }
+
+    .wb-right-image img {
+        width: 100%;
     }
 }

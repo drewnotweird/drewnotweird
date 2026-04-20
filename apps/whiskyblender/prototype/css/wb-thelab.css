@@ -39,6 +39,7 @@
     position: relative;
     overflow: visible;
     transition: background 5s;
+    z-index: 1;
 }
 
 .wb-option-cards li .wb-card-image .wb-cask {

@@ -17,7 +17,6 @@
             wb-fonts.css     → base.css/fonts       (heading sizes, TrimPoster @font-face)
             wb-header.css    → header.css
             wb-footer.css    → footer.css
-            wb-home.css      → section-image-banner.css, section-multicolumn.css
             wb-products.css  → component-card.css, section-featured-collection.css
             glide.core.css   → vendor asset
             glide.custom.css → custom carousel overrides
@@ -27,7 +26,6 @@
         <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
-        <link rel="stylesheet" type="text/css" href="css/wb-home.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
         <link rel="stylesheet" type="text/css" href="css/glide.core.css" />
         <link rel="stylesheet" type="text/css" href="css/glide.custom.css" />
@@ -49,6 +47,30 @@
         <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
         <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
         <meta name="twitter:description" content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) { elmnt.innerHTML = this.responseText; }
+                                if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        return;
+                    }
+                }
+            }
+        </script>
     </head>
     <body>
 
@@ -331,7 +353,7 @@
                             <p>Our Scotch whisky is the perfect way to commemorate, appreciate, or celebrate in a truly unique and personal way.</p>
                             <ul class="wb-cards wb-main-cards">
                                 <li>
-                                    <a href="occasion.html?handle=weddings">
+                                    <a href="collection.html?handle=weddings">
                                         <div class="wb-card-image">
                                             <img src="images/occassions/weddings.png" alt="Wedding whisky" loading="lazy" />
                                         </div>
@@ -342,7 +364,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="occasion.html?handle=birthdays">
+                                    <a href="collection.html?handle=birthdays">
                                         <div class="wb-card-image">
                                             <img src="images/occassions/birthdays.png" alt="Birthday whisky" loading="lazy" />
                                         </div>
@@ -353,7 +375,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="occasion.html?handle=anniversaries">
+                                    <a href="collection.html?handle=anniversaries">
                                         <div class="wb-card-image">
                                             <img src="images/occassions/anniversaries.png" alt="Anniversary whisky" loading="lazy" />
                                         </div>
@@ -364,7 +386,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="occasion.html?handle=christmas">
+                                    <a href="collection.html?handle=christmas">
                                         <div class="wb-card-image">
                                             <img src="images/occassions/christmas.png" alt="Whisky for Christmas" loading="lazy" />
                                         </div>
@@ -375,7 +397,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="occasion.html?handle=thankyous">
+                                    <a href="collection.html?handle=thankyous">
                                         <div class="wb-card-image">
                                             <img src="images/occassions/thankyous.png" alt="Say thanks with whisky" loading="lazy" />
                                         </div>
@@ -386,7 +408,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="occasion.html?handle=celebrations">
+                                    <a href="collection.html?handle=celebrations">
                                         <div class="wb-card-image">
                                             <img src="images/occassions/celebrations.png" alt="Whisky to celebrate" loading="lazy" />
                                         </div>
@@ -419,18 +441,7 @@
             -->
             <div class="shopify-section">
                 <section class="wb-banded">
-                    <div class="wb-container">
-                        <div class="wb-padding">
-                            <div class="wb-right-image">
-                                <img class="wb-foryersel" src="images/home/wb-foryersel.png" alt="" loading="lazy" />
-                            </div>
-                            <h2 class="wb-medium-heading">For yersel'</h2>
-                            <p>You don't need an excuse to treat yourself. So take a look at the different ways you can create something you can enjoy, share and show off.</p>
-                            <div class="wb-buttons">
-                                <a href="create.html" class="wb-button">Create something</a>
-                            </div>
-                        </div>
-                    </div>
+                    <div data-cta="foryersel" w3-include-html="wb-cta.html"></div>
                 </section>
             </div>
 
@@ -442,24 +453,12 @@
              Settings:     heading (text), subheading (richtext),
                            button_label_1/2 (text), button_link_1/2 (url)
              Notes:        No direct Dawn equivalent — implement as a custom
-                           section. Content sourced from wb-letscollab.html.
+                           section. Content sourced from wb-cta.html (letscollab).
             ════════════════════════════════════════════════════════════════
             -->
             <div class="shopify-section">
                 <section class="wb-banded">
-                    <div class="wb-container">
-                        <div class="wb-padding" style="position: relative;">
-                            <div class="wb-right-image">
-                                <img class="wb-yourownbrand" src="images/home/wb-yerownbrand.png" alt="" />
-                            </div>
-                            <h2 class="wb-medium-heading">Let's collaborate</h2>
-                            <p>Got a brand or an event and fancy your own bottle of whisky? We'd love to work with you.</p>
-                            <div class="wb-buttons">
-                                <a href="collaborate.html" class="wb-button wb-primary-button">Get in touch</a>
-                                <a href="collection.html?handle=collaborations" class="wb-button">See collaborations</a>
-                            </div>
-                        </div>
-                    </div>
+                    <div data-cta="letscollab" w3-include-html="wb-cta.html"></div>
                 </section>
             </div>
 
@@ -490,7 +489,7 @@
                             <li><a href="thelab.html">Create your own</a></li>
                             <li><a href="product.html?handle=voucher">Vouchers</a></li>
                             <li><a href="perfectdrams.html">Perfect drams</a></li>
-                            <li><a href="singlemalts.html">Single malts</a></li>
+                            <li><a href="collection.html?handle=single-malts">Single malts</a></li>
                             <li><a href="collaborate.html">Your own brand</a></li>
                         </ul>
                     </div>
@@ -546,6 +545,7 @@
             }).mount();
 
             document.getElementById("wb-year").textContent = new Date().getFullYear();
+            includeHTML();
         </script>
     </body>
 </html>
