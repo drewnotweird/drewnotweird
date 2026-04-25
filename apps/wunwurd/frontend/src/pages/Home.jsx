@@ -4,15 +4,37 @@ import SkeletonCard from '../components/SkeletonCard'
 import { apiFetch } from '../api'
 
 const SCROLL_THRESHOLD = 140
-const COLS = 4 // matches md grid cols — used for skeleton rows
+const COLS = 4
 const ROWS = 5
+const CACHE_KEY = 'wunwurd_movies_cache'
+const CACHE_TTL = 1000 * 60 * 60 * 24 // 24 hours
+
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    const { movies, ts } = JSON.parse(raw)
+    if (Date.now() - ts > CACHE_TTL) return null
+    return movies
+  } catch {
+    return null
+  }
+}
+
+function saveCache(movies) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ movies, ts: Date.now() }))
+  } catch {}
+}
 
 export default function Home() {
-  const [movies, setMovies] = useState([])
-  const [loading, setLoading] = useState(true)
+  const cached = useRef(loadCache())
+  const [movies, setMovies] = useState(cached.current || [])
+  const [loading, setLoading] = useState(!cached.current)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [scrollY, setScrollY] = useState(0)
+  const [waking, setWaking] = useState(false)
   const pageRef = useRef(1)
   const fetchingRef = useRef(false)
 
@@ -45,17 +67,41 @@ export default function Home() {
     }
   }, [])
 
-  // Initial load
+  // Initial load with retry for cold starts
   useEffect(() => {
-    setLoading(true)
-    apiFetch('/api/movies/trending?page=1', {})
-      .then(r => r.json())
-      .then(data => {
-        setMovies(Array.isArray(data) ? data : [])
-        pageRef.current = 2
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
+    let cancelled = false
+    let attempt = 0
+    const delays = [0, 5000, 10000, 15000] // retry up to 3 times
+
+    async function fetchPage1() {
+      while (attempt < delays.length) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, delays[attempt]))
+        if (cancelled) return
+        if (attempt > 0) setWaking(true)
+        try {
+          const r = await apiFetch('/api/movies/trending?page=1', {})
+          if (!r.ok) throw new Error()
+          const data = await r.json()
+          const results = Array.isArray(data) ? data : []
+          if (cancelled) return
+          setMovies(results)
+          setLoading(false)
+          setWaking(false)
+          pageRef.current = 2
+          if (results.length > 0) saveCache(results)
+          return
+        } catch {
+          attempt++
+        }
+      }
+      // All retries failed — show cache if we have it, otherwise empty
+      if (cancelled) return
+      setLoading(false)
+      setWaking(false)
+    }
+
+    fetchPage1()
+    return () => { cancelled = true }
   }, [])
 
   // Scroll to bottom check
@@ -97,15 +143,21 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Waking up indicator */}
+      {waking && (
+        <p className="text-center text-gray-500 text-sm py-3 animate-pulse">
+          Waking up…
+        </p>
+      )}
+
       {/* Grid */}
       <div className="px-2 py-2">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
           {loading
             ? Array.from({ length: COLS * ROWS }).map((_, i) => <SkeletonCard key={i} />)
-            : movies.map(movie => <MovieCard key={movie.id} movie={movie} />)}
+            : movies.map(movie => <MovieCard key={movie.id || movie.tmdbId} movie={movie} />)}
         </div>
 
-        {/* Loading more */}
         {loadingMore && (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 mt-2">
             {Array.from({ length: COLS * ROWS }).map((_, i) => <SkeletonCard key={i} />)}
