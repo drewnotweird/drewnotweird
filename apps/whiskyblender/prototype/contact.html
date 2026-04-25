@@ -56,7 +56,7 @@
                                 includeHTML();
                             }
                         };
-                        xhttp.open("GET", file, true);
+                        xhttp.open("GET", file + "?t=" + Date.now(), true);
                         xhttp.send();
                         return;
                     }
