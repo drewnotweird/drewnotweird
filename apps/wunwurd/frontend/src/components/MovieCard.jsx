@@ -42,8 +42,8 @@ export default function MovieCard({ movie, simple = false }) {
         />
         <div className="absolute bottom-0 left-0 right-0 h-1/2 flex items-center justify-center p-3">
           <span
-            className="font-bold uppercase break-words w-full block text-center text-white"
-            style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85 }}
+            className="font-bold uppercase line-clamp-3 w-full block text-center text-white"
+            style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 0.85 }}
           >
             {title}
           </span>
@@ -89,8 +89,8 @@ export default function MovieCard({ movie, simple = false }) {
           onMouseLeave={() => setTopHovered(false)}
         >
           <span
-            className="font-bold uppercase leading-none break-words w-full text-center"
-            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85, opacity: topHovered ? 1 : 0, color: '#FF1493', transition: 'opacity 0.3s' }}
+            className="font-bold uppercase line-clamp-3 w-full text-center"
+            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', lineHeight: 0.85, opacity: topHovered ? 1 : 0, color: '#FF1493', transition: 'opacity 0.3s' }}
           >
             {title}
           </span>
