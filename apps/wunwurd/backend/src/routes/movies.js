@@ -19,11 +19,27 @@ const wunwurdLimiter = rateLimit({
 });
 
 // GET /api/movies/trending?page=1
+// Returns TMDB trending movies filtered to only those with wunwurds.
+// Each client page scans 4 TMDB pages to find up to 20 seeded movies.
+// Search still covers all TMDB movies regardless of submissions.
 router.get('/trending', async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
+  const PAGE_SIZE = 20;
+  const startTmdbPage = (page - 1) * 4 + 1;
   try {
-    const movies = await getTrending(page);
-    res.json(movies);
+    const filtered = [];
+    for (let tmdbPage = startTmdbPage; tmdbPage < startTmdbPage + 4 && filtered.length < PAGE_SIZE; tmdbPage++) {
+      const movies = await getTrending(tmdbPage);
+      if (!movies.length) break;
+      const tmdbIds = movies.map(m => m.id);
+      const withWords = await prisma.movie.findMany({
+        where: { tmdbId: { in: tmdbIds }, wunwurds: { some: {} } },
+        select: { tmdbId: true },
+      });
+      const hasWords = new Set(withWords.map(m => m.tmdbId));
+      filtered.push(...movies.filter(m => hasWords.has(m.id)));
+    }
+    res.json(filtered.slice(0, PAGE_SIZE));
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch trending movies' });
   }
@@ -67,17 +83,21 @@ router.get('/:tmdbId/wunwurds', authOptional, async (req, res) => {
 
     const rows = await prisma.wunwurd.findMany({
       where: { movieId: movie.id },
-      select: { word: true, userId: true },
+      select: { word: true, userId: true, user: { select: { email: true } } },
     });
 
-    // Aggregate frequencies
+    // Aggregate frequencies; real-user votes sort above seed-bot votes
     const freq = {};
     for (const r of rows) {
-      freq[r.word] = (freq[r.word] || 0) + 1;
+      const isBot = r.user.email.endsWith('@wunwurd.app');
+      if (!freq[r.word]) freq[r.word] = { count: 0, realCount: 0 };
+      freq[r.word].count++;
+      if (!isBot) freq[r.word].realCount++;
     }
     const words = Object.entries(freq)
-      .map(([word, count]) => ({ word, count }))
-      .sort((a, b) => b.count - a.count);
+      .map(([word, { count, realCount }]) => ({ word, count, realCount }))
+      .sort((a, b) => b.realCount - a.realCount || b.count - a.count)
+      .map(({ word, count }) => ({ word, count }));
 
     const topWord = words.length > 0 ? words[0].word : null;
     const userWord = req.user

@@ -1,0 +1,26 @@
+name: Seed Wunwurd Daily
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3am UTC daily
+  workflow_dispatch:      # allow manual trigger
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install pg @anthropic-ai/sdk
+
+      - name: Run daily seeder
+        env:
+          DATABASE_URL: ${{ secrets.WUNWURD_DATABASE_URL }}
+          TMDB_API_KEY: ${{ secrets.WUNWURD_TMDB_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node apps/wunwurd/scripts/daily-seed.js
