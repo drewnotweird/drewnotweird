@@ -71,7 +71,7 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false
     let attempt = 0
-    const delays = [0, 5000, 10000, 15000] // retry up to 3 times
+    const delays = [0, 5000, 10000, 15000, 20000, 25000] // retry up to 5 times (~75s total)
 
     async function fetchPage1() {
       while (attempt < delays.length) {
