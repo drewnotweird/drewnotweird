@@ -19,10 +19,18 @@ const wunwurdLimiter = rateLimit({
 });
 
 // GET /api/movies/trending?page=1
+// Returns only movies that have at least one wunwurd, newest first.
+// Search still covers all TMDB movies regardless of submissions.
 router.get('/trending', async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
+  const PAGE_SIZE = 20;
   try {
-    const movies = await getTrending(page);
+    const movies = await prisma.movie.findMany({
+      where: { wunwurds: { some: {} } },
+      orderBy: [{ year: 'desc' }, { cachedAt: 'desc' }],
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    });
     res.json(movies);
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch trending movies' });
