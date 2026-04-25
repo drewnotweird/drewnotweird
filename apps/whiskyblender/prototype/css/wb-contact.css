@@ -227,24 +227,6 @@
     margin-top: 24px;
 }
 
-.wbcw-back-btn {
-    background: transparent;
-    border: none;
-    font-family: "Raleway", sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: #999999;
-    cursor: pointer;
-    padding: 0;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 3px;
-    transition: color 0.2s;
-}
-
-.wbcw-back-btn:hover {
-    color: #333333;
-}
 
 /* ── Textareas ─────────────────────────────────────────────────────────────── */
 
