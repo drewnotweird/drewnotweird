@@ -6,7 +6,7 @@ export default function About() {
     <div className="min-h-[80vh] max-w-2xl mx-auto px-6 py-16">
 
       <h1 className="text-5xl font-black uppercase text-[#FF1493] mb-12 leading-none">
-        WUNWURD
+        Single-word reviews
       </h1>
 
       <div className="space-y-8 text-xl leading-relaxed">

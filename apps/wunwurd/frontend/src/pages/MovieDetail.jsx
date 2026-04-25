@@ -110,6 +110,12 @@ export default function MovieDetail() {
     )
   }
 
+  function formatRuntime(mins) {
+    const h = Math.floor(mins / 60)
+    const m = mins % 60
+    return h ? `${h}h ${m}m` : `${m}m`
+  }
+
   const backdropUrl = movie.backdropPath
     ? `https://image.tmdb.org/t/p/original${movie.backdropPath}`
     : null
@@ -206,6 +212,116 @@ export default function MovieDetail() {
         {/* Word cloud */}
         <div className="mt-10">
           <WordCloud words={wunwurds.words.slice(1)} userWord={wunwurds.userWord} />
+        </div>
+
+        {/* Movie info */}
+        {(movie.overview || movie.genres?.length > 0 || movie.director || movie.cast?.length > 0) && (
+          <div className="mt-10 border-t border-gray-800 pt-8 space-y-8 text-center">
+
+            {/* Overview */}
+            {movie.overview && (
+              <div>
+                {movie.tagline && (
+                  <p className="text-[#FF1493] font-bold uppercase text-sm mb-3 tracking-wide">{movie.tagline}</p>
+                )}
+                <p className="text-gray-300 leading-relaxed text-base">{movie.overview}</p>
+              </div>
+            )}
+
+            {/* Genres + runtime + rating */}
+            {(movie.genres?.length > 0 || movie.runtime || movie.voteAverage) && (
+              <div className="flex flex-wrap gap-2 justify-center">
+                {movie.runtime > 0 && (
+                  <span className="border border-gray-600 text-white font-bold uppercase text-xs px-3 py-1.5 tracking-wide">
+                    {formatRuntime(movie.runtime)}
+                  </span>
+                )}
+                {movie.voteAverage > 0 && (
+                  <span className="border border-gray-600 text-white font-bold uppercase text-xs px-3 py-1.5 tracking-wide">
+                    ★ {movie.voteAverage.toFixed(1)}
+                  </span>
+                )}
+                {movie.genres?.map(g => (
+                  <span key={g} className="bg-[#FF1493] text-black font-bold uppercase text-xs px-3 py-1.5 tracking-wide">
+                    {g}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Director */}
+            {movie.director && (
+              <div>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Director</p>
+                <p className="text-white font-bold uppercase text-lg">{movie.director}</p>
+              </div>
+            )}
+
+            {/* Cast — horizontal scroll photo cards */}
+            {movie.cast?.length > 0 && (
+              <div>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">Cast</p>
+                <div className="flex justify-center gap-3 overflow-x-auto -mx-4 px-4 pb-2" style={{ scrollbarWidth: 'none' }}>
+                  {movie.cast.map((person, i) => (
+                    <div key={i} className="flex-shrink-0 w-[72px] text-center">
+                      {person.profilePath
+                        ? <img
+                            src={`https://image.tmdb.org/t/p/w185${person.profilePath}`}
+                            alt={person.name}
+                            className="w-[72px] h-[108px] object-cover object-top bg-gray-900"
+                          />
+                        : <div className="w-[72px] h-[108px] bg-gray-900 flex items-center justify-center">
+                            <span className="text-gray-600 font-bold text-2xl uppercase">{person.name[0]}</span>
+                          </div>
+                      }
+                      <p className="text-white font-bold uppercase text-xs mt-1.5 leading-tight" style={{ wordBreak: 'break-word' }}>{person.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+        )}
+
+        {/* Onwards */}
+        <div className="mt-8 border-t border-gray-800 pt-8 space-y-6 pb-4 text-center">
+
+          {/* Where to watch */}
+          {movie.watch && (movie.watch.stream?.length > 0 || movie.watch.rent?.length > 0) && (
+            <div>
+              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">Where to Watch</p>
+              <div className="flex flex-wrap gap-4 justify-center">
+                {[...movie.watch.stream, ...movie.watch.rent.filter(r => !movie.watch.stream.find(s => s.name === r.name))].map(p => (
+                  <a key={p.name} href={movie.watch.link} target="_blank" rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-1.5 group">
+                    {p.logoPath
+                      ? <img src={`https://image.tmdb.org/t/p/w92${p.logoPath}`} alt={p.name}
+                          className="w-10 h-10 rounded-lg group-hover:opacity-80 transition-opacity" />
+                      : <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">{p.name[0]}</span>
+                        </div>
+                    }
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* External links */}
+          <div className="flex gap-3 justify-center">
+            {movie.imdbId && (
+              <a href={`https://www.imdb.com/title/${movie.imdbId}`} target="_blank" rel="noopener noreferrer"
+                className="border border-gray-600 text-gray-400 font-bold uppercase text-xs px-4 py-2.5 hover:border-white hover:text-white transition-colors tracking-wide">
+                IMDb ↗
+              </a>
+            )}
+            <a href={`https://www.themoviedb.org/movie/${tmdbId}`} target="_blank" rel="noopener noreferrer"
+              className="border border-gray-600 text-gray-400 font-bold uppercase text-xs px-4 py-2.5 hover:border-white hover:text-white transition-colors tracking-wide">
+              TMDB ↗
+            </a>
+          </div>
+
         </div>
       </div>
 

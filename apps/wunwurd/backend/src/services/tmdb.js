@@ -49,4 +49,12 @@ async function getMovieDetail(tmdbId) {
   return tmdbFetch(`/movie/${tmdbId}`);
 }
 
-module.exports = { cacheMovie, searchMovies, getTrending, getMovieDetail };
+async function getMovieCredits(tmdbId) {
+  return tmdbFetch(`/movie/${tmdbId}/credits`);
+}
+
+async function getWatchProviders(tmdbId) {
+  return tmdbFetch(`/movie/${tmdbId}/watch/providers`);
+}
+
+module.exports = { cacheMovie, searchMovies, getTrending, getMovieDetail, getMovieCredits, getWatchProviders };

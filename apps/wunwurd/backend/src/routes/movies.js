@@ -2,7 +2,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { PrismaClient } = require('@prisma/client');
 const { authRequired, authOptional } = require('../middleware/auth');
-const { cacheMovie, searchMovies, getTrending, getMovieDetail } = require('../services/tmdb');
+const { cacheMovie, searchMovies, getTrending, getMovieDetail, getMovieCredits, getWatchProviders } = require('../services/tmdb');
 const { notify } = require('../services/notify');
 
 const router = express.Router();
@@ -57,17 +57,70 @@ router.get('/search', async (req, res) => {
   }
 });
 
+// GET /api/movies/random
+// Returns a random movie that has wunwurd submissions
+router.get('/random', async (req, res) => {
+  try {
+    const count = await prisma.movie.count({ where: { wunwurds: { some: {} } } });
+    if (!count) return res.status(404).json({ error: 'No movies found' });
+    const skip = Math.floor(Math.random() * count);
+    const movies = await prisma.movie.findMany({
+      where: { wunwurds: { some: {} } },
+      skip,
+      take: 1,
+    });
+    if (!movies.length) return res.status(404).json({ error: 'No movies found' });
+    res.json({ tmdbId: movies[0].tmdbId });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch random movie' });
+  }
+});
+
 // GET /api/movies/:tmdbId
 router.get('/:tmdbId', async (req, res) => {
   const tmdbId = parseInt(req.params.tmdbId);
   if (isNaN(tmdbId)) return res.status(400).json({ error: 'Invalid movie ID' });
   try {
-    let movie = await prisma.movie.findUnique({ where: { tmdbId } });
-    if (!movie) {
-      const tmdbData = await getMovieDetail(tmdbId);
-      movie = await cacheMovie(tmdbData);
+    const [dbMovie, tmdbData, credits, providers] = await Promise.all([
+      prisma.movie.findUnique({ where: { tmdbId } }).catch(() => null),
+      getMovieDetail(tmdbId),
+      getMovieCredits(tmdbId),
+      getWatchProviders(tmdbId).catch(() => ({ results: {} })),
+    ]);
+    let cached = dbMovie;
+    if (!cached) {
+      cached = await cacheMovie(tmdbData).catch(() => ({
+        tmdbId,
+        title: tmdbData.title || 'Unknown',
+        year: tmdbData.release_date ? parseInt(tmdbData.release_date.slice(0, 4)) : null,
+        posterPath: tmdbData.poster_path || null,
+        backdropPath: tmdbData.backdrop_path || null,
+      }));
     }
-    res.json(movie);
+    const director = credits.crew?.find(c => c.job === 'Director') || null;
+    const cast = (credits.cast || []).slice(0, 8).map(c => ({
+      name: c.name,
+      character: c.character,
+      profilePath: c.profile_path || null,
+    }));
+    const gbProviders = providers.results?.GB || null;
+    const watch = gbProviders ? {
+      link: gbProviders.link,
+      stream: (gbProviders.flatrate || []).map(p => ({ name: p.provider_name, logoPath: p.logo_path })),
+      rent: (gbProviders.rent || []).map(p => ({ name: p.provider_name, logoPath: p.logo_path })),
+    } : null;
+    res.json({
+      ...cached,
+      overview: tmdbData.overview || null,
+      tagline: tmdbData.tagline || null,
+      genres: (tmdbData.genres || []).map(g => g.name),
+      runtime: tmdbData.runtime || null,
+      voteAverage: tmdbData.vote_average || null,
+      imdbId: tmdbData.imdb_id || null,
+      director: director?.name || null,
+      cast,
+      watch,
+    });
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch movie' });
   }

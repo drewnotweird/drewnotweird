@@ -45,6 +45,19 @@ function LoginIcon({ size }) {
   )
 }
 
+function RandomIcon({ size }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"
+      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <circle cx="8.5" cy="8.5" r="1.5" fill="black" stroke="none" />
+      <circle cx="15.5" cy="8.5" r="1.5" fill="black" stroke="none" />
+      <circle cx="8.5" cy="15.5" r="1.5" fill="black" stroke="none" />
+      <circle cx="15.5" cy="15.5" r="1.5" fill="black" stroke="none" />
+    </svg>
+  )
+}
+
 function InfoIcon({ size }) {
   return (
     <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
@@ -66,6 +79,7 @@ export default function Navbar() {
 
   const [scrollY, setScrollY] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [randomLoading, setRandomLoading] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
@@ -110,6 +124,17 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', h)
   }, [searchOpen])
 
+  async function handleRandom() {
+    if (randomLoading) return
+    setRandomLoading(true)
+    try {
+      const r = await apiFetch('/api/movies/random', {})
+      const data = await r.json()
+      if (data.tmdbId) navigate(`/movie/${data.tmdbId}`)
+    } catch {}
+    setRandomLoading(false)
+  }
+
   function closeSearch() { setSearchOpen(false); setQuery(''); setResults([]) }
   function handleResultClick(movie) { navigate(`/movie/${movie.id}`); closeSearch() }
   function handleProfileClick() {
@@ -138,10 +163,10 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-[#FF1493]" style={{ height: `${navHeight}px`, borderBottom: `${Math.round(progress * 4)}px solid black`, transition: 'height 0.35s ease, border-bottom-width 0.35s ease' }}>
+      <nav className="sticky top-0 z-50 bg-[#FF1493]" style={{ height: `${navHeight}px`, borderBottom: `${Math.round(progress * 8)}px solid black`, transition: 'height 0.35s ease, border-bottom-width 0.35s ease' }}>
         <div className="flex items-center h-full px-4 gap-3">
 
-          {/* Left — search */}
+          {/* Left — search + random */}
           <button
             className="flex items-center justify-center flex-shrink-0"
             style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px` }}
@@ -149,6 +174,14 @@ export default function Navbar() {
             aria-label="Search"
           >
             <SearchIcon size={iconSize} />
+          </button>
+          <button
+            className="flex items-center justify-center flex-shrink-0"
+            style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px`, opacity: randomLoading ? 0.4 : 1, transition: 'opacity 0.2s ease' }}
+            onClick={handleRandom}
+            aria-label="Random movie"
+          >
+            <RandomIcon size={iconSize} />
           </button>
 
           {/* Centre — logo (hidden at top of home, fades in on scroll) */}
