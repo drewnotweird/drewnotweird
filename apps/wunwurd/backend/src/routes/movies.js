@@ -19,19 +19,27 @@ const wunwurdLimiter = rateLimit({
 });
 
 // GET /api/movies/trending?page=1
-// Returns only movies that have at least one wunwurd, newest first.
+// Returns TMDB trending movies filtered to only those with wunwurds.
+// Each client page scans 4 TMDB pages to find up to 20 seeded movies.
 // Search still covers all TMDB movies regardless of submissions.
 router.get('/trending', async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const PAGE_SIZE = 20;
+  const startTmdbPage = (page - 1) * 4 + 1;
   try {
-    const movies = await prisma.movie.findMany({
-      where: { wunwurds: { some: {} } },
-      orderBy: [{ year: 'desc' }, { cachedAt: 'desc' }],
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-    });
-    res.json(movies);
+    const filtered = [];
+    for (let tmdbPage = startTmdbPage; tmdbPage < startTmdbPage + 4 && filtered.length < PAGE_SIZE; tmdbPage++) {
+      const movies = await getTrending(tmdbPage);
+      if (!movies.length) break;
+      const tmdbIds = movies.map(m => m.id);
+      const withWords = await prisma.movie.findMany({
+        where: { tmdbId: { in: tmdbIds }, wunwurds: { some: {} } },
+        select: { tmdbId: true },
+      });
+      const hasWords = new Set(withWords.map(m => m.tmdbId));
+      filtered.push(...movies.filter(m => hasWords.has(m.id)));
+    }
+    res.json(filtered.slice(0, PAGE_SIZE));
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch trending movies' });
   }
