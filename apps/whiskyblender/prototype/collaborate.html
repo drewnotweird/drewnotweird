@@ -19,6 +19,7 @@
         <link rel="stylesheet" type="text/css" href="css/glide.core.css" />
         <link rel="stylesheet" type="text/css" href="css/glide.custom.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-collaborate.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-contact.css" />
         <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
 
         <meta content="Andrews of Bothwell" name="author" />
@@ -47,14 +48,11 @@
         <script>
             function includeHTML() {
                 var z, i, elmnt, file, xhttp;
-                /*loop through a collection of all HTML elements:*/
                 z = document.getElementsByTagName("*");
                 for (i = 0; i < z.length; i++) {
                     elmnt = z[i];
-                    /*search for elements with a certain attribute:*/
                     file = elmnt.getAttribute("w3-include-html");
                     if (file) {
-                        /*make an HTTP request using the attribute value as the file name:*/
                         xhttp = new XMLHttpRequest();
                         xhttp.onreadystatechange = function () {
                             if (this.readyState == 4) {
@@ -64,14 +62,12 @@
                                 if (this.status == 404) {
                                     elmnt.innerHTML = "Page not found.";
                                 }
-                                /*remove the attribute, and call this function once more:*/
                                 elmnt.removeAttribute("w3-include-html");
                                 includeHTML();
                             }
                         };
                         xhttp.open("GET", file, true);
                         xhttp.send();
-                        /*exit the function:*/
                         return;
                     }
                 }
@@ -96,13 +92,13 @@
                             <a href="#wb-getintouch">tell us yours</a>.
                         </p>
                         <p>
-                            Whether you’re launching a limited-edition release, celebrating a milestone, or building
+                            Whether you're launching a limited-edition release, celebrating a milestone, or building
                             something entirely new, our team helps you create a Scotch that carries your name, your
                             values, and your taste.
                         </p>
                         <p>
-                            From cask selection and blending to design, bottling, and packaging, we’ll guide you through
-                            each step of the journey. The result? A whisky that’s uniquely yours — authentic, memorable,
+                            From cask selection and blending to design, bottling, and packaging, we'll guide you through
+                            each step of the journey. The result? A whisky that's uniquely yours — authentic, memorable,
                             and made to share.
                         </p>
                     </div>
@@ -145,39 +141,11 @@
                 <div class="wb-container">
                     <div class="wb-padding">
                         <a id="wb-getintouch"></a>
-                        <h2 class="wb-medium-heading">Let’s talk Scotch</h2>
-                        <p>Tell us about an idea, a label, or even just a spark of inspiration you have.</p>
-                        <form class="wb-bottle-form wb-letter-form">
-                            <div class="wb-lab-inputs wb-letter-emailinput">
-                                <div class="wb-lab-input">
-                                    <label for="wb-youremail">Your email</label>
-                                    <input
-                                        type="text"
-                                        id="wb-youremail"
-                                        name="wb-youremail"
-                                        placeholder="legend@domain.com" />
-                                </div>
-                            </div>
-                            <div
-                                class="wb-lab-inputs wb-letter"
-                                style="background-image: url(images/collaborate/wb-paper.png)">
-                                <div class="wb-lab-input">
-                                    <label for="wb-message">Your message</label>
-                                    <textarea
-                                        id="wb-message"
-                                        name="wb-message"
-                                        placeholder="Gie's yer thoughts..."
-                                        rows="7"></textarea>
-                                </div>
-                            </div>
-                            <div class="wb-buttons">
-                                <!-- button disabled until email is provided -->
-                                <input
-                                    type="submit"
-                                    value="Send to us"
-                                    class="wb-button wb-primary-button wb-button-disabled" />
-                            </div>
-                        </form>
+                        <h2 class="wb-medium-heading">Let's talk Scotch</h2>
+                        <p>Tell us about an idea, a label, or even just a spark of inspiration — the wizard will guide you through.</p>
+                        <div style="margin-top: 32px;">
+                            <div w3-include-html="wb-contact-wizard.html"></div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -219,6 +187,7 @@
                 }
             }).mount();
         </script>
+        <script src="js/wb-contact-wizard.js"></script>
         <script>
             includeHTML();
         </script>

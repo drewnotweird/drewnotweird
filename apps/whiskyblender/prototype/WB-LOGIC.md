@@ -198,6 +198,33 @@ Used on pages that depend on an async data load. States:
 
 ---
 
+## Contact Wizard (`contact.html`, `collaborate.html`)
+
+A multi-step enquiry wizard replaces the old single-textarea contact form. It lives in both `contact.html` (standalone page) and the "Let's talk Scotch" section of `collaborate.html`. Styles are in `css/wb-contact.css`.
+
+### Flow
+```
+Step 1 (contact): name / email* / phone  +  path choice
+   ├── "Write a message"  →  message textarea  →  success
+   └── "Collaborate"      →  about → quantity → whisky → label → additional info → success
+```
+
+### State (JS, IIFE per page)
+- `answers` object collects all fields
+- `stepHistory` array enables back-navigation
+- `PROGRESS` maps step name → progress bar %
+
+### Auto-advance steps (about / quantity / whisky / label)
+Clicking a choice card calls `wbcwAnswer(field, value, nextStep, btn)`. After a 200 ms flash animation, the wizard advances automatically — no separate Next button needed.
+
+### Shopify integration
+At submit time, `buildBody()` compiles all answers into a formatted string for `contact[body]`. To wire into Shopify:
+1. Wrap `<div class="wbcw">` in `{% form 'contact' %}...{% endform %}`
+2. Add `<textarea name="contact[body]" id="wbcwHiddenBody" style="display:none"></textarea>` and hidden fields for name/email/phone
+3. Uncomment the SHOPIFY block in `wbcwSubmit()`
+
+---
+
 ## Global Rules
 
 - **No text selection on tap**: `user-select: none` applied to all interactive cards, buttons, labels, and list items

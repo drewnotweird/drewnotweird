@@ -24,12 +24,34 @@ function CloseIcon({ size }) {
   )
 }
 
-function ProfileIcon({ filled, size }) {
+function ProfileIcon({ size }) {
   return (
     <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
       style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
       <circle cx="12" cy="8" r="4" fill="none" />
       <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="square" />
+    </svg>
+  )
+}
+
+function LoginIcon({ size }) {
+  return (
+    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
+      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" strokeLinecap="square" />
+      <polyline points="10 17 15 12 10 7" />
+      <line x1="15" y1="12" x2="3" y2="12" />
+    </svg>
+  )
+}
+
+function InfoIcon({ size }) {
+  return (
+    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
+      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+      <circle cx="12" cy="12" r="9" />
+      <line x1="12" y1="11" x2="12" y2="16" strokeLinecap="square" />
+      <line x1="12" y1="8" x2="12.01" y2="8" strokeLinecap="round" strokeWidth="3" />
     </svg>
   )
 }
@@ -90,7 +112,14 @@ export default function Navbar() {
 
   function closeSearch() { setSearchOpen(false); setQuery(''); setResults([]) }
   function handleResultClick(movie) { navigate(`/movie/${movie.id}`); closeSearch() }
-  function handleProfileClick() { user ? navigate('/profile') : navigate(`/login?from=${encodeURIComponent(location.pathname)}`) }
+  function handleProfileClick() {
+    if (user) {
+      navigate('/profile')
+    } else {
+      const dest = location.pathname.startsWith('/movie/') ? location.pathname : '/profile'
+      navigate(`/login?from=${encodeURIComponent(dest)}`)
+    }
+  }
 
   // Scroll progress: 0 = at top of home page, 1 = scrolled / not home page
   const progress = isHome ? Math.min(1, scrollY / SCROLL_THRESHOLD) : 1
@@ -195,14 +224,22 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Right — profile */}
+          {/* Right — about + profile/login */}
+          <button
+            className="flex items-center justify-center flex-shrink-0"
+            style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px` }}
+            onClick={() => navigate('/about')}
+            aria-label="About"
+          >
+            <InfoIcon size={iconSize} />
+          </button>
           <button
             className="flex items-center justify-center flex-shrink-0"
             style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px` }}
             onClick={handleProfileClick}
             aria-label={user ? 'Profile' : 'Log in'}
           >
-            <ProfileIcon filled={!!user} size={iconSize} />
+            {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
           </button>
         </div>
       </nav>

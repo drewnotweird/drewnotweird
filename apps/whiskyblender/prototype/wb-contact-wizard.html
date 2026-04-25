@@ -1,0 +1,251 @@
+<!--
+════════════════════════════════════════════════════════════════
+SHOPIFY INTEGRATION NOTES
+════════════════════════════════════════════════════════════════
+1. Wrap <div class="wbcw"> in {% form 'contact' %}...{% endform %}
+2. Add hidden fields inside the form:
+       <input type="hidden" name="form_type" value="contact">
+       <input type="hidden" name="utf8" value="✓">
+       <input type="hidden" name="contact[name]"  id="wbcwHiddenName">
+       <input type="hidden" name="contact[email]" id="wbcwHiddenEmail">
+       <input type="hidden" name="contact[phone]" id="wbcwHiddenPhone">
+       <textarea name="contact[body]" id="wbcwHiddenBody" style="display:none"></textarea>
+3. In wbcwSubmit() in wb-contact-wizard.js, uncomment the SHOPIFY block.
+4. Handle {% if form.posted_successfully? %} in the template to show success on load.
+════════════════════════════════════════════════════════════════
+-->
+<div class="wbcw" id="wbContactWizard">
+    <div class="wbcw-progress">
+        <div class="wbcw-progress-fill" id="wbcwProgress"></div>
+    </div>
+
+    <!-- ── Step 1: contact details + path choice ─────────────────────────── -->
+    <div class="wbcw-step wbcw-active" data-step="contact">
+        <div class="wbcw-fields">
+            <div class="wbcw-field">
+                <label for="wbcwName">Your name</label>
+                <input type="text" id="wbcwName" autocomplete="name" placeholder="Your name" />
+            </div>
+            <div class="wbcw-field">
+                <label for="wbcwEmail">Email <span style="color:#da5252">*</span></label>
+                <input type="email" id="wbcwEmail" autocomplete="email" placeholder="legend@domain.com" />
+                <span class="wbcw-error-msg" id="wbcwEmailError">We'll need your email to reply</span>
+            </div>
+            <div class="wbcw-field">
+                <label for="wbcwPhone">Phone (optional)</label>
+                <input type="tel" id="wbcwPhone" autocomplete="tel" placeholder="+44 ..." />
+            </div>
+        </div>
+        <span class="wbcw-question">What are you looking to do?</span>
+        <div class="wbcw-choices wbcw-paths">
+            <button type="button" class="wbcw-choice" onclick="wbcwChoosePath('message')">
+                <span class="wbcw-choice-icon">✉️</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Write us a message</span>
+                    <span class="wbcw-choice-sub">Just want to say hello or ask something? We'd love to hear from you.</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwChoosePath('collab')">
+                <span class="wbcw-choice-icon">🥃</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Collaborate on a whisky</span>
+                    <span class="wbcw-choice-sub">Looking to create your own branded Scotch? Tell us all about it.</span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Step: message ─────────────────────────────────────────────────── -->
+    <div class="wbcw-step" data-step="message">
+        <h3 class="wbcw-heading">What's on your mind?</h3>
+        <div class="wbcw-field-group wbcw-message-field">
+            <textarea id="wbcwMessage" placeholder="Gie's yer thoughts..." rows="7"></textarea>
+        </div>
+        <div class="wbcw-nav">
+            <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
+            <button type="button" class="wb-button wb-primary-button" onclick="wbcwSubmit()">Send to us</button>
+        </div>
+    </div>
+
+    <!-- ── Step: about ───────────────────────────────────────────────────── -->
+    <div class="wbcw-step" data-step="about">
+        <span class="wbcw-label">About you &mdash; 1 of 4</span>
+        <h3 class="wbcw-heading">Tell us about yourself</h3>
+        <div class="wbcw-choices">
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('about', 'An individual', 'quantity', this)">
+                <span class="wbcw-choice-icon">👤</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">An individual</span>
+                    <span class="wbcw-choice-sub">A personal project or a very special gift</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('about', 'A small business', 'quantity', this)">
+                <span class="wbcw-choice-icon">🏪</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">A small business</span>
+                    <span class="wbcw-choice-sub">Branded bottles for your company or event</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('about', 'A bar or restaurant', 'quantity', this)">
+                <span class="wbcw-choice-icon">🍺</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">A bar or restaurant</span>
+                    <span class="wbcw-choice-sub">A house pour or signature serve that's all yours</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('about', 'Other', 'quantity', this)">
+                <span class="wbcw-choice-icon">💡</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Other</span>
+                    <span class="wbcw-choice-sub">Something else entirely — we're all ears</span>
+                </span>
+            </button>
+        </div>
+        <div class="wbcw-nav">
+            <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
+        </div>
+    </div>
+
+    <!-- ── Step: quantity ────────────────────────────────────────────────── -->
+    <div class="wbcw-step" data-step="quantity">
+        <span class="wbcw-label">The order &mdash; 2 of 4</span>
+        <h3 class="wbcw-heading">How many bottles are you thinking?</h3>
+        <div class="wbcw-choices">
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', '1–5 bottles', 'whisky', this)">
+                <span class="wbcw-choice-icon">🍾</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">1–5 bottles</span>
+                    <span class="wbcw-choice-sub">A personal run or a handful of gifts</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', 'A case or two (6–24 bottles)', 'whisky', this)">
+                <span class="wbcw-choice-icon">📦</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">A case or two</span>
+                    <span class="wbcw-choice-sub">6–24 bottles</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', '20–100 bottles', 'whisky', this)">
+                <span class="wbcw-choice-icon">🏷️</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">20–100 bottles</span>
+                    <span class="wbcw-choice-sub">A proper branded run</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', '100+ bottles', 'whisky', this)">
+                <span class="wbcw-choice-icon">🚀</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">100+ bottles</span>
+                    <span class="wbcw-choice-sub">A serious commercial release</span>
+                </span>
+            </button>
+        </div>
+        <div class="wbcw-nav">
+            <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
+        </div>
+    </div>
+
+    <!-- ── Step: whisky ──────────────────────────────────────────────────── -->
+    <div class="wbcw-step" data-step="whisky">
+        <span class="wbcw-label">The Scotch &mdash; 3 of 4</span>
+        <h3 class="wbcw-heading">What kind of Scotch?</h3>
+        <div class="wbcw-choices">
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('whisky', 'Single malt', 'label', this)">
+                <span class="wbcw-choice-icon">⭐</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Single malt</span>
+                    <span class="wbcw-choice-sub">From one distillery — all the prestige</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('whisky', 'Single cask', 'label', this)">
+                <span class="wbcw-choice-icon">🪣</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Single cask</span>
+                    <span class="wbcw-choice-sub">Truly unique — one barrel, one release</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('whisky', 'House malt', 'label', this)">
+                <span class="wbcw-choice-icon">🏠</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">House malt</span>
+                    <span class="wbcw-choice-sub">Our signature blend under your name</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('whisky', 'Custom blended malt', 'label', this)">
+                <span class="wbcw-choice-icon">🧪</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Custom blended malt</span>
+                    <span class="wbcw-choice-sub">Work with us to craft a profile from scratch</span>
+                </span>
+            </button>
+        </div>
+        <div class="wbcw-nav">
+            <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
+        </div>
+    </div>
+
+    <!-- ── Step: label ───────────────────────────────────────────────────── -->
+    <div class="wbcw-step" data-step="label">
+        <span class="wbcw-label">The label &mdash; 4 of 4</span>
+        <h3 class="wbcw-heading">What about the label?</h3>
+        <div class="wbcw-choices">
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Overprint our label', 'additional', this)">
+                <span class="wbcw-choice-icon">🖨️</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Overprint our label</span>
+                    <span class="wbcw-choice-sub">Your name and message on our design</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Fully bespoke label', 'additional', this)">
+                <span class="wbcw-choice-icon">🎨</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Fully bespoke label</span>
+                    <span class="wbcw-choice-sub">Designed entirely from scratch for you</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Send us your own labels', 'additional', this)">
+                <span class="wbcw-choice-icon">📬</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Send us your own labels</span>
+                    <span class="wbcw-choice-sub">You handle the design, we handle the rest</span>
+                </span>
+            </button>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Explore options with us', 'additional', this)">
+                <span class="wbcw-choice-icon">🔍</span>
+                <span class="wbcw-choice-body">
+                    <span class="wbcw-choice-title">Explore options with us</span>
+                    <span class="wbcw-choice-sub">Not sure yet — let's figure it out together</span>
+                </span>
+            </button>
+        </div>
+        <div class="wbcw-nav">
+            <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
+        </div>
+    </div>
+
+    <!-- ── Step: additional ──────────────────────────────────────────────── -->
+    <div class="wbcw-step" data-step="additional">
+        <span class="wbcw-label">Almost there</span>
+        <h3 class="wbcw-heading">Anything else we should know?</h3>
+        <div class="wbcw-field-group">
+            <label for="wbcwAdditional">Any other details, ideas, or questions (optional)</label>
+            <textarea
+                id="wbcwAdditional"
+                placeholder="Tell us anything else that might help — timelines, inspirations, questions..."
+                rows="5"></textarea>
+        </div>
+        <div class="wbcw-summary" id="wbcwSummary"></div>
+        <div class="wbcw-nav">
+            <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
+            <button type="button" class="wb-button wb-primary-button" onclick="wbcwSubmit()">Send to us</button>
+        </div>
+    </div>
+
+    <!-- ── Success ───────────────────────────────────────────────────────── -->
+    <div class="wbcw-success" id="wbcwSuccess">
+        <span class="wbcw-success-icon">🥃</span>
+        <h3 class="wbcw-heading">We'll be in touch!</h3>
+        <p>Thanks for reaching out — we'll get back to you as soon as we can.</p>
+    </div>
+
+</div><!-- /.wbcw -->

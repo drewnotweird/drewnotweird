@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <title>Whisky Blender | Get in touch</title>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Kalam&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-contact.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta
+            content="Get in touch with Whisky Blender — whether you want to say hello or collaborate on a bespoke Scotch whisky."
+            name="description" />
+        <meta property="og:title" content="Whisky Blender | Get in touch" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/contact" />
+        <meta
+            property="og:description"
+            content="Get in touch with Whisky Blender — whether you want to say hello or collaborate on a bespoke Scotch whisky." />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Get in touch" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta
+            name="twitter:description"
+            content="Get in touch with Whisky Blender — whether you want to say hello or collaborate on a bespoke Scotch whisky." />
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) { elmnt.innerHTML = this.responseText; }
+                                if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main class="wb-overflow-hidden-x">
+            <section>
+                <div class="wb-container">
+                    <div class="wb-imagebg" style="background-image: url(images/collaborate/collaborate.jpg)">
+                        <div class="wb-padding">
+                            <h1 class="wb-medium-heading">Get in touch</h1>
+                            <p class="wb-collection-sub">We'd love to hear from you</p>
+                        </div>
+                    </div>
+                    <div class="wb-padding wb-collection-copy">
+                        <p class="wb-intro">Whether you're curious about a blend, looking to collaborate on something bespoke, or just want to talk whisky — we're always happy to hear from you. Fill in the form below and we'll get back to you as soon as we can.</p>
+                    </div>
+                </div>
+            </section>
+            <section class="wb-banded">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <div w3-include-html="wb-contact-wizard.html"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div w3-include-html="wb-footer.html"></div>
+        <script src="js/wb-contact-wizard.js"></script>
+        <script>
+            includeHTML();
+        </script>
+    </body>
+</html>

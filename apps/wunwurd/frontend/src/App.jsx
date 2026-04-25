@@ -8,6 +8,7 @@ import MovieDetail from './pages/MovieDetail'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import WordPage from './pages/WordPage'
+import About from './pages/About'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/word/:word" element={<WordPage />} />
           <Route path="/search-words" element={<WordPage />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
     </AuthProvider>
