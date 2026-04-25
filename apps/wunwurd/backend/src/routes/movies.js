@@ -67,17 +67,21 @@ router.get('/:tmdbId/wunwurds', authOptional, async (req, res) => {
 
     const rows = await prisma.wunwurd.findMany({
       where: { movieId: movie.id },
-      select: { word: true, userId: true },
+      select: { word: true, userId: true, user: { select: { email: true } } },
     });
 
-    // Aggregate frequencies
+    // Aggregate frequencies; real-user votes sort above seed-bot votes
     const freq = {};
     for (const r of rows) {
-      freq[r.word] = (freq[r.word] || 0) + 1;
+      const isBot = r.user.email.endsWith('@wunwurd.app');
+      if (!freq[r.word]) freq[r.word] = { count: 0, realCount: 0 };
+      freq[r.word].count++;
+      if (!isBot) freq[r.word].realCount++;
     }
     const words = Object.entries(freq)
-      .map(([word, count]) => ({ word, count }))
-      .sort((a, b) => b.count - a.count);
+      .map(([word, { count, realCount }]) => ({ word, count, realCount }))
+      .sort((a, b) => b.realCount - a.realCount || b.count - a.count)
+      .map(({ word, count }) => ({ word, count }));
 
     const topWord = words.length > 0 ? words[0].word : null;
     const userWord = req.user
