@@ -2,13 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { apiFetch } from '../api'
 
-function WordTrunc({ text }) {
-  return text.split(' ').map((word, i, arr) => (
-    <span key={i} style={{ display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-      {word}{i < arr.length - 1 ? ' ' : ''}
-    </span>
-  ))
-}
 
 export default function MovieCard({ movie, simple = false }) {
   const [topHovered, setTopHovered] = useState(false)
@@ -51,9 +44,9 @@ export default function MovieCard({ movie, simple = false }) {
         <div className="absolute bottom-0 left-0 right-0 h-1/2 flex items-center justify-center p-3">
           <span
             className="font-bold uppercase w-full block text-center text-white"
-            style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 0.85 }}
+            style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 0.85, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
           >
-            <WordTrunc text={title} />
+            {title}
           </span>
         </div>
       </Link>
@@ -98,9 +91,9 @@ export default function MovieCard({ movie, simple = false }) {
         >
           <span
             className="font-bold uppercase leading-none w-full text-center"
-            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', lineHeight: 0.85, opacity: topHovered ? 1 : 0, color: '#FF1493', transition: 'opacity 0.3s' }}
+            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', lineHeight: 0.85, opacity: topHovered ? 1 : 0, color: '#FF1493', transition: 'opacity 0.3s', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
           >
-            <WordTrunc text={title} />
+            {title}
           </span>
         </Link>
 
@@ -114,9 +107,9 @@ export default function MovieCard({ movie, simple = false }) {
           {topWord && (
             <span
               className="font-bold uppercase leading-none w-full text-center"
-              style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 0.85, opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
+              style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 0.85, opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
             >
-              <WordTrunc text={topWord.toUpperCase()} />
+              {topWord.toUpperCase()}
             </span>
           )}
         </Link>
