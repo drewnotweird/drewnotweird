@@ -40,8 +40,10 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true)
   const [scrollY, setScrollY] = useState(0)
   const [waking, setWaking] = useState(false)
+  const [wakingDone, setWakingDone] = useState(false)
   const [countdown, setCountdown] = useState(COLD_START_SECONDS)
   const countdownRef = useRef(null)
+  const wasWakingRef = useRef(false)
   const pageRef = useRef(1)
   const fetchingRef = useRef(false)
 
@@ -94,6 +96,7 @@ export default function Home() {
     // After 500ms with no response, reveal the countdown banner
     const wakeTimer = setTimeout(() => {
       if (!cancelled) {
+        wasWakingRef.current = true
         setWaking(true)
         setServerReady(false)
       }
@@ -115,6 +118,11 @@ export default function Home() {
           setLoading(false)
           setWaking(false)
           setServerReady(true)
+          if (wasWakingRef.current) {
+            wasWakingRef.current = false
+            setWakingDone(true)
+            setTimeout(() => setWakingDone(false), 1500)
+          }
           pageRef.current = 2
           if (results.length > 0) saveCache(results)
           return
@@ -178,30 +186,38 @@ export default function Home() {
       <div
         className="text-center overflow-hidden"
         style={{
-          maxHeight: waking ? '500px' : '0px',
-          paddingTop: waking ? '2.5rem' : '0',
-          paddingBottom: waking ? '2.5rem' : '0',
-          borderBottom: waking ? '4px solid #FF1493' : '0px solid #FF1493',
+          maxHeight: (waking || wakingDone) ? '500px' : '0px',
+          paddingTop: (waking || wakingDone) ? '2.5rem' : '0',
+          paddingBottom: (waking || wakingDone) ? '2.5rem' : '0',
+          borderBottom: (waking || wakingDone) ? '4px solid #FF1493' : '0px solid #FF1493',
           transition: 'max-height 0.6s ease-in-out, padding 0.6s ease-in-out, border-bottom-width 0.6s ease-in-out',
         }}
       >
-        <p className="text-[#FF1493] font-bold uppercase tracking-widest text-sm">
-          Server warming up
-        </p>
-        {countdown > 0 ? (
-          <p className="text-white font-bold leading-none mt-2"
+        {wakingDone ? (
+          <p className="text-[#FF1493] font-black uppercase leading-none"
             style={{ fontSize: 'clamp(5rem, 22vw, 10rem)' }}>
-            {countdown}
+            YAS!
           </p>
         ) : (
-          <p className="text-white font-bold text-3xl mt-4 animate-pulse">
-            Any moment now…
-          </p>
+          <>
+            <p className="text-[#FF1493] font-bold uppercase tracking-widest text-sm">
+              Server warming up
+            </p>
+            {countdown > 0 ? (
+              <p className="text-white font-bold leading-none mt-2"
+                style={{ fontSize: 'clamp(5rem, 22vw, 10rem)' }}>
+                {countdown}
+              </p>
+            ) : (
+              <p className="text-white font-bold text-3xl mt-4 animate-pulse">
+                Any moment now…
+              </p>
+            )}
+            <p className="text-gray-600 text-xs uppercase tracking-wide mt-3">
+              Buttons disabled until ready
+            </p>
+          </>
         )}
-        <p className="text-gray-600 text-xs uppercase tracking-wide mt-3">
-          Buttons disabled until ready
-        </p>
-
       </div>
 
       {/* Grid */}

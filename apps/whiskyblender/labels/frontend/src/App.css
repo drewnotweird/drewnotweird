@@ -146,6 +146,15 @@ button {
   align-items: start;
 }
 
+.base-column:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding-right: 20px;
+}
+
+.base-column:not(:first-child) {
+  padding-left: 0;
+}
+
 .base-column__heading {
   font-size: 0.7rem;
   font-weight: 700;

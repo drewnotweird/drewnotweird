@@ -708,7 +708,7 @@ function StepOne() {
               <div className="base-grid">
                 {BASE_LABELS.filter(col.filter).map(base => (
                   <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
-                    <span className="base-card__name">{col.heading === 'Other' ? base.name : base.name.replace(/^\d+ml\s+/i, '')}</span>
+                    <span className="base-card__name">{(() => { const n = col.heading === 'Other' ? base.name : base.name.replace(/^\d+ml\s+/i, ''); return n.charAt(0).toUpperCase() + n.slice(1); })()}</span>
                   </button>
                 ))}
               </div>
