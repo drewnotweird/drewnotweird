@@ -90,7 +90,7 @@ export const ALL_TEMPLATES = {
       series: "Gaspar's Stash Series",
       blendName: 'Orchard Galore',
       customerName: 'Andy Davidson',
-      description: 'Inchmurrin Distilled at Loch Lomond Distillery / First Fill Bourbon / Cask No.66 / Distilled January 6th, 2014 / Bottled March 20th 2026',
+      description: 'Inchmurrin Distilled at Loch Lomond Distillery / First Fill Bourbon / Cask No.66 / Distilled January 6th, 2014 / Bottled March 20th 2026 / 500ml℮ / 46% abv',
       color: 'red',
       keyImage: 'ship',
     },
