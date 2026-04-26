@@ -91,13 +91,13 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false
 
-    // After 3s with no response, reveal the countdown banner
+    // After 500ms with no response, reveal the countdown banner
     const wakeTimer = setTimeout(() => {
       if (!cancelled) {
         setWaking(true)
         setServerReady(false)
       }
-    }, 3000)
+    }, 500)
 
     async function fetchPage1() {
       while (!cancelled) {
@@ -178,10 +178,10 @@ export default function Home() {
       <div
         className="text-center overflow-hidden"
         style={{
-          maxHeight: (waking && loading) ? '500px' : '0px',
-          paddingTop: (waking && loading) ? '2.5rem' : '0',
-          paddingBottom: (waking && loading) ? '2.5rem' : '0',
-          borderBottom: (waking && loading) ? '4px solid #FF1493' : '0px solid #FF1493',
+          maxHeight: waking ? '500px' : '0px',
+          paddingTop: waking ? '2.5rem' : '0',
+          paddingBottom: waking ? '2.5rem' : '0',
+          borderBottom: waking ? '4px solid #FF1493' : '0px solid #FF1493',
           transition: 'max-height 0.6s ease-in-out, padding 0.6s ease-in-out, border-bottom-width 0.6s ease-in-out',
         }}
       >
