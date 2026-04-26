@@ -90,23 +90,27 @@ export default function Home() {
   // Initial load with retry for cold starts
   useEffect(() => {
     let cancelled = false
-    let attempt = 0
-    const delays = [0, 5000, 10000, 15000, 20000, 25000] // retry up to 5 times (~75s total)
+
+    // After 3s with no response, reveal the countdown banner
+    const wakeTimer = setTimeout(() => {
+      if (!cancelled) {
+        setWaking(true)
+        setServerReady(false)
+      }
+    }, 3000)
 
     async function fetchPage1() {
-      while (attempt < delays.length) {
-        if (attempt > 0) {
-          setWaking(true)
-          setServerReady(false)
-          await new Promise(r => setTimeout(r, delays[attempt]))
-        }
-        if (cancelled) return
+      while (!cancelled) {
+        const ctrl = new AbortController()
+        const abortTimer = setTimeout(() => ctrl.abort(), 8000)
         try {
-          const r = await apiFetch('/api/movies/trending?page=1', {})
+          const r = await apiFetch('/api/movies/trending?page=1', { signal: ctrl.signal })
+          clearTimeout(abortTimer)
           if (!r.ok) throw new Error()
           const data = await r.json()
           const results = Array.isArray(data) ? data : []
           if (cancelled) return
+          clearTimeout(wakeTimer)
           setMovies(results)
           setLoading(false)
           setWaking(false)
@@ -115,18 +119,18 @@ export default function Home() {
           if (results.length > 0) saveCache(results)
           return
         } catch {
-          attempt++
+          clearTimeout(abortTimer)
+          if (cancelled) return
+          await new Promise(res => setTimeout(res, 5000))
         }
       }
-      // All retries failed — unblock UI regardless
-      if (cancelled) return
-      setLoading(false)
-      setWaking(false)
-      setServerReady(true)
     }
 
     fetchPage1()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      clearTimeout(wakeTimer)
+    }
   }, [])
 
   // Scroll to bottom check
@@ -174,10 +178,10 @@ export default function Home() {
       <div
         className="text-center overflow-hidden"
         style={{
-          maxHeight: waking ? '500px' : '0px',
-          paddingTop: waking ? '2.5rem' : '0',
-          paddingBottom: waking ? '2.5rem' : '0',
-          borderBottom: waking ? '4px solid #FF1493' : '0px solid #FF1493',
+          maxHeight: (waking && loading) ? '500px' : '0px',
+          paddingTop: (waking && loading) ? '2.5rem' : '0',
+          paddingBottom: (waking && loading) ? '2.5rem' : '0',
+          borderBottom: (waking && loading) ? '4px solid #FF1493' : '0px solid #FF1493',
           transition: 'max-height 0.6s ease-in-out, padding 0.6s ease-in-out, border-bottom-width 0.6s ease-in-out',
         }}
       >

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -8,12 +8,19 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import WordPage from './pages/WordPage'
 import About from './pages/About'
-import Lab from './pages/Lab'
+import Stats from './pages/Stats'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
 
 function AppContent() {
   const { pathname } = useLocation()
   return (
     <div className="min-h-screen bg-black text-white">
+      <ScrollToTop />
       {pathname !== '/' && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -24,7 +31,7 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/word/:word" element={<WordPage />} />
         <Route path="/about" element={<About />} />
-        <Route path="/lab" element={<Lab />} />
+        <Route path="/stats" element={<Stats />} />
       </Routes>
     </div>
   )

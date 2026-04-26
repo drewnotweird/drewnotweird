@@ -69,7 +69,7 @@ export default function Lab() {
     return (
       <div className="min-h-screen flex items-center justify-center px-6">
         <div className="w-full max-w-sm">
-          <h1 className="text-[#FF1493] font-black uppercase text-4xl mb-8 text-center">LAB</h1>
+          <h1 className="text-[#FF1493] font-black uppercase text-4xl mb-8 text-center">STATS</h1>
           {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
           <input
             type="password"
@@ -104,7 +104,7 @@ export default function Lab() {
     <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
 
       <div className="flex items-baseline justify-between">
-        <h1 className="text-[#FF1493] font-black uppercase text-5xl">LAB</h1>
+        <h1 className="text-[#FF1493] font-black uppercase text-5xl">STATS</h1>
         <button
           onClick={() => { sessionStorage.removeItem(KEY_STORAGE); setKey(''); setStats(null); setInput('') }}
           className="text-gray-600 text-xs uppercase hover:text-gray-400 transition-colors"

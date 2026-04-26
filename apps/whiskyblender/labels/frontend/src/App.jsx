@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Routes, Route, useParams, useNavigate, useSearchParams, Navigate } from 'react-router-dom';
-import { BASE_LABELS, ALL_TEMPLATES, getTemplatesForBase, LABEL_DIMS } from './data/labels';
+import { BASE_LABELS, ALL_TEMPLATES, getTemplatesForBase, LABEL_DIMS, COLOR_PALETTE, SINGLEMALT_ARTWORKS } from './data/labels';
 
 // ─── URL encoding / decoding ──────────────────────────────────────────────────
 
@@ -11,7 +11,7 @@ const FIELD_TO_PARAM = {
   distillery:   'distillery',
   reference:    'reference',
   color:        'color',
-  labelStyle:   'labelstyle',
+  artwork:      'artwork',
   singleCask:   'single-cask',
   series:       'series',
   customerName: 'customer-name',
@@ -297,121 +297,73 @@ function TampaOutput({ formData, onBack }) {
   );
 }
 
-// ─── Single malt (website options) label ─────────────────────────────────────
-
-const SINGLEMALT_PRINT_COLORS = {
-  white: { color: '#ffffff', textShadow: '1px 1px #000000' },
-  black: { color: '#000000', textShadow: '1px 1px #ffffff' },
-};
+// ─── Single malt with roundel label ──────────────────────────────────────────
 
 function SingleMaltOutput({ baseLabel, formData, onBack }) {
   const dims = LABEL_DIMS[baseLabel.size];
   const baseUrl = import.meta.env.BASE_URL;
-
-  const style = SINGLEMALT_PRINT_COLORS.white; // website options always white text
-  const bgFile = `singlemalt${baseLabel.size === '200ml' ? '200ml' : '500ml'}-${formData.labelStyle || 'option_1'}.jpg`;
-  const caskOverlayFile = baseLabel.size === '200ml' ? 'singlecask20-black.png' : 'singlecask50-black.png';
-
-  const blendNameRef = useRef(null);
-  useAutoFontSize(blendNameRef, formData.blendName);
+  const fgColor = formData.fgColor || '#111111';
+  const bgColor = formData.bgColor || '#ffffff';
+  const artwork = formData.artwork || SINGLEMALT_ARTWORKS[0].value;
 
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims} cropsFile="crops50-taller.png" pageBackground={`url(${baseUrl}images/${bgFile})`}>
-        {/* Single cask overlay on the page (covers full content + padding area) */}
-        {formData.singleCask && (
-          <div style={{
-            position: 'absolute',
-            top: -dims.pagePaddingTop,
-            left: -(dims.pageW - dims.labelW) / 2,
-            width: dims.pageW,
-            height: dims.pageH + dims.pagePaddingTop,
-            backgroundImage: `url(${baseUrl}images/${caskOverlayFile})`,
-            backgroundSize: 'cover',
-            zIndex: 9,
-            pointerEvents: 'none',
-          }} />
-        )}
-
-        {/* Blend name */}
+      <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}sample50cl-bars.png)`}>
         <div style={{
-          fontFamily: '"trimPosterCompressed", sans-serif',
-          fontWeight: 400,
           position: 'absolute',
-          top: dims.outerTop, left: dims.outerLeft,
-          width: dims.outerW, height: dims.outerH,
-          textTransform: 'uppercase',
-          display: 'grid',
-          placeContent: 'center',
-          justifyContent: 'start',
-          scale: String(dims.scale),
-          zIndex: 4,
-          color: style.color,
-          textShadow: style.textShadow,
-          overflow: 'hidden',
-        }}>
-          <div ref={blendNameRef}>
-            {insertSpaceForLongWords(formData.blendName)}
-          </div>
+          top: 4,
+          left: -9,
+          width: 570,
+          height: 232,
+          backgroundImage: `url(${baseUrl}images/${artwork})`,
+          backgroundPosition: 'center center',
+          backgroundSize: 'cover',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }} />
+        <div style={{ position: 'absolute', top: 180, left: 140, zIndex: 2, textTransform: 'uppercase', color: '#ffffff', letterSpacing: '8px', fontSize: '8px', fontWeight: 700, textShadow: '1px 1px #000000' }}>
+          Distilled at
         </div>
-
-        {/* Distillery name */}
-        {formData.distillery && (
-          <div style={{
-            fontFamily: '"Raleway", sans-serif',
-            position: 'absolute',
-            top: dims.sideTop, left: dims.sideLeft,
-            width: dims.sideW, height: dims.sideH,
-            scale: String(dims.scale),
-            zIndex: 3,
-            overflow: 'hidden',
-          }}>
-            <div style={{ fontSize: 7, lineHeight: '10px', fontWeight: 700, color: style.color, textShadow: style.textShadow }}>
-              {formData.distillery}
-            </div>
-          </div>
-        )}
-
-        {/* Reference — rotated */}
-        {formData.reference && (
-          <div style={{
-            position: 'absolute',
-            transform: 'rotate(-90deg)',
-            right: dims.refRight, top: dims.refTop,
-            height: 20, width: 80,
-            zIndex: 2,
-            textAlign: 'right',
-          }}>
-            <div style={{
-              fontFamily: '"Roboto Mono", monospace',
-              fontSize: dims.refFontSize,
-              lineHeight: `${dims.refFontSize + 2}px`,
-              opacity: 0.6,
-              color: style.color,
-              textShadow: style.textShadow,
-            }}>
-              {formData.reference}
-            </div>
-          </div>
-        )}
+        <div style={{ position: 'absolute', zIndex: 2 }}>
+          {formData.distillery}
+        </div>
+        <SideInfoPanels
+          fgColor={fgColor} bgColor={bgColor}
+          strength={formData.strength} singleCask={formData.singleCask}
+          baseUrl={baseUrl}
+          panelTop={4} panelLength={232}
+          panelPadding="10px 16px 17px"
+          tallFontSize={14}
+          domainFontSize={9}
+          svgWidth={202} svgHeight={34}
+        />
       </LabelPage>
     </OutputWrapper>
   );
 }
 
-// ─── Single image label ───────────────────────────────────────────────────────
+// ─── Shared side panels (info + single cask) ─────────────────────────────────
 
-
-function SingleImageOutput({ baseLabel, formData, onBack }) {
-  const dims = LABEL_DIMS[baseLabel.size];
-  const baseUrl = import.meta.env.BASE_URL;
-  const fgColor = formData.fgColor || 'black';
-  const bgColor = formData.bgColor || 'white';
-
-  // Panel: rotated 90deg clockwise, anchored at left:46, top:-32
-  // Top edge (y=0) faces right after rotation — zigzag clip applied there
+function SideInfoPanels({
+  fgColor, bgColor, strength, singleCask, baseUrl,
+  panelTop = -33, panelLength = 269,
+  panelPadding = '10px 20px 17px',
+  tallFontSize = 15,
+  domainFontSize = 10,
+  svgWidth = 230, svgHeight = 38,
+}) {
   const zigzagClip = (() => {
-    const w = 269, h = 56, step = 8, depth = 5;
+    const w = panelLength, h = 56, step = 8, depth = 5;
+    const count = Math.ceil(w / step);
+    const pts = Array.from({ length: count + 1 }, (_, i) => {
+      const x = Math.min(i * step, w);
+      return `${x}px ${i % 2 === 0 ? 0 : depth}px`;
+    });
+    return `polygon(${[...pts, `${w}px ${h}px`, `0px ${h}px`].join(', ')})`;
+  })();
+
+  const singleCaskClip = (() => {
+    const w = panelLength, h = 70, step = 8, depth = 5;
     const count = Math.ceil(w / step);
     const pts = Array.from({ length: count + 1 }, (_, i) => {
       const x = Math.min(i * step, w);
@@ -422,35 +374,71 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
 
   const panelStyle = {
     position: 'absolute',
-    top: -33,
-    left: 47,
-    width: 269,
-    height: 56,
-    transform: 'rotate(90deg)',
-    transformOrigin: 'left top',
+    top: panelTop, left: 47, width: panelLength, height: 56,
+    transform: 'rotate(90deg)', transformOrigin: 'left top',
     clipPath: zigzagClip,
-    backgroundColor: bgColor,
-    color: fgColor,
-    textShadow: 'none',
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    alignItems: 'center',
-    padding: '10px 14px 17px 14px',
-    zIndex: 2,
+    backgroundColor: bgColor, color: fgColor, textShadow: 'none',
+    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'center',
+    padding: panelPadding, zIndex: 2,
   };
 
-  const tallFont = { fontFamily: '"Antonio", sans-serif', fontWeight: 300, fontSize: 13, textTransform: 'uppercase', letterSpacing: -0.5 };
+  const tallFont = { fontFamily: '"Antonio", sans-serif', fontWeight: 300, fontSize: tallFontSize, textTransform: 'uppercase', letterSpacing: -0.5 };
+
+  return (
+    <>
+      <div style={panelStyle}>
+        <span style={tallFont}>{strength || '46'}% abv</span>
+        <span style={{ fontSize: domainFontSize, fontWeight: 700, textAlign: 'center', letterSpacing: 0.4, fontFamily: '"Raleway", sans-serif' }}>whiskyblender.com</span>
+        <span style={{ ...tallFont, textAlign: 'right' }}>500ml ℮</span>
+      </div>
+
+      {singleCask && (
+        <div style={{
+          position: 'absolute',
+          top: panelTop, left: 102, width: panelLength, height: 70, paddingTop: 6,
+          transform: 'rotate(90deg)', transformOrigin: 'left top',
+          clipPath: singleCaskClip,
+          backgroundColor: bgColor, color: fgColor,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 2,
+        }}>
+          <div style={{
+            width: svgWidth, height: svgHeight,
+            backgroundColor: fgColor,
+            WebkitMaskImage: `url(${baseUrl}single-cask.svg)`,
+            maskImage: `url(${baseUrl}single-cask.svg)`,
+            WebkitMaskSize: 'contain', maskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center', maskPosition: 'center',
+          }} />
+        </div>
+      )}
+    </>
+  );
+}
+
+// ─── Single image label ───────────────────────────────────────────────────────
+
+function SingleImageOutput({ baseLabel, formData, onBack }) {
+  const dims = LABEL_DIMS[baseLabel.size];
+  const baseUrl = import.meta.env.BASE_URL;
+  const fgColor = formData.fgColor || '#111111';
+  const bgColor = formData.bgColor || '#ffffff';
+  const isTaller = baseLabel.id === '500ml-single-malt';
 
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims} cropsFile="crops50-taller.png" pageBackground={`url(${baseUrl}sample50cl-bars.png)`}>
-        {/* User image */}
+      <LabelPage
+        dims={dims}
+        cropsFile={isTaller ? 'crops50-taller.png' : dims.cropsFile}
+        pageBackground={`url(${baseUrl}${isTaller ? 'sample50cl-tallerbars.png' : 'sample50cl-bars.png'})`}
+      >
         {formData.image && (
           <div style={{
             position: 'absolute',
             top: -33,
-            left: formData.singleCask ? 46 : 40,
-            width: formData.singleCask ? 515 : 521,
+            left: formData.singleCask ? 90 : 40,
+            width: formData.singleCask ? 471 : 521,
             height: 269,
             backgroundImage: `url(${formData.image})`,
             backgroundPosition: 'center center',
@@ -458,13 +446,11 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
             zIndex: 1,
           }} />
         )}
-
-        {/* Side info panel */}
-        <div style={panelStyle}>
-          <span style={tallFont}>{formData.strength || '46'}% abv.</span>
-          <span style={{ fontSize: 7, textAlign: 'center', letterSpacing: 0.8, fontFamily: '"Raleway", sans-serif' }}>whiskyblender.com</span>
-          <span style={{ ...tallFont, textAlign: 'right' }}>500ml</span>
-        </div>
+        <SideInfoPanels
+          fgColor={fgColor} bgColor={bgColor}
+          strength={formData.strength} singleCask={formData.singleCask}
+          baseUrl={baseUrl}
+        />
       </LabelPage>
     </OutputWrapper>
   );
@@ -591,10 +577,11 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
   const [values, setValues] = useState(() => {
     const defaults = {};
     template.fields.forEach(f => {
-      if (f.type === 'select') defaults[f.key] = f.default ?? f.options[0].value;
+      if (f.type === 'select' || f.type === 'color-swatch' || f.type === 'preset-image')
+        defaults[f.key] = f.default ?? f.options[0].value;
       else if (f.type === 'checkbox') defaults[f.key] = false;
       else if (f.type === 'strength') defaults[f.key] = f.default ?? '';
-      else defaults[f.key] = '';
+      else defaults[f.key] = f.default ?? '';
     });
     return initialValues ? { ...defaults, ...initialValues } : defaults;
   });
@@ -603,8 +590,17 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
   const handleChange = (key, value) => {
     setValues(prev => {
       const next = { ...prev, [key]: value };
-      if (key === 'fgColor' && next.bgColor === value) next.bgColor = value === 'black' ? 'white' : 'black';
-      if (key === 'bgColor' && next.fgColor === value) next.fgColor = value === 'black' ? 'white' : 'black';
+      const getLum = v => COLOR_PALETTE.find(c => c.value === v)?.luminance;
+      if (key === 'bgColor') {
+        const bgLum = getLum(value);
+        if (bgLum && getLum(next.fgColor) === bgLum)
+          next.fgColor = COLOR_PALETTE.find(c => c.luminance !== bgLum)?.value ?? next.fgColor;
+      }
+      if (key === 'fgColor') {
+        const fgLum = getLum(value);
+        if (fgLum && getLum(next.bgColor) === fgLum)
+          next.bgColor = COLOR_PALETTE.find(c => c.luminance !== fgLum)?.value ?? next.bgColor;
+      }
       return next;
     });
   };
@@ -634,7 +630,40 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
             <div key={field.key} className="form-field">
               <label className="form-label" htmlFor={field.key}>{field.label}</label>
 
-              {field.type === 'select' ? (
+              {field.type === 'preset-image' ? (
+                <div className="color-swatches">
+                  {field.options.map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`color-swatch${values[field.key] === opt.value ? ' color-swatch--selected' : ''}`}
+                      onClick={() => handleChange(field.key, opt.value)}
+                    >
+                      <span className="color-swatch__dot" style={{
+                        backgroundImage: `url(${import.meta.env.BASE_URL}images/${opt.value})`,
+                        backgroundSize: '600%',
+                        backgroundPosition: 'center center',
+                        height: '72px',
+                      }} />
+                      <span className="color-swatch__label">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : field.type === 'color-swatch' ? (
+                <div className="color-swatches">
+                  {field.options.map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`color-swatch${values[field.key] === opt.value ? ' color-swatch--selected' : ''}`}
+                      onClick={() => handleChange(field.key, opt.value)}
+                    >
+                      <span className="color-swatch__dot" style={{ backgroundColor: opt.value }} />
+                      <span className="color-swatch__label">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : field.type === 'select' ? (
                 <select id={field.key} className="form-select" value={values[field.key]}
                   onChange={e => handleChange(field.key, e.target.value)}>
                   {field.options.map(opt => (
@@ -667,7 +696,7 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
               ) : field.type === 'strength' ? (
                 <div className="strength-input">
                   <input id={field.key} type="number" className="form-input form-input--strength"
-                    value={values[field.key]} min="0" max="99.9" step="0.1"
+                    value={values[field.key]} min="0" max="99" step="1"
                     onChange={e => handleChange(field.key, e.target.value)} />
                   <span className="strength-unit">% abv.</span>
                 </div>

@@ -62,18 +62,24 @@ const TAMPA_IMAGE_OPTIONS = [
   { value: 'casks', label: 'Casks' },
 ];
 
-const SINGLEMALT_STYLE_OPTIONS = [
-  { value: 'option_1', label: 'Style 1' },
-  { value: 'option_2', label: 'Style 2' },
-  { value: 'option_3', label: 'Style 3' },
-  { value: 'option_4', label: 'Style 4' },
-  { value: 'option_5', label: 'Style 5' },
-  { value: 'option_6', label: 'Style 6' },
+export const SINGLEMALT_ARTWORKS = [
+  { value: 'singlemalt500ml-option_1.jpg', label: 'Style 1' },
+  { value: 'singlemalt500ml-option_2.jpg', label: 'Style 2' },
+  { value: 'singlemalt500ml-option_3.jpg', label: 'Style 3' },
+  { value: 'singlemalt500ml-option_4.jpg', label: 'Style 4' },
+  { value: 'singlemalt500ml-option_5.jpg', label: 'Style 5' },
+  { value: 'singlemalt500ml-option_6.jpg', label: 'Style 6' },
 ];
 
-const COLOR_OPTIONS = [
-  { value: 'black', label: 'Black' },
-  { value: 'white', label: 'White' },
+export const COLOR_PALETTE = [
+  { value: '#ffffff', label: 'White',     luminance: 'light' },
+  { value: '#f5f0e8', label: 'Cream',     luminance: 'light' },
+  { value: '#d4a878', label: 'Gold',      luminance: 'light' },
+  { value: '#c8bfa8', label: 'Parchment', luminance: 'light' },
+  { value: '#111111', label: 'Black',     luminance: 'dark' },
+  { value: '#1a2744', label: 'Navy',      luminance: 'dark' },
+  { value: '#1c3320', label: 'Forest',    luminance: 'dark' },
+  { value: '#3b0d17', label: 'Claret',    luminance: 'dark' },
 ];
 
 export const ALL_TEMPLATES = {
@@ -102,18 +108,19 @@ export const ALL_TEMPLATES = {
     id: 'website-options-singlemalt',
     name: 'Website options',
     sample: {
-      blendName: 'Highland Selection',
-      distillery: 'Glengoyne',
-      reference: '09374658G27',
-      labelStyle: 'option_1',
+      artwork: 'singlemalt500ml-option_1.jpg',
+      strength: '46',
       singleCask: false,
+      fgColor: '#111111',
+      bgColor: '#ffffff',
     },
     fields: [
-      { key: 'blendName',   label: 'Blend name',            type: 'text',     placeholder: 'Name of the blend' },
-      { key: 'distillery',  label: 'Distilled at',          type: 'text',     placeholder: 'Name of the distillery' },
-      { key: 'reference',   label: 'Reference',             type: 'text',     placeholder: 'e.g. 09374658g27' },
-      { key: 'labelStyle',  label: 'Label style',           type: 'select',   options: SINGLEMALT_STYLE_OPTIONS },
-      { key: 'singleCask',  label: 'Single cask overlay',   type: 'checkbox' },
+      { key: 'artwork',     label: 'Label artwork',      type: 'preset-image',  options: SINGLEMALT_ARTWORKS, default: 'singlemalt500ml-option_1.jpg' },
+      { key: 'distillery', label: 'Distilled at',       type: 'text',          default: '[Name of] Distillery' },
+      { key: 'strength',   label: 'Strength',           type: 'strength',      default: '46' },
+      { key: 'singleCask', label: 'Single cask',        type: 'checkbox' },
+      { key: 'fgColor',    label: 'Foreground colour',  type: 'color-swatch',  options: COLOR_PALETTE, default: '#111111' },
+      { key: 'bgColor',    label: 'Background colour',  type: 'color-swatch',  options: COLOR_PALETTE, default: '#ffffff' },
     ],
   },
 
@@ -142,8 +149,8 @@ export const ALL_TEMPLATES = {
       { key: 'image',      label: 'Background image',  type: 'file',     accept: 'image/*' },
       { key: 'strength',   label: 'Strength',           type: 'strength', default: '46' },
       { key: 'singleCask', label: 'Single cask',        type: 'checkbox' },
-      { key: 'fgColor',    label: 'Foreground colour',  type: 'select',   options: COLOR_OPTIONS, default: 'black' },
-      { key: 'bgColor',    label: 'Background colour',  type: 'select',   options: COLOR_OPTIONS, default: 'white' },
+      { key: 'fgColor',    label: 'Foreground colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#111111' },
+      { key: 'bgColor',    label: 'Background colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#ffffff' },
     ],
   },
 };
