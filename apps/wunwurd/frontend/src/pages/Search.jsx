@@ -38,16 +38,6 @@ export default function Search() {
     <div className="px-4 pt-6 pb-20 max-w-2xl mx-auto">
       <div className="mb-6 flex gap-3">
         <button
-          onClick={() => setSearchType('movies')}
-          className={`px-4 py-2 font-bold uppercase text-sm transition-colors ${
-            searchType === 'movies'
-              ? 'bg-[#FF1493] text-black'
-              : 'bg-gray-900 text-white border-2 border-[#FF1493]'
-          }`}
-        >
-          Title
-        </button>
-        <button
           onClick={() => setSearchType('wunwurds')}
           className={`px-4 py-2 font-bold uppercase text-sm transition-colors ${
             searchType === 'wunwurds'
@@ -57,12 +47,22 @@ export default function Search() {
         >
           Wurd
         </button>
+        <button
+          onClick={() => setSearchType('movies')}
+          className={`px-4 py-2 font-bold uppercase text-sm transition-colors ${
+            searchType === 'movies'
+              ? 'bg-[#FF1493] text-black'
+              : 'bg-gray-900 text-white border-2 border-[#FF1493]'
+          }`}
+        >
+          Title
+        </button>
       </div>
 
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder={searchType === 'movies' ? 'Name a movie' : 'Adjective'}
+        placeholder={searchType === 'movies' ? 'Movie' : 'Adjective'}
         autoFocus
         className="w-full bg-transparent border-b-2 border-[#FF1493] text-white font-bold text-2xl uppercase py-2 outline-none placeholder-gray-700 mb-8"
       />

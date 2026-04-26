@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { apiFetch } from '../api'
 
 
-export default function MovieCard({ movie, simple = false }) {
+export default function MovieCard({ movie, simple = false, index = 0 }) {
+  const animDelay = `${Math.min(index, 8) * 40}ms`
   const [topHovered, setTopHovered] = useState(false)
   const [bottomHovered, setBottomHovered] = useState(false)
   const [topWord, setTopWord] = useState(null)
@@ -31,7 +32,8 @@ export default function MovieCard({ movie, simple = false }) {
 
   if (simple) {
     return (
-      <Link to={`/movie/${tmdbId}`} className="relative overflow-hidden bg-gray-900 aspect-square block">
+      <Link to={`/movie/${tmdbId}`} className="relative overflow-hidden bg-gray-900 aspect-square block"
+        style={{ animation: 'fadeInUp 350ms ease both', animationDelay: animDelay }}>
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
         ) : (
@@ -54,7 +56,8 @@ export default function MovieCard({ movie, simple = false }) {
   }
 
   return (
-    <div className="relative overflow-hidden bg-gray-900 aspect-square">
+    <div className="relative overflow-hidden bg-gray-900 aspect-square"
+      style={{ animation: 'fadeInUp 350ms ease both', animationDelay: animDelay }}>
       {imageUrl ? (
         <img src={imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
       ) : (

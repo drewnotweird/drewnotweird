@@ -6,7 +6,7 @@ export default function WordCloud({ words, userWord }) {
 
   return (
     <div className="flex flex-wrap gap-x-8 gap-y-3 justify-center py-4">
-      {words.map(({ word, count }) => {
+      {words.map(({ word, count }, i) => {
         const isUserWord = userWord && word === userWord.toLowerCase()
         return (
           <Link
@@ -16,6 +16,7 @@ export default function WordCloud({ words, userWord }) {
               isUserWord ? 'text-[#FF1493]' : 'text-white'
             }`}
             title={`${count} vote${count !== 1 ? 's' : ''}`}
+            style={{ animation: 'fadeIn 400ms ease both', animationDelay: `${i * 70}ms` }}
           >
             {word.toUpperCase()}
           </Link>

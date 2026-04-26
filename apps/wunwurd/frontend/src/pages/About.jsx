@@ -77,7 +77,7 @@ export default function About() {
           BROWSE FILMS
         </Link>
         <Link
-          to="/search-words"
+          to="/search"
           className="inline-block border-2 border-[#FF1493] text-[#FF1493] font-bold text-lg uppercase px-8 py-4 hover:bg-[#FF1493] hover:text-black transition-colors text-center"
         >
           SEARCH BY WORD

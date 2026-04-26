@@ -205,7 +205,7 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
           {loading
             ? Array.from({ length: COLS * ROWS }).map((_, i) => <SkeletonCard key={i} />)
-            : movies.map(movie => <MovieCard key={movie.id || movie.tmdbId} movie={movie} />)}
+            : movies.map((movie, i) => <MovieCard key={movie.id || movie.tmdbId} movie={movie} index={i} />)}
         </div>
 
         {loadingMore && (

@@ -43,7 +43,7 @@ export default function WordPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-transparent text-white font-bold leading-none uppercase outline-none border-none text-center placeholder-gray-700"
             style={{ fontSize: 'clamp(2.5rem, 12vw, 6rem)' }}
-            placeholder={searchMode === 'movies' ? 'Name a movie' : 'Adjective'}
+            placeholder={searchMode === 'movies' ? 'Movie' : 'Adjective'}
             autoFocus={!word}
           />
         </div>
@@ -52,17 +52,6 @@ export default function WordPage() {
       {/* Tabs */}
       <div className="flex justify-center border-b-2 border-gray-900">
         <div className="flex gap-3 pt-4">
-          <button
-            onClick={() => setSearchMode('movies')}
-            className={`px-4 py-2 font-bold uppercase transition-colors ${
-              searchMode === 'movies'
-                ? 'text-[#FF1493] border-b-2 border-[#FF1493]'
-                : 'text-gray-400 border-b-2 border-transparent'
-            }`}
-            style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
-          >
-            Title
-          </button>
           <button
             onClick={() => setSearchMode('wunwurds')}
             className={`px-4 py-2 font-bold uppercase transition-colors ${
@@ -73,6 +62,17 @@ export default function WordPage() {
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
             Wurd
+          </button>
+          <button
+            onClick={() => setSearchMode('movies')}
+            className={`px-4 py-2 font-bold uppercase transition-colors ${
+              searchMode === 'movies'
+                ? 'text-[#FF1493] border-b-2 border-[#FF1493]'
+                : 'text-gray-400 border-b-2 border-transparent'
+            }`}
+            style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
+          >
+            Title
           </button>
         </div>
       </div>

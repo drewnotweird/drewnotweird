@@ -182,12 +182,12 @@ export default function Navbar() {
           <button
             className="group relative flex items-center justify-center h-full transition-opacity duration-300"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
-            onClick={() => navigate('/search-words')}
+            onClick={() => navigate('/search')}
             disabled={!serverReady}
             aria-label="Search"
           >
             <SearchIcon size={iconSize} />
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
           </button>
           <button
             className="group relative flex items-center justify-center h-full transition-opacity duration-300"
@@ -199,7 +199,7 @@ export default function Navbar() {
             {randomLoading
               ? <div style={{ width: iconSize, height: iconSize, border: '2.5px solid black', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
               : <RandomIcon size={iconSize} />}
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>RANDOM</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>RANDOM</span>
           </button>
 
           {/* Spacer — expands when minimised to push right icons to the right */}
@@ -213,7 +213,7 @@ export default function Navbar() {
             aria-label="About"
           >
             <InfoIcon size={iconSize} />
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
           </button>
           <button
             className="group relative flex items-center justify-center h-full transition-opacity duration-300"
@@ -223,7 +223,7 @@ export default function Navbar() {
             aria-label={user ? 'Profile' : 'Log in'}
           >
             {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>{user ? 'ACCOUNT' : 'LOGIN'}</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>{user ? 'ACCOUNT' : 'LOGIN'}</span>
           </button>
         </div>
 

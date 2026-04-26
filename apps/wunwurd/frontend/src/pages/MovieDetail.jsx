@@ -136,7 +136,8 @@ export default function MovieDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
 
         {/* Content over backdrop */}
-        <div className="absolute inset-0 flex flex-col items-end justify-end px-6 pb-6 text-center">
+        <div className="absolute inset-0 flex flex-col items-end justify-end px-6 pb-6 text-center"
+          style={{ animation: 'fadeIn 600ms ease both' }}>
           <div className="w-full">
             <h1
               className="text-white font-bold uppercase leading-none drop-shadow-lg"
@@ -176,6 +177,7 @@ export default function MovieDetail() {
           <button
             onClick={handleWunwurdClick}
             className="w-full bg-[#FF1493] text-black font-bold text-2xl uppercase py-4 hover:bg-white transition-colors"
+            style={{ animation: 'fadeInUp 400ms ease both', animationDelay: '150ms' }}
           >
             + WUNWURD!
           </button>
@@ -183,7 +185,8 @@ export default function MovieDetail() {
 
         {/* User's existing submission */}
         {user && wunwurds.userWord && (
-          <div className="mt-4 flex items-center justify-between border-2 border-[#FF1493] px-4 py-3">
+          <div className="mt-4 flex items-center justify-between border-2 border-[#FF1493] px-4 py-3"
+            style={{ animation: 'fadeInUp 400ms ease both', animationDelay: '150ms' }}>
             <div>
               <span className="text-gray-500 text-xs uppercase block">
                 YOUR WUNWURD
@@ -210,13 +213,14 @@ export default function MovieDetail() {
         )}
 
         {/* Word cloud */}
-        <div className="mt-10">
+        <div className="mt-10" style={{ animation: 'fadeInUp 500ms ease both', animationDelay: '250ms' }}>
           <WordCloud words={wunwurds.words.slice(1)} userWord={wunwurds.userWord} />
         </div>
 
         {/* Movie info */}
         {(movie.overview || movie.genres?.length > 0 || movie.director || movie.cast?.length > 0) && (
-          <div className="mt-10 border-t border-gray-800 pt-8 space-y-8 text-center">
+          <div className="mt-10 border-t border-gray-800 pt-8 space-y-8 text-center"
+            style={{ animation: 'fadeInUp 500ms ease both', animationDelay: '350ms' }}>
 
             {/* Overview */}
             {movie.overview && (
@@ -287,7 +291,8 @@ export default function MovieDetail() {
         )}
 
         {/* Onwards */}
-        <div className="mt-8 border-t border-gray-800 pt-8 space-y-6 pb-4 text-center">
+        <div className="mt-8 border-t border-gray-800 pt-8 space-y-6 pb-4 text-center"
+          style={{ animation: 'fadeInUp 500ms ease both', animationDelay: '450ms' }}>
 
           {/* Where to watch */}
           {movie.watch && (movie.watch.stream?.length > 0 || movie.watch.rent?.length > 0) && (
