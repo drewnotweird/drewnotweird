@@ -162,7 +162,7 @@ export default function Home() {
         >
           <h1
             className="text-black font-bold leading-none uppercase"
-            style={{ fontSize: 'clamp(4rem, 18vw, 10rem)' }}
+            style={{ fontSize: 'clamp(4rem, 22vw, 10rem)' }}
           >
             WUNWURD
           </h1>
