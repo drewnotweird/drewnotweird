@@ -39,11 +39,10 @@ export default function Home() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [scrollY, setScrollY] = useState(0)
-  const [waking, setWaking] = useState(false)
-  const [wakingDone, setWakingDone] = useState(false)
+  const [bannerPhase, setBannerPhase] = useState('idle') // 'idle' | 'counting' | 'done' | 'closing'
   const [countdown, setCountdown] = useState(COLD_START_SECONDS)
   const countdownRef = useRef(null)
-  const wasWakingRef = useRef(false)
+  const wasCountingRef = useRef(false)
   const pageRef = useRef(1)
   const fetchingRef = useRef(false)
 
@@ -54,17 +53,16 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    if (waking) {
+    if (bannerPhase === 'counting') {
       setCountdown(COLD_START_SECONDS)
       countdownRef.current = setInterval(() => {
         setCountdown(c => Math.max(0, c - 1))
       }, 1000)
     } else {
       clearInterval(countdownRef.current)
-      setCountdown(COLD_START_SECONDS)
     }
     return () => clearInterval(countdownRef.current)
-  }, [waking])
+  }, [bannerPhase])
 
   const loadMore = useCallback(async () => {
     if (fetchingRef.current) return
@@ -96,8 +94,8 @@ export default function Home() {
     // After 500ms with no response, reveal the countdown banner
     const wakeTimer = setTimeout(() => {
       if (!cancelled) {
-        wasWakingRef.current = true
-        setWaking(true)
+        wasCountingRef.current = true
+        setBannerPhase('counting')
         setServerReady(false)
       }
     }, 500)
@@ -116,12 +114,18 @@ export default function Home() {
           clearTimeout(wakeTimer)
           setMovies(results)
           setLoading(false)
-          setWaking(false)
           setServerReady(true)
-          if (wasWakingRef.current) {
-            wasWakingRef.current = false
-            setWakingDone(true)
-            setTimeout(() => setWakingDone(false), 1500)
+          if (wasCountingRef.current) {
+            wasCountingRef.current = false
+            setBannerPhase('done')
+            setTimeout(() => {
+              if (!cancelled) {
+                setBannerPhase('closing')
+                setTimeout(() => { if (!cancelled) setBannerPhase('idle') }, 650)
+              }
+            }, 1500)
+          } else {
+            setBannerPhase('idle')
           }
           pageRef.current = 2
           if (results.length > 0) saveCache(results)
@@ -186,14 +190,14 @@ export default function Home() {
       <div
         className="text-center overflow-hidden"
         style={{
-          maxHeight: (waking || wakingDone) ? '500px' : '0px',
-          paddingTop: (waking || wakingDone) ? '2.5rem' : '0',
-          paddingBottom: (waking || wakingDone) ? '2.5rem' : '0',
-          borderBottom: (waking || wakingDone) ? '4px solid #FF1493' : '0px solid #FF1493',
+          maxHeight: bannerPhase !== 'idle' ? '500px' : '0px',
+          paddingTop: bannerPhase !== 'idle' ? '2.5rem' : '0',
+          paddingBottom: bannerPhase !== 'idle' ? '2.5rem' : '0',
+          borderBottom: bannerPhase !== 'idle' ? '4px solid #FF1493' : '0px solid #FF1493',
           transition: 'max-height 0.6s ease-in-out, padding 0.6s ease-in-out, border-bottom-width 0.6s ease-in-out',
         }}
       >
-        {wakingDone ? (
+        {bannerPhase === 'done' || bannerPhase === 'closing' ? (
           <p className="text-[#FF1493] font-black uppercase leading-none"
             style={{ fontSize: 'clamp(5rem, 22vw, 10rem)' }}>
             YAS!
