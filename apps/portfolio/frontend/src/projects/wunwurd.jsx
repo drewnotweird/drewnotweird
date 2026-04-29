@@ -36,7 +36,7 @@ export default function Wunwurd() {
       ]} />
 
       <section>
-        <p>Until one day I decided to explore Claude Code and knew instantly what idea I wanted to test it out on. Just the idea, not detailing implementation or dictating tools. People submit single words against movies and the more commonly submitted words rise to the top — with a single word representing that film. You can also search for movies that people have described with a specific word. Simple, stupid, but I wanted to see it.</p>
+        <p>Until one day I decided to explore Claude Code and knew instantly what idea I wanted to test it out on. Just the idea, not detailing implementation or dictating tools. People submit single words against movies and the more commonly submitted words rise to the top — with a single word representing that film. You can also search for movies that people have described with a specific word. Simple, silly, but I wanted to see it.</p>
         <p>I worked on it for a few hours to get the concept built. Took a break, and when the kids were in bed I worked on getting it deployed. Films, words, profiles — all working. The kind of stuff that used to block me because it was such an undertaking was solved in a single evening.</p>
       </section>
 

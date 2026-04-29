@@ -31,7 +31,7 @@ export default function Introducing() {
 
       <section>
         <p>The idea of "giving back" is something most of us agree with in principle, but in practice it can be difficult. Graduates often struggle to reach out, and industry professionals don't always know how best to offer support. The project was an attempt to close that gap.</p>
-        <p>Last summer, I began contacting people to see if they'd be interested in introducing themselves to students and early-career creatives — talking a little about their journey so far, sharing some of their work, and offering a few honest nuggets of advice to anyone who might relate to their story. Over the following months, I built up a small backlog of video content, ready to be shared.</p>
+        <p>I spent a few months reaching out to creatives to see if they'd be interested in introducing themselves to students and early-career designers — talking about their journey so far, sharing some of their work, and offering honest nuggets of advice. I built up a small backlog of video content, ready to be shared.</p>
       </section>
 
       <ImageSection images={[
@@ -40,7 +40,7 @@ export default function Introducing() {
 
       <section>
         <p>Around that time, Eilidh joined my team at work. I mentioned the project and asked if she'd be interested in collaborating. As a recent graduate herself, it felt like the perfect balance of perspectives. By September, the feed was live and we were posting our first introductions.</p>
-        <p>Alongside established creatives, we regularly highlight students and recent graduates from institutions across the globe. We're also sponsors of Show Off, a Scotland-wide showcase for graduating graphic design students whose degree shows were cancelled due to the Covid-19 pandemic.</p>
+        <p>Alongside established creatives, we regularly highlight students and recent graduates from institutions across the globe. We're also sponsors of Show Off, a Scotland-wide showcase for graduating graphic design students.</p>
       </section>
 
       <ImageSection images={[

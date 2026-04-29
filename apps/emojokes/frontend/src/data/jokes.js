@@ -39,4 +39,5 @@ export const JOKES = [
   { id: 37, emoji: '🫏', setup: "What do you call a donkey with 3 legs?", punchline: "A wonky." },
   { id: 38, emoji: '🐝', setup: "What kind of bees can produce milk?", punchline: "Boobies!" },
   { id: 39, emoji: '🏌️', setup: "Why did the golfer wear 2 pairs of pants", punchline: "In case they got a hole in one!" },
+  { id: 40, emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', setup: "What do you call a man with one foot in his front door?", punchline: "Hamish." },
 ]

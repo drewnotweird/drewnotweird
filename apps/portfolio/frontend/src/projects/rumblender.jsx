@@ -38,9 +38,6 @@ export default function RumBlender() {
         { src: `${BASE}/rumblenderjourney04.gif`, layout: 'full' },
       ]} />
 
-      <section>
-        <p>As Massimo Vignelli once said, "You do design because you feel it inside." Nobody gets into design for the money. We do it because we can't help ourselves — because we need to make things, and often it's our own ideas that we most want to explore.</p>
-      </section>
     </ProjectLayout>
   )
 }

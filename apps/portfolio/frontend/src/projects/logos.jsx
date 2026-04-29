@@ -8,6 +8,10 @@ export default function Logos() {
     <ProjectLayout slug="logos"
       title="Logos"
     >
+      <section>
+        <p>A logo has to work everywhere — big, small, in colour, in black and white, on a business card and on a billboard. A selection from across 20-odd years of client and self-initiated work.</p>
+      </section>
+
       <ImageSection images={[
         { src: `${BASE}/logos01.png`, layout: 'half' },
         { src: `${BASE}/logos02.png`, layout: 'half' },

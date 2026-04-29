@@ -16,7 +16,7 @@ export default function MakeItHappen() {
         { src: `${BASE}/makeithappen01.jpg`, layout: 'full' },
       ]} />
       <section>
-        <p>Make it Happen is a charity with the aim to inspire children's digital learning. They run an innovative and exciting app design competition for Primary Schools across Scotland, and I have been fortunate enough to be given the opportunity of getting involved.</p>
+        <p>Make it Happen is a charity that inspires digital learning in children. They run an app design competition for Primary Schools across Scotland, and I've been part of it for several years.</p>
         <p>I've helped realise a number of different apps since I started volunteering on the programme. Apps to battle climate change, help with basic colour theory, educate kids on the Coronavirus, learn about space, measuring out ingredients for recipes, anything&hellip; and all designed by kids.</p>
       </section>
 
@@ -43,7 +43,7 @@ export default function MakeItHappen() {
       ]} />
 
       <section>
-        <p>Working in a role where projects can span several months or even years, being able to be part of something that requires rapid turnarounds and tight deliverables is great for maintaining energy levels and creative satisfaction.</p>
+        <p>After months-long client projects, the pace here is genuinely energising.</p>
         <p>If you're interested in finding out more about Make It Happen or what apps the team have helped produce on behalf of the schoolkids, you can find it all on the <a href="https://makeithappen.club/" target="_blank" rel="noreferrer">Make it Happen website</a>.</p>
       </section>
     </ProjectLayout>

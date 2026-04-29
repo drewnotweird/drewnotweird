@@ -46,7 +46,6 @@ export default function AirNewZealand() {
 
       <section>
         <p>Running predominantly across London Underground stations, the creative used unexpected facts to grab attention — "babies can't dream", "lobsters taste with their feet", "mangoes get sunburn", "bees do have knees" — before revealing the airline's daily direct service. The tone was light-hearted and slightly irreverent, designed to feel human rather than corporate.</p>
-        <p>As Air New Zealand's Head of UK and Europe, Joanna Copestake, put it at the time: "People are sometimes surprised when we tell them Air New Zealand flies direct from London to Los Angeles. We wanted to draw on that element of surprise with our latest campaign, using it to raise awareness among travellers of our award-winning product, kiwi hospitality and the fact that we fly directly from London to Los Angeles with no hidden extras, making our airline a better way to fly."</p>
       </section>
 
       <ImageSection images={[

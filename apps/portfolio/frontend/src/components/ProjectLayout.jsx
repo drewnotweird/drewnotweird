@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { projects } from '../data/projects.js'
 
 function setMeta(name, content, attr = 'name') {
@@ -13,11 +13,29 @@ function setMeta(name, content, attr = 'name') {
 }
 
 export default function ProjectLayout({ slug, title, subtitle, tags, credit, children }) {
-  const navigate = useNavigate()
-  const project = projects.find(p => p.slug === slug)
+  const mainRef = useRef(null)
+  const currentIndex = projects.findIndex(p => p.slug === slug)
+  const project = projects[currentIndex]
+  const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length]
+  const nextProject = projects[(currentIndex + 1) % projects.length]
   const ogImage = project?.ogImage || 'https://www.drewnotweird.co.uk/work/whiskyblender/whiskyblender-05.jpg'
   const url = `https://www.drewnotweird.co.uk/work/${slug}`
   const desc = 'User Interface, User Experience, Logo, Brand, Website, iOS, Android, Digital, Print (Glasgow)'
+
+  useEffect(() => {
+    const els = mainRef.current?.querySelectorAll('section, header')
+    if (!els) return
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.1 })
+    els.forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     document.title = `${title} | Andrew Nicolson`
@@ -39,8 +57,8 @@ export default function ProjectLayout({ slug, title, subtitle, tags, credit, chi
 
   return (
     <>
-      <a className="back" onClick={e => { e.preventDefault(); if (window.history.length > 1) navigate(-1); else navigate('/') }} href="/" aria-label="Back">Back</a>
-      <main>
+      <Link className="back" to="/" aria-label="Back">Back</Link>
+      <main ref={mainRef}>
         <header>
           <h1>{title}</h1>
           {subtitle && <h2>{subtitle}</h2>}
@@ -50,12 +68,24 @@ export default function ProjectLayout({ slug, title, subtitle, tags, credit, chi
 
         {children}
 
+        <section id="project-nav">
+          <Link to={`/work/${prevProject.slug}`} className="project-nav-tile">
+            <div className="project-bg" style={{ backgroundImage: `url(${prevProject.cover})` }} />
+            <span><em>←</em>{prevProject.title}</span>
+          </Link>
+          <Link to={`/work/${nextProject.slug}`} className="project-nav-tile">
+            <div className="project-bg" style={{ backgroundImage: `url(${nextProject.cover})` }} />
+            <span>{nextProject.title}<em>→</em></span>
+          </Link>
+        </section>
+
         <section>
           <ul id="contact">
             <li><a href="mailto:drewnotweird@gmail.com">@</a></li>
             <li><a href="https://twitter.com/drewnotweird" target="_blank" rel="noreferrer">X</a></li>
             <li><a href="https://www.linkedin.com/in/drewnotweird/" target="_blank" rel="noreferrer">LI</a></li>
             <li><a href="https://www.instagram.com/drewnotweird/" target="_blank" rel="noreferrer">IG</a></li>
+            <li><a href="https://github.com/drewnotweird/" target="_blank" rel="noreferrer">GH</a></li>
           </ul>
         </section>
       </main>
