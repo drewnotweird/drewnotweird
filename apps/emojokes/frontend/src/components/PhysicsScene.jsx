@@ -26,6 +26,8 @@ export default function PhysicsScene() {
   const shuffleAnchorRef = useRef(null)
   const shufflingRef = useRef(new Set())
   const anchorSpinnerRef = useRef(null)
+  const restoreQueueRef = useRef([])
+  const nextRestoreRef = useRef(0)
   const [expandedId, setExpandedId] = useState(null)
   const [textVisibleId, setTextVisibleId] = useState(null)
   const [punchlineVisibleId, setPunchlineVisibleId] = useState(null)
@@ -122,18 +124,30 @@ export default function PhysicsScene() {
       const cH = container.clientHeight
       const cW = container.clientWidth
 
+      const now = performance.now()
+      if (restoreQueueRef.current.length > 0 && now >= nextRestoreRef.current) {
+        const id = restoreQueueRef.current.shift()
+        const body = bodyMap.current[id]
+        if (body) {
+          const rx = R + Math.random() * (cW - R * 2)
+          body.collisionFilter = { category: CAT_NORMAL, mask: CAT_NORMAL }
+          Matter.Body.setPosition(body, { x: rx, y: -cH })
+          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
+          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+        }
+        nextRestoreRef.current = now + STAGGER
+      }
+
       JOKES.forEach(({ id }) => {
         const body = bodyMap.current[id]
         if (!body || body.isStatic) return
 
-        // Teleport falling circles back to top once off-screen
+        // Circle has fallen off-screen — park it and queue for sequential re-entry
         if (shufflingRef.current.has(id) && body.position.y > cH + R * 2) {
           shufflingRef.current.delete(id)
-          const rx = R + Math.random() * (cW - R * 2)
-          Matter.Body.setCollisionFilter(body, { category: CAT_NORMAL, mask: CAT_NORMAL })
-          Matter.Body.setPosition(body, { x: rx, y: -R * 2 })
-          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
-          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+          Matter.Body.setPosition(body, { x: body.position.x, y: -(cH * 3) })
+          Matter.Body.setVelocity(body, { x: 0, y: 0 })
+          restoreQueueRef.current.push(id)
         }
 
         const dx = body.position.x - cx
@@ -176,9 +190,12 @@ export default function PhysicsScene() {
     active.slice(0, half).forEach(({ id }) => {
       const body = bodyMap.current[id]
       shufflingRef.current.add(id)
-      Matter.Body.setCollisionFilter(body, { category: CAT_FALLING, mask: 0x0000 })
+      body.collisionFilter = { category: CAT_FALLING, mask: 0x0000 }
       Matter.Body.setVelocity(body, { x: body.velocity.x, y: Math.max(body.velocity.y, 15) })
     })
+
+    restoreQueueRef.current = []
+    nextRestoreRef.current = 0
 
     const el = anchorSpinnerRef.current
     if (el) {
@@ -282,6 +299,9 @@ export default function PhysicsScene() {
     const H = containerRef.current.clientHeight
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
+    const dx = x - W / 2
+    const dy = y - H / 2
+    const dist = Math.sqrt(dx * dx + dy * dy)
 
     if (expandedRef.current !== null) {
       collapse(expandedRef.current)
@@ -289,9 +309,7 @@ export default function PhysicsScene() {
     }
 
     // Anchor check: direct distance to centre — always wins, no physics query needed
-    const dx = x - W / 2
-    const dy = y - H / 2
-    if (Math.sqrt(dx * dx + dy * dy) <= R) {
+    if (dist <= R) {
       handleShuffle()
       return
     }
@@ -431,15 +449,15 @@ export default function PhysicsScene() {
             <defs>
               <path
                 id="emojokes-smile"
-                d={`M ${R * 0.22},${R} A ${R * 0.78},${R * 0.78} 0 0 1 ${R * 1.78},${R}`}
+                d={`M ${R * 0.394},${R * 0.65} A ${R * 0.7},${R * 0.7} 0 1 0 ${R * 1.606},${R * 0.65}`}
               />
             </defs>
             <text
               fill="white"
-              fontSize={R * 0.21}
+              fontSize={R * 0.44}
               fontFamily="'DynaPuff', cursive"
               fontWeight="700"
-              letterSpacing={R * 0.02}
+              letterSpacing={R * 0.06}
             >
               <textPath href="#emojokes-smile" startOffset="50%" textAnchor="middle">
                 EMOJOKES
