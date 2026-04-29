@@ -10,6 +10,8 @@ const REPEL_R = WIDE ? 120 : 90
 const REPEL_F = 0.0025
 const TRANSITION = 380
 const STAGGER = 180
+const CAT_NORMAL = 0x0001
+const CAT_FALLING = 0x0002
 
 export default function PhysicsScene() {
   const containerRef = useRef(null)
@@ -21,6 +23,9 @@ export default function PhysicsScene() {
   const cursorRef = useRef({ x: -999, y: -999 })
   const expandedRef = useRef(null)
   const handsOffRef = useRef(new Set())
+  const shuffleAnchorRef = useRef(null)
+  const shufflingRef = useRef(new Set())
+  const anchorSpinnerRef = useRef(null)
   const [expandedId, setExpandedId] = useState(null)
   const [textVisibleId, setTextVisibleId] = useState(null)
   const [punchlineVisibleId, setPunchlineVisibleId] = useState(null)
@@ -40,18 +45,43 @@ export default function PhysicsScene() {
       const H = container.clientHeight
       wallsRef.current.forEach(w => Matter.World.remove(world, w))
       const walls = [
-        Matter.Bodies.rectangle(W / 2, H + 30, W * 3, 60, { isStatic: true, label: 'wall' }),
-        Matter.Bodies.rectangle(-30, H / 2, 60, H * 3, { isStatic: true, label: 'wall' }),
-        Matter.Bodies.rectangle(W + 30, H / 2, 60, H * 3, { isStatic: true, label: 'wall' }),
+        // Floor only stops CAT_NORMAL; shuffling circles fall through
+        Matter.Bodies.rectangle(W / 2, H + 30, W * 3, 60, {
+          isStatic: true, label: 'wall',
+          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
+        }),
+        Matter.Bodies.rectangle(-30, H / 2, 60, H * 3, {
+          isStatic: true, label: 'wall',
+          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL | CAT_FALLING },
+        }),
+        Matter.Bodies.rectangle(W + 30, H / 2, 60, H * 3, {
+          isStatic: true, label: 'wall',
+          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL | CAT_FALLING },
+        }),
       ]
       Matter.World.add(world, walls)
       wallsRef.current = walls
+
+      if (shuffleAnchorRef.current) {
+        Matter.Body.setPosition(shuffleAnchorRef.current, { x: W / 2, y: H / 2 })
+      }
     }
 
     buildWalls()
 
-    // Create all bodies high off-screen but don't add to world yet — stagger the drops
+    // Static black circle at screen centre
     const W = container.clientWidth
+    const H = container.clientHeight
+    const anchor = Matter.Bodies.circle(W / 2, H / 2, R, {
+      isStatic: true,
+      label: 'anchor',
+      collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
+    })
+    shuffleAnchorRef.current = anchor
+    Matter.World.add(world, anchor)
+
+    // Create all bodies high off-screen but don't add to world yet — stagger the drops
+    const staggerIds = []
     JOKES.forEach((joke, i) => {
       const cols = Math.max(1, Math.floor(W / (R * 2 + 10)))
       const col = i % cols
@@ -64,17 +94,17 @@ export default function PhysicsScene() {
         friction: 0.05,
         frictionAir: 0.008,
         label: String(joke.id),
+        collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
       })
       bodyMap.current[joke.id] = body
 
-      // Stagger each circle dropping in
-      setTimeout(() => {
+      staggerIds.push(setTimeout(() => {
         if (worldRef.current) {
           Matter.World.add(worldRef.current, body)
           const el = elMap.current[joke.id]
           if (el) el.style.opacity = '1'
         }
-      }, i * STAGGER)
+      }, i * STAGGER))
     })
 
     const ro = new ResizeObserver(() => buildWalls())
@@ -89,10 +119,22 @@ export default function PhysicsScene() {
 
       const cx = cursorRef.current.x
       const cy = cursorRef.current.y
+      const cH = container.clientHeight
+      const cW = container.clientWidth
 
       JOKES.forEach(({ id }) => {
         const body = bodyMap.current[id]
         if (!body || body.isStatic) return
+
+        // Teleport falling circles back to top once off-screen
+        if (shufflingRef.current.has(id) && body.position.y > cH + R * 2) {
+          shufflingRef.current.delete(id)
+          const rx = R + Math.random() * (cW - R * 2)
+          Matter.Body.setCollisionFilter(body, { category: CAT_NORMAL, mask: CAT_NORMAL })
+          Matter.Body.setPosition(body, { x: rx, y: -R * 2 })
+          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
+          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+        }
 
         const dx = body.position.x - cx
         const dy = body.position.y - cy
@@ -105,18 +147,44 @@ export default function PhysicsScene() {
         if (handsOffRef.current.has(id)) return
         const el = elMap.current[id]
         if (!el) return
-        el.style.left = `${body.position.x - R}px`
-        el.style.top = `${body.position.y - R}px`
-        el.style.transform = `rotate(${body.angle}rad)`
+        el.style.transform = `translate(${body.position.x - R}px, ${body.position.y - R}px) rotate(${body.angle}rad)`
       })
     }
 
     tick()
     return () => {
       cancelAnimationFrame(rafId)
+      staggerIds.forEach(clearTimeout)
       ro.disconnect()
       Matter.World.clear(world)
       Matter.Engine.clear(engine)
+    }
+  }, [])
+
+  const handleShuffle = useCallback(() => {
+    const world = worldRef.current
+    if (!world) return
+
+    const active = JOKES
+      .filter(({ id }) => {
+        const body = bodyMap.current[id]
+        return body && !body.isStatic && !shufflingRef.current.has(id) && expandedRef.current !== id
+      })
+      .sort((a, b) => bodyMap.current[b.id].position.y - bodyMap.current[a.id].position.y)
+
+    const half = Math.ceil(active.length / 2)
+    active.slice(0, half).forEach(({ id }) => {
+      const body = bodyMap.current[id]
+      shufflingRef.current.add(id)
+      Matter.Body.setCollisionFilter(body, { category: CAT_FALLING, mask: 0x0000 })
+      Matter.Body.setVelocity(body, { x: body.velocity.x, y: Math.max(body.velocity.y, 15) })
+    })
+
+    const el = anchorSpinnerRef.current
+    if (el) {
+      el.classList.remove('anchor-spinning')
+      void el.offsetWidth
+      el.classList.add('anchor-spinning')
     }
   }, [])
 
@@ -144,10 +212,10 @@ export default function PhysicsScene() {
       el.style.borderRadius = '50%'
       el.style.zIndex = '1'
       el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
-      el.style.left = `${randomX - R}px`
-      el.style.top = `${-R * 2}px`
+      el.style.left = '0'
+      el.style.top = '0'
       el.style.transition = ''
-      el.style.transform = ''
+      el.style.transform = `translate(${randomX - R}px, ${-R * 2}px)`
 
       if (body) {
         // Re-add to world (expand removed it)
@@ -169,8 +237,18 @@ export default function PhysicsScene() {
     const W = containerRef.current.clientWidth
     const H = containerRef.current.clientHeight
 
+    // Snapshot physical position before handing off — needed to start the CSS transition from the right place
+    const startX = body.position.x - R
+    const startY = body.position.y - R
+
     handsOffRef.current.add(id)
     Matter.World.remove(worldRef.current, body)
+
+    // Switch from transform-based positioning to left/top so CSS transition can animate
+    el.style.transform = 'none'
+    el.style.left = `${startX}px`
+    el.style.top = `${startY}px`
+    void el.offsetWidth // force reflow so browser registers starting position
 
     const expW = Math.min(EXP_W, W - 32)
     el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease, box-shadow ${TRANSITION}ms ease`
@@ -180,7 +258,6 @@ export default function PhysicsScene() {
     el.style.left = `${W / 2 - expW / 2}px`
     el.style.top = `${H / 2 - EXP_H / 2}px`
     el.style.zIndex = '10'
-    el.style.transform = 'none'
     el.style.boxShadow = '0 8px 40px rgba(0,0,0,0.2)'
 
     setExpandedId(id)
@@ -199,6 +276,35 @@ export default function PhysicsScene() {
     setTimeout(() => expand(id), delay)
   }, [collapse, expand])
 
+  const handleContainerClick = useCallback((e) => {
+    const rect = containerRef.current.getBoundingClientRect()
+    const W = containerRef.current.clientWidth
+    const H = containerRef.current.clientHeight
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    if (expandedRef.current !== null) {
+      collapse(expandedRef.current)
+      return
+    }
+
+    // Anchor check: direct distance to centre — always wins, no physics query needed
+    const dx = x - W / 2
+    const dy = y - H / 2
+    if (Math.sqrt(dx * dx + dy * dy) <= R) {
+      handleShuffle()
+      return
+    }
+
+    // Joke circle check via physics query
+    const bodies = Matter.Query.point(Matter.Composite.allBodies(worldRef.current), { x, y })
+    const jokeBody = bodies.find(b => {
+      const id = Number(b.label)
+      return !isNaN(id) && b.label !== 'wall' && !shufflingRef.current.has(id)
+    })
+    if (jokeBody) handleTap(Number(jokeBody.label))
+  }, [collapse, handleTap, handleShuffle])
+
   const handleMouseMove = useCallback((e) => {
     const rect = containerRef.current.getBoundingClientRect()
     cursorRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
@@ -214,6 +320,7 @@ export default function PhysicsScene() {
     <div
       ref={containerRef}
       style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#f6f0d1', overflow: 'hidden' }}
+      onClick={handleContainerClick}
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
     >
@@ -223,7 +330,6 @@ export default function PhysicsScene() {
           <div
             key={joke.id}
             ref={(el) => { elMap.current[joke.id] = el }}
-            onClick={() => handleTap(joke.id)}
             style={{
               position: 'absolute',
               width: R * 2,
@@ -237,6 +343,7 @@ export default function PhysicsScene() {
               overflow: 'hidden',
               zIndex: 1,
               opacity: 0,
+              willChange: 'transform',
             }}
           >
             {/* Emoji — absolutely centred in the circle at all times */}
@@ -302,8 +409,47 @@ export default function PhysicsScene() {
         )
       })}
 
+      {/* Black shuffle anchor — outer div positions, inner div spins */}
+      <div style={{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 3,
+        pointerEvents: 'none',
+      }}>
+        <div
+          ref={anchorSpinnerRef}
+          style={{ width: R * 2, height: R * 2, borderRadius: '50%', background: '#111', position: 'relative' }}
+        >
+          <svg
+            width={R * 2}
+            height={R * 2}
+            viewBox={`0 0 ${R * 2} ${R * 2}`}
+            style={{ position: 'absolute', top: 0, left: 0 }}
+          >
+            <defs>
+              <path
+                id="emojokes-smile"
+                d={`M ${R * 0.22},${R} A ${R * 0.78},${R * 0.78} 0 0 1 ${R * 1.78},${R}`}
+              />
+            </defs>
+            <text
+              fill="white"
+              fontSize={R * 0.21}
+              fontFamily="'DynaPuff', cursive"
+              fontWeight="700"
+              letterSpacing={R * 0.02}
+            >
+              <textPath href="#emojokes-smile" startOffset="50%" textAnchor="middle">
+                EMOJOKES
+              </textPath>
+            </text>
+          </svg>
+        </div>
+      </div>
+
       <div
-        onClick={() => expandedRef.current !== null && collapse(expandedRef.current)}
         style={{
           position: 'absolute', inset: 0,
           background: 'rgba(0,0,0,0.25)',

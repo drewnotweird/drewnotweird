@@ -40,4 +40,10 @@ export const JOKES = [
   { id: 38, emoji: '🐝', setup: "What kind of bees can produce milk?", punchline: "Boobies!" },
   { id: 39, emoji: '🏌️', setup: "Why did the golfer wear 2 pairs of pants", punchline: "In case they got a hole in one!" },
   { id: 40, emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', setup: "What do you call a man with one foot in his front door?", punchline: "Hamish." },
+  { id: 41, emoji: '⚽', setup: "Why is Cinderella so bad at football?", punchline: "Because her coach is a pumpkin." },
+  { id: 42, emoji: '🧀', setup: "What kind of cheese doesn't belong to you?", punchline: "Nacho cheese!" },
+  { id: 43, emoji: '💨️', setup: "What do you call a teacher who only farts when they're alone?", punchline: "A private tooter." },
+  { id: 44, emoji: '🖐️', setup: "Why can a hand not be 12 inches long?", punchline: "Because then it would be a foot." },
+  { id: 45, emoji: '🥔', setup: "What is fast and made of potato?", punchline: "A rocket chip." },
+  { id: 46, emoji: '🐬', setup: "Why wasn't the dolphin sorry?", punchline: "Because he did it on porpoise" },
 ]
