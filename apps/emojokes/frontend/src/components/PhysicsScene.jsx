@@ -11,7 +11,6 @@ const REPEL_F = 0.0025
 const TRANSITION = 380
 const STAGGER = 180
 const CAT_NORMAL = 0x0001
-const CAT_FALLING = 0x0002
 
 export default function PhysicsScene() {
   const containerRef = useRef(null)
@@ -28,6 +27,8 @@ export default function PhysicsScene() {
   const anchorSpinnerRef = useRef(null)
   const restoreQueueRef = useRef([])
   const nextRestoreRef = useRef(0)
+  const restoreIdxRef = useRef(0)
+  const shuffleTimerIds = useRef([])
   const [expandedId, setExpandedId] = useState(null)
   const [textVisibleId, setTextVisibleId] = useState(null)
   const [punchlineVisibleId, setPunchlineVisibleId] = useState(null)
@@ -47,18 +48,17 @@ export default function PhysicsScene() {
       const H = container.clientHeight
       wallsRef.current.forEach(w => Matter.World.remove(world, w))
       const walls = [
-        // Floor only stops CAT_NORMAL; shuffling circles fall through
         Matter.Bodies.rectangle(W / 2, H + 30, W * 3, 60, {
           isStatic: true, label: 'wall',
           collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
         }),
         Matter.Bodies.rectangle(-30, H / 2, 60, H * 3, {
           isStatic: true, label: 'wall',
-          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL | CAT_FALLING },
+          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
         }),
         Matter.Bodies.rectangle(W + 30, H / 2, 60, H * 3, {
           isStatic: true, label: 'wall',
-          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL | CAT_FALLING },
+          collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
         }),
       ]
       Matter.World.add(world, walls)
@@ -128,12 +128,20 @@ export default function PhysicsScene() {
       if (restoreQueueRef.current.length > 0 && now >= nextRestoreRef.current) {
         const id = restoreQueueRef.current.shift()
         const body = bodyMap.current[id]
-        if (body) {
-          const rx = R + Math.random() * (cW - R * 2)
-          body.collisionFilter = { category: CAT_NORMAL, mask: CAT_NORMAL }
+        const el = elMap.current[id]
+        if (body && el) {
+          const cols = Math.max(1, Math.floor(cW / (R * 2.4)))
+          const col = restoreIdxRef.current % cols
+          const rx = R * 1.2 + col * (cW - R * 2.4) / Math.max(1, cols - 1 || 1)
+          restoreIdxRef.current++
           Matter.Body.setPosition(body, { x: rx, y: -cH })
-          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
+          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 2, y: 2 })
           Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+          Matter.World.add(worldRef.current, body)
+          el.style.transform = `translate(${rx - R}px, ${-cH - R}px)`
+          el.style.opacity = '1'
+          handsOffRef.current.delete(id)
+          shufflingRef.current.delete(id)
         }
         nextRestoreRef.current = now + STAGGER
       }
@@ -141,14 +149,7 @@ export default function PhysicsScene() {
       JOKES.forEach(({ id }) => {
         const body = bodyMap.current[id]
         if (!body || body.isStatic) return
-
-        // Circle has fallen off-screen — park it and queue for sequential re-entry
-        if (shufflingRef.current.has(id) && body.position.y > cH + R * 2) {
-          shufflingRef.current.delete(id)
-          Matter.Body.setPosition(body, { x: body.position.x, y: -(cH * 3) })
-          Matter.Body.setVelocity(body, { x: 0, y: 0 })
-          restoreQueueRef.current.push(id)
-        }
+        if (handsOffRef.current.has(id)) return
 
         const dx = body.position.x - cx
         const dy = body.position.y - cy
@@ -158,7 +159,6 @@ export default function PhysicsScene() {
           Matter.Body.applyForce(body, body.position, { x: (dx / dist) * f, y: (dy / dist) * f })
         }
 
-        if (handsOffRef.current.has(id)) return
         const el = elMap.current[id]
         if (!el) return
         el.style.transform = `translate(${body.position.x - R}px, ${body.position.y - R}px) rotate(${body.angle}rad)`
@@ -176,8 +176,13 @@ export default function PhysicsScene() {
   }, [])
 
   const handleShuffle = useCallback(() => {
-    const world = worldRef.current
-    if (!world) return
+    if (!worldRef.current) return
+
+    shuffleTimerIds.current.forEach(clearTimeout)
+    shuffleTimerIds.current = []
+    restoreQueueRef.current = []
+    nextRestoreRef.current = 0
+    restoreIdxRef.current = 0
 
     const active = JOKES
       .filter(({ id }) => {
@@ -187,15 +192,26 @@ export default function PhysicsScene() {
       .sort((a, b) => bodyMap.current[b.id].position.y - bodyMap.current[a.id].position.y)
 
     const half = Math.ceil(active.length / 2)
-    active.slice(0, half).forEach(({ id }) => {
-      const body = bodyMap.current[id]
-      shufflingRef.current.add(id)
-      body.collisionFilter = { category: CAT_FALLING, mask: 0x0000 }
-      Matter.Body.setVelocity(body, { x: body.velocity.x, y: Math.max(body.velocity.y, 15) })
+    active.slice(0, half).forEach(({ id }, i) => {
+      const tid = setTimeout(() => {
+        const body = bodyMap.current[id]
+        const el = elMap.current[id]
+        if (!body || !el) return
+        const tx = body.position.x - R
+        const ty = body.position.y - R
+        handsOffRef.current.add(id)
+        shufflingRef.current.add(id)
+        el.style.transition = 'transform 0.2s ease-in, opacity 0.15s ease-in'
+        el.style.transform = `translate(${tx}px, ${ty}px) scale(0)`
+        el.style.opacity = '0'
+        setTimeout(() => {
+          Matter.World.remove(worldRef.current, body)
+          el.style.transition = ''
+          restoreQueueRef.current.push(id)
+        }, 220)
+      }, i * STAGGER)
+      shuffleTimerIds.current.push(tid)
     })
-
-    restoreQueueRef.current = []
-    nextRestoreRef.current = 0
 
     const el = anchorSpinnerRef.current
     if (el) {
@@ -457,7 +473,7 @@ export default function PhysicsScene() {
               fontSize={R * 0.44}
               fontFamily="'DynaPuff', cursive"
               fontWeight="700"
-              letterSpacing={R * 0.06}
+              letterSpacing={R * 0.1}
             >
               <textPath href="#emojokes-smile" startOffset="50%" textAnchor="middle">
                 EMOJOKES

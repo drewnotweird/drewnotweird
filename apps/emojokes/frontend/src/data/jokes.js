@@ -46,4 +46,7 @@ export const JOKES = [
   { id: 44, emoji: '🖐️', setup: "Why can a hand not be 12 inches long?", punchline: "Because then it would be a foot." },
   { id: 45, emoji: '🥔', setup: "What is fast and made of potato?", punchline: "A rocket chip." },
   { id: 46, emoji: '🐬', setup: "Why wasn't the dolphin sorry?", punchline: "Because he did it on porpoise" },
+  { id: 47, emoji: '🦰', setup: "I bought a cheap wig this morning.", punchline: "It was a small price toupee." },
+  { id: 48, emoji: '🌵', setup: "There's something wrong with my cactus.", punchline: "I just can't put my finger on it." },
+  { id: 49, emoji: '🌡️', setup: "What's the difference between thermal and rectal thermometers?", punchline: "The taste." },
 ]
