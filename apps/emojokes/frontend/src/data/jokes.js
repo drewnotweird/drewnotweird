@@ -41,7 +41,7 @@ export const JOKES = [
   { id: 39, emoji: '🏌️', setup: "Why did the golfer wear 2 pairs of pants", punchline: "In case they got a hole in one!" },
   { id: 40, emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', setup: "What do you call a man with one foot in his front door?", punchline: "Hamish." },
   { id: 41, emoji: '⚽', setup: "Why is Cinderella so bad at football?", punchline: "Because her coach is a pumpkin." },
-  { id: 42, emoji: '🧀', setup: "What kind of cheese doesn't belong to you?", punchline: "Nacho cheese!" },
+  { id: 42, emoji: '🧀', setup: "Which cheese doesn't belong to you?", punchline: "Nacho cheese!" },
   { id: 43, emoji: '💨️', setup: "What do you call a teacher who only farts when they're alone?", punchline: "A private tooter." },
   { id: 44, emoji: '🖐️', setup: "Why can a hand not be 12 inches long?", punchline: "Because then it would be a foot." },
   { id: 45, emoji: '🥔', setup: "What is fast and made of potato?", punchline: "A rocket chip." },
@@ -49,4 +49,7 @@ export const JOKES = [
   { id: 47, emoji: '🦰', setup: "I bought a cheap wig this morning.", punchline: "It was a small price toupee." },
   { id: 48, emoji: '🌵', setup: "There's something wrong with my cactus.", punchline: "I just can't put my finger on it." },
   { id: 49, emoji: '🌡️', setup: "What's the difference between thermal and rectal thermometers?", punchline: "The taste." },
+  { id: 50, emoji: '🐿️', setup: "Why did the squirrel swim on its back?", punchline: "To keep his nuts dry." },
+  { id: 51, emoji: '🦪', setup: "Why don't oysters share?", punchline: "They're shellfish." },
+  { id: 52, emoji: '🐟', setup: "Why don't fish play piano?", punchline: "You can't tuna fish." },
 ]
