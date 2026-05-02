@@ -1,12 +1,20 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home.jsx'
+import { useState } from 'react'
+import PintGlass from './components/PintGlass'
+import Lightbox from './components/Lightbox'
 
 export default function App() {
+  const [lightbox, setLightbox] = useState(null) // { src, rect }
+
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <PintGlass onPhotoClick={(src, rect) => setLightbox({ src, rect })} />
+      {lightbox && (
+        <Lightbox
+          src={lightbox.src}
+          clickRect={lightbox.rect}
+          onClose={() => setLightbox(null)}
+        />
+      )}
+    </>
   )
 }

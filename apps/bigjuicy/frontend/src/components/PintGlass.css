@@ -1,0 +1,205 @@
+.scene {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    #6b3200 0%,
+    #a04e00 14%,
+    #cf6c08 32%,
+    #e68c18 52%,
+    #f5aa2a 72%,
+    #fcc63c 88%,
+    #ffde58 100%
+  );
+  overflow: hidden;
+}
+
+.bubble-layer,
+.fg-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.fg-layer {
+  pointer-events: none;
+}
+
+/* ─── shared bubble base ─── */
+.bubble {
+  position: absolute;
+  bottom: -200px;
+  border-radius: 50%;
+  animation: rise linear forwards;
+  transform: translateX(-50%) scale(0.1);
+  overflow: hidden;
+  will-change: bottom, transform, opacity;
+}
+
+/* ─── photo bubble ─── */
+.bubble--photo {
+  cursor: pointer;
+  background-color: rgba(195, 105, 8, 0.2);
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.45),
+    0 6px 28px rgba(0, 0, 0, 0.26);
+  /* spring easing for hover scale/rotate snap-back */
+  transition:
+    scale    0.5s  cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate   0.4s  cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s,
+    filter   0.25s;
+}
+
+.bubble--photo:hover {
+  box-shadow:
+    0 0 0 2px   rgba(255, 255, 255, 0.78),
+    0 8px  38px rgba(255, 190, 40, 0.42);
+}
+
+/* photo rendered at ~73% opacity — beer-amber bleeds through */
+.bubble--photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--photo-url);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.73;
+}
+
+/* ─── plain decorative bubble ─── */
+.bubble--plain {
+  background-color: rgba(255, 200, 50, 0.04);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+/* ─── glass highlight layer (photo + plain) ─── */
+.bubble::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    /* ① wide top-arc crescent — the unmistakable bubble signature */
+    radial-gradient(
+      ellipse 75% 24% at 50% 3%,
+      rgba(255, 255, 255, 0.97) 0%,
+      rgba(255, 255, 255, 0.22) 55%,
+      transparent 100%
+    ),
+    /* ② primary catchlight — bright ellipse upper-left */
+    radial-gradient(
+      ellipse 32% 28% at 30% 26%,
+      rgba(255, 255, 255, 0.92) 0%,
+      transparent 100%
+    ),
+    /* ③ secondary tiny sparkle */
+    radial-gradient(
+      circle 8% at 63% 30%,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 100%
+    ),
+    /* ④ subtle bottom caustic shadow */
+    radial-gradient(
+      ellipse 55% 18% at 50% 97%,
+      rgba(50, 18, 0, 0.3) 0%,
+      transparent 60%
+    ),
+    /* ⑤ iridescent rim — thicker, brighter, slight warm tint on one side */
+    radial-gradient(
+      circle at 50% 50%,
+      transparent           43%,
+      rgba(255,255,255,0.82) 48%,
+      rgba(255,240,180,0.28) 54%,
+      rgba(255,255,255,0.06) 60%,
+      transparent           64%
+    );
+}
+
+/* plain bubbles: highlights only, no photo competing */
+.bubble--plain::after {
+  background:
+    radial-gradient(
+      ellipse 72% 20% at 50% 3%,
+      rgba(255, 255, 255, 0.80) 0%,
+      rgba(255, 255, 255, 0.12) 55%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 28% 24% at 30% 26%,
+      rgba(255, 255, 255, 0.70) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      transparent           45%,
+      rgba(255,255,255,0.60) 49%,
+      rgba(255,240,180,0.20) 55%,
+      rgba(255,255,255,0.04) 61%,
+      transparent           65%
+    );
+}
+
+/* ─── micro bubbles (foreground layer) ─── */
+.fg-layer { pointer-events: none; }
+
+.bubble--micro {
+  overflow: visible;       /* no clipping needed — just a dot */
+  animation-name: rise-micro;
+  pointer-events: none;
+  /* per-bubble randomised highlight — set via JS custom props */
+  background-color: rgba(255, 215, 55, var(--ba, 0.05));
+  background-image: radial-gradient(
+    circle at var(--hx, 38%) var(--hy, 30%),
+    rgba(255, 255, 255, var(--hop, 0.75)) 0%,
+    rgba(255, 255, 255, calc(var(--hop, 0.75) * 0.25)) 48%,
+    transparent 100%
+  );
+  /* no box-shadow — at 1–7px it would dominate and look like a blob */
+}
+
+/* ─── keyframes ─── */
+@keyframes rise {
+  0% {
+    bottom: -200px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.12);
+  }
+  7% {
+    opacity: 1;
+    transform: translateX(calc(-50% + calc(var(--drift) * 0.05))) scale(1);
+  }
+  50% {
+    transform: translateX(calc(-50% + calc(var(--drift) * 0.50))) scale(1);
+  }
+  93% {
+    opacity: 1;
+    transform: translateX(calc(-50% + calc(var(--drift) * 0.95))) scale(1);
+  }
+  100% {
+    bottom: 110vh;
+    opacity: 0;
+    transform: translateX(calc(-50% + var(--drift))) scale(0.9);
+  }
+}
+
+@keyframes rise-micro {
+  0% {
+    bottom: -6px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.4);
+  }
+  10% {
+    opacity: 0.85;
+    transform: translateX(calc(-50% + calc(var(--drift) * 0.08))) scale(1);
+  }
+  88% {
+    opacity: 0.85;
+  }
+  100% {
+    bottom: 104vh;
+    opacity: 0;
+    transform: translateX(calc(-50% + var(--drift)));
+  }
+}
