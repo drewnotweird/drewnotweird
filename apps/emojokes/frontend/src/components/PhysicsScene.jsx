@@ -201,14 +201,19 @@ export default function PhysicsScene() {
         const ty = body.position.y - R
         handsOffRef.current.add(id)
         shufflingRef.current.add(id)
-        el.style.transition = 'transform 0.2s ease-in, opacity 0.15s ease-in'
-        el.style.transform = `translate(${tx}px, ${ty}px) scale(0)`
-        el.style.opacity = '0'
+        el.style.setProperty('--pop-tx', `${tx}px`)
+        el.style.setProperty('--pop-ty', `${ty}px`)
+        el.style.animation = 'bubble-pop 0.28s ease-in forwards'
+        const ring = document.createElement('div')
+        ring.style.cssText = `position:absolute;left:${tx + R}px;top:${ty + R}px;width:${R * 2}px;height:${R * 2}px;border-radius:50%;border:${WIDE ? 3 : 2}px solid rgba(0,0,0,0.25);pointer-events:none;z-index:2;animation:pop-ring-expand 0.32s ease-out forwards;`
+        containerRef.current.appendChild(ring)
+        setTimeout(() => ring.remove(), 380)
         setTimeout(() => {
           Matter.World.remove(worldRef.current, body)
+          el.style.animation = ''
           el.style.transition = ''
           restoreQueueRef.current.push(id)
-        }, 220)
+        }, 300)
       }, i * STAGGER)
       shuffleTimerIds.current.push(tid)
     })
@@ -383,13 +388,15 @@ export default function PhysicsScene() {
             {/* Emoji — absolutely centred in the circle at all times */}
             <span style={{
               position: 'absolute',
-              top: isExpanded ? 24 : '50%',
+              top: isExpanded ? 20 : '50%',
               left: '50%',
               transform: isExpanded ? 'translateX(-50%)' : 'translate(-50%, -50%)',
-              fontSize: isExpanded ? 52 : R * 1.05,
+              fontSize: isExpanded ? 68 : R * 1.05,
               lineHeight: 1,
               transition: 'font-size 0.3s ease, top 0.3s ease, transform 0.3s ease',
+              filter: isExpanded ? 'drop-shadow(0 3px 6px rgba(0,0,0,0.18))' : 'none',
               pointerEvents: 'none',
+              zIndex: 2,
             }}>
               {joke.emoji}
             </span>
@@ -398,7 +405,8 @@ export default function PhysicsScene() {
             {isExpanded && (
               <div style={{
                 position: 'absolute',
-                top: WIDE ? 90 : 105,
+                zIndex: 2,
+                top: WIDE ? 100 : 110,
                 bottom: 20,
                 left: 0,
                 right: 0,
