@@ -27,7 +27,7 @@ export default function PintGlass({ onPhotoClick }) {
       const b = document.createElement('div')
       b.className = 'bubble bubble--photo'
       b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px`
-      b.style.setProperty('--photo-url', `url('photos/${img.src}')`)
+      b.style.setProperty('--photo-url', `url('${import.meta.env.BASE_URL}photos/${img.src}')`)
 
       // ── hover: CSS individual scale/rotate properties compose with keyframe transform ──
       b.addEventListener('mouseenter', () => {
@@ -52,7 +52,7 @@ export default function PintGlass({ onPhotoClick }) {
 
       b.addEventListener('click', () => {
         const rect = b.getBoundingClientRect()
-        onClickRef.current(`photos/${img.src}`, rect)
+        onClickRef.current(`${import.meta.env.BASE_URL}photos/${img.src}`, rect)
       }, { once: true })
       b.addEventListener('animationend', () => { b.remove(); photoCount-- }, { once: true })
       el.appendChild(b)
