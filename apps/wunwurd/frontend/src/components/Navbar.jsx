@@ -176,7 +176,7 @@ export default function Navbar() {
         {/* Icon row — buttons grow to fill equally when expanded, shrink to sides when minimised */}
         <div className="flex items-center h-full px-4" style={{ gap: `${iconGap}px` }}>
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={() => navigate('/search')}
             disabled={!serverReady}
@@ -186,7 +186,7 @@ export default function Navbar() {
             <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
           </button>
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={handleRandom}
             disabled={!serverReady}
@@ -204,7 +204,7 @@ export default function Navbar() {
           <div style={{ flexGrow: spacerGrow, flexShrink: 1, flexBasis: 0, minWidth: 0 }} />
 
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={() => navigate('/about')}
             disabled={!serverReady}
@@ -214,7 +214,7 @@ export default function Navbar() {
             <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
           </button>
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={handleProfileClick}
             disabled={!serverReady}
