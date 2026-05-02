@@ -685,7 +685,7 @@ function AppShell({ children }) {
 
 // ─── Step 1: Choose base label ────────────────────────────────────────────────
 
-const BASE_COLUMNS = [
+const BASE_TABS = [
   { heading: '500ml', filter: b => b.size === '500ml' },
   { heading: '200ml', filter: b => b.size === '200ml' },
   { heading: 'Other', filter: b => b.size !== '500ml' && b.size !== '200ml' },
@@ -693,6 +693,8 @@ const BASE_COLUMNS = [
 
 function StepOne() {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(0);
+  const tab = BASE_TABS[activeTab];
   return (
     <AppShell>
       <div className="step-shell">
@@ -701,18 +703,22 @@ function StepOne() {
           <h1 className="step-title">Choose label</h1>
           <p className="step-desc">Select the base label format for your bottle.</p>
         </div>
-        <div className="base-columns">
-          {BASE_COLUMNS.map(col => (
-            <div key={col.heading} className="base-column">
-              <div className="base-column__heading">{col.heading}</div>
-              <div className="base-grid">
-                {BASE_LABELS.filter(col.filter).map(base => (
-                  <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
-                    <span className="base-card__name">{(() => { const n = col.heading === 'Other' ? base.name : base.name.replace(/^\d+ml\s+/i, ''); return n.charAt(0).toUpperCase() + n.slice(1); })()}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+        <div className="base-tabs">
+          {BASE_TABS.map((t, i) => (
+            <button
+              key={t.heading}
+              className={`base-tab${i === activeTab ? ' base-tab--active' : ''}`}
+              onClick={() => setActiveTab(i)}
+            >
+              {t.heading}
+            </button>
+          ))}
+        </div>
+        <div className="base-grid">
+          {BASE_LABELS.filter(tab.filter).map(base => (
+            <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
+              <span className="base-card__name">{base.name.charAt(0).toUpperCase() + base.name.slice(1)}</span>
+            </button>
           ))}
         </div>
       </div>
@@ -736,6 +742,7 @@ function StepTwo() {
           <h1 className="step-title">Choose template</h1>
           <p className="step-desc"><span className="step-desc__label">{base.name}</span></p>
         </div>
+        <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
         <div className="template-grid">
           {templates.map(tmpl => (
             <button key={tmpl.id} className="template-card" onClick={() => navigate(`/${baseId}/${tmpl.id}/`)}>
@@ -743,7 +750,6 @@ function StepTwo() {
             </button>
           ))}
         </div>
-        <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
       </div>
     </AppShell>
   );
@@ -803,6 +809,7 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
           <h1 className="step-title">{template.name}</h1>
           <p className="step-desc"><span className="step-desc__label">{baseLabel.name}</span></p>
         </div>
+        <button type="button" className="back-btn" onClick={onBack}>← Back</button>
         <form className="label-form" onSubmit={handleSubmit}>
           {template.fields.map(field => (
             <div key={field.key} className="form-field">
@@ -892,7 +899,6 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
                 Try a sample
               </button>
             )}
-            <button type="button" className="back-btn" onClick={onBack}>← Back</button>
           </div>
         </form>
       </div>

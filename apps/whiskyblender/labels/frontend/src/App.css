@@ -137,33 +137,38 @@ button {
   font-style: italic;
 }
 
-/* ─── Base label columns ───────────────────────────────────────────────────── */
+/* ─── Base label tabs ───────────────────────────────────────────────────────── */
 
-.base-columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  align-items: start;
+.base-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0;
 }
 
-.base-column:not(:last-child) {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  padding-right: 20px;
-}
-
-.base-column:not(:first-child) {
-  padding-left: 0;
-}
-
-.base-column__heading {
-  font-size: 0.7rem;
+.base-tab {
+  padding: 8px 20px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.base-tab:hover {
+  color: var(--text);
+}
+
+.base-tab--active {
   color: var(--gold);
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(200, 160, 74, 0.2);
+  border-bottom-color: var(--gold);
 }
 
 /* ─── Base label cards ─────────────────────────────────────────────────────── */
@@ -553,6 +558,7 @@ button {
   display: inline-flex;
   align-items: center;
   padding: 10px 0;
+  margin-bottom: 12px;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-dim);

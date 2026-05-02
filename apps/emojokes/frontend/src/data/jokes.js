@@ -52,4 +52,11 @@ export const JOKES = [
   { id: 50, emoji: '🐿️', setup: "Why did the squirrel swim on its back?", punchline: "To keep his nuts dry." },
   { id: 51, emoji: '🦪', setup: "Why don't oysters share?", punchline: "They're shellfish." },
   { id: 52, emoji: '🐟', setup: "Why don't fish play piano?", punchline: "You can't tuna fish." },
+  { id: 53, emoji: '🪳', setup: "A termite walks into the bar and asks,", punchline: "'Is the bar tender here?'" },
+  { id: 54, emoji: '⏰', setup: "6:30 is the best time on a clock,", punchline: "hands down." },
+  { id: 55, emoji: '🍻', setup: "A bossy man walked into a bar.", punchline: "Then ordered everyone a round." },
+  { id: 56, emoji: '🐻‍❄️', setup: "What do you get when you cross a polar bear with a seal?", punchline: "A polar bear." },
+  { id: 57, emoji: '👁️', setup: "Cataracts dot com", punchline: "It's a site for sore eyes." },
+  { id: 58, emoji: '✌️', setup: "What do you call a hippie’s wife?", punchline: "Mississippi." },
+  { id: 59, emoji: '🦶', setup: "What has five toes but isn't your foot?", punchline: "My foot." },
 ]
