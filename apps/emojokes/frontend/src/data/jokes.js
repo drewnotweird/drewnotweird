@@ -1,4 +1,4 @@
-export const JOKES = [
+const ALL_JOKES = [
   { id: 0,  emoji: '🐶', setup: "My wife asked me if I'd seen the dog bowl…", punchline: "I said I didn't know he could." },
   { id: 1,  emoji: '🐱', setup: "What is a cat's favorite dessert?", punchline: "A mice cream cone." },
   { id: 2,  emoji: '🍕', setup: "What to hear a joke about pizza?", punchline: "Never mind it's too cheesy." },
@@ -59,4 +59,26 @@ export const JOKES = [
   { id: 57, emoji: '👁️', setup: "Cataracts dot com", punchline: "It's a site for sore eyes." },
   { id: 58, emoji: '✌️', setup: "What do you call a hippie’s wife?", punchline: "Mississippi." },
   { id: 59, emoji: '🦶', setup: "What has five toes but isn't your foot?", punchline: "My foot." },
+  { id: 60, emoji: '♾️', setup: "I have a joke about infinity.", punchline: "But I don't know where to start." },
+  { id: 61, emoji: '📄', setup: "I have a joke about paper.", punchline: "It's tearable." },
+  { id: 62, emoji: '🚂', setup: "Why can't a steam train sit down?", punchline: "It has a tender behind." },
+  { id: 63, emoji: '👽', setup: "What's ET short for?", punchline: "Because he's got little legs." },
+  { id: 64, emoji: '💧', setup: "How do you make holy water?", punchline: "Boil the hell out of it." },
+  { id: 65, emoji: '🦵', setup: "What do you call a woman with one leg?", punchline: "Eileen." },
+  { id: 66, emoji: '☘️', setup: "What do you call an Irish man bouncing off walls?", punchline: "Rick O'Shea." },
+  { id: 67, emoji: '🦷', setup: "What's the best time to visit the dentist?", punchline: "Tooth-hurty." },
+  { id: 68, emoji: '📚', setup: "I'm reading a book about anti-gravity.", punchline: "Can't put it down." },
+  { id: 69, emoji: '🐇', setup: "What do you call a line of rabbits walking backwards?", punchline: "A receding hare-line." },
+  { id: 70, emoji: '🦉', setup: "What do you call a magic owl?", punchline: "Hoo-dini." },
+  { id: 71, emoji: '🦕', setup: "What do you call a dinosaur with an extensive vocabulary?", punchline: "A thesaurus." },
+  { id: 72, emoji: '🪜', setup: "I don't trust stairs.", punchline: "They're always up to something." },
+  { id: 73, emoji: '💡', setup: "Why did the light bulb fail his exam?", punchline: "He wasn't very bright." },
+  { id: 74, emoji: '🐠', setup: "What do you call a fish with no eyes?", punchline: "Fsh." },
+  { id: 75, emoji: '🔋', setup: "What do you call a can opener that doesn't work?", punchline: "A can't opener." },
+  { id: 76, emoji: '🐍', setup: "What do you call a snake that works for the government?", punchline: "A civil serpent." },
 ]
+
+export const JOKES = ALL_JOKES
+  .map(joke => ({ joke, sort: Math.random() }))
+  .sort((a, b) => a.sort - b.sort)
+  .map(({ joke }) => joke)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import MovieCard from '../components/MovieCard'
@@ -12,25 +12,59 @@ export default function WordPage() {
   const debouncedTerm = useDebounce(searchTerm, 300)
   const [movies, setMovies] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(false)
+  const pageRef = useRef(1)
+  const fetchingRef = useRef(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    setMovies([])
+    setHasMore(false)
+    pageRef.current = 1
+
     if (!debouncedTerm.trim()) {
-      setMovies([])
       setLoading(false)
       return
     }
     setLoading(true)
-    
+
     const endpoint = searchMode === 'wunwurds'
-      ? `/api/words/${encodeURIComponent(debouncedTerm)}`
+      ? `/api/words/${encodeURIComponent(debouncedTerm)}?page=1`
       : `/api/movies/search?q=${encodeURIComponent(debouncedTerm)}`
-    
+
     apiFetch(endpoint, {})
       .then((r) => r.json())
-      .then((data) => { setMovies(Array.isArray(data) ? data : []); setLoading(false) })
+      .then((data) => {
+        if (searchMode === 'wunwurds') {
+          setMovies(Array.isArray(data.movies) ? data.movies : [])
+          setHasMore(!!data.hasMore)
+          pageRef.current = 2
+        } else {
+          setMovies(Array.isArray(data) ? data : [])
+        }
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
   }, [debouncedTerm, searchMode])
+
+  async function loadMore() {
+    if (fetchingRef.current || !hasMore) return
+    fetchingRef.current = true
+    setLoadingMore(true)
+    try {
+      const r = await apiFetch(`/api/words/${encodeURIComponent(debouncedTerm)}?page=${pageRef.current}`, {})
+      const data = await r.json()
+      setMovies(prev => [...prev, ...(Array.isArray(data.movies) ? data.movies : [])])
+      setHasMore(!!data.hasMore)
+      pageRef.current += 1
+    } catch {
+      // silently fail
+    } finally {
+      setLoadingMore(false)
+      fetchingRef.current = false
+    }
+  }
 
   return (
     <div>
@@ -95,6 +129,19 @@ export default function WordPage() {
               ? Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)
               : movies.map((movie) => <MovieCard key={movie.tmdbId} movie={movie} simple />)}
           </div>
+
+          {/* Load more */}
+          {!loading && hasMore && (
+            <div className="flex justify-center mt-8 mb-4">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="bg-gray-900 text-white font-bold uppercase px-8 py-3 hover:bg-gray-800 transition-colors disabled:opacity-40"
+              >
+                {loadingMore ? 'LOADING...' : 'LOAD MORE'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

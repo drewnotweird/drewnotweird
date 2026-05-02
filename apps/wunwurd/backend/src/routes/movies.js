@@ -4,6 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const { authRequired, authOptional } = require('../middleware/auth');
 const { cacheMovie, searchMovies, getTrending, getMovieDetail, getMovieCredits, getWatchProviders } = require('../services/tmdb');
 const { notify } = require('../services/notify');
+const { isBlocked } = require('../services/blocklist');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -174,6 +175,8 @@ router.post('/:tmdbId/wunwurds', authRequired, wunwurdLimiter, async (req, res) 
   // Sanitise: letters only, lowercase, max 30 chars
   word = word.replace(/[^a-zA-Z]/g, '').toLowerCase().slice(0, 30);
   if (!word) return res.status(400).json({ error: 'Word must contain letters only' });
+  if (word.length < 3) return res.status(400).json({ error: 'Word must be at least 3 letters' });
+  if (isBlocked(word)) return res.status(400).json({ error: 'That word is not allowed' });
 
   try {
     let movie = await prisma.movie.findUnique({ where: { tmdbId } });

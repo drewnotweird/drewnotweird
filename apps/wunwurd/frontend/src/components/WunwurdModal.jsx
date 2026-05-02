@@ -36,6 +36,7 @@ export default function WunwurdModal({ tmdbId, existingWord, onClose, onSuccess 
     const trimmed = word.trim()
     if (!trimmed) return setError('Type a word first!')
     if (trimmed.includes(' ')) return setError('ONE word only — no spaces!')
+    if (trimmed.length < 3) return setError('At least 3 letters!')
 
     setLoading(true)
     try {

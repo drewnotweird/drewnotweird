@@ -32,7 +32,7 @@ function StatBox({ label, value, sub }) {
 }
 
 export default function Lab() {
-  const [key, setKey] = useState(() => sessionStorage.getItem(KEY_STORAGE) || '')
+  const [key, setKey] = useState(() => localStorage.getItem(KEY_STORAGE) || '')
   const [input, setInput] = useState('')
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -48,13 +48,13 @@ export default function Lab() {
         return r.json()
       })
       .then((data) => {
-        sessionStorage.setItem(KEY_STORAGE, k)
+        localStorage.setItem(KEY_STORAGE, k)
         setKey(k)
         setStats(data)
         setLoading(false)
       })
       .catch((e) => {
-        sessionStorage.removeItem(KEY_STORAGE)
+        localStorage.removeItem(KEY_STORAGE)
         setKey('')
         setError(e.message)
         setLoading(false)
@@ -106,7 +106,7 @@ export default function Lab() {
       <div className="flex items-baseline justify-between">
         <h1 className="text-[#FF1493] font-black uppercase text-5xl">STATS</h1>
         <button
-          onClick={() => { sessionStorage.removeItem(KEY_STORAGE); setKey(''); setStats(null); setInput('') }}
+          onClick={() => { localStorage.removeItem(KEY_STORAGE); setKey(''); setStats(null); setInput('') }}
           className="text-gray-600 text-xs uppercase hover:text-gray-400 transition-colors"
         >
           Lock
