@@ -7,6 +7,7 @@ export default function ImageSection({ images }) {
           src={img.src}
           alt=""
           className={`${img.layout}-width`}
+          loading="lazy"
         />
       ))}
     </section>

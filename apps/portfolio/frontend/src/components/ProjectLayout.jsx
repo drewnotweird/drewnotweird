@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { projects } from '../data/projects.js'
 
 function setMeta(name, content, attr = 'name') {
@@ -14,13 +14,23 @@ function setMeta(name, content, attr = 'name') {
 
 export default function ProjectLayout({ slug, title, subtitle, tags, credit, children }) {
   const mainRef = useRef(null)
+  const navigate = useNavigate()
   const currentIndex = projects.findIndex(p => p.slug === slug)
   const project = projects[currentIndex]
   const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length]
   const nextProject = projects[(currentIndex + 1) % projects.length]
   const ogImage = project?.ogImage || 'https://www.drewnotweird.co.uk/work/whiskyblender/whiskyblender-05.jpg'
   const url = `https://www.drewnotweird.co.uk/work/${slug}`
-  const desc = 'User Interface, User Experience, Logo, Brand, Website, iOS, Android, Digital, Print (Glasgow)'
+  const desc = project?.description || ''
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowLeft')  navigate(`/work/${prevProject.slug}`)
+      if (e.key === 'ArrowRight') navigate(`/work/${nextProject.slug}`)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [prevProject.slug, nextProject.slug])
 
   useEffect(() => {
     const els = mainRef.current?.querySelectorAll('section, header')
