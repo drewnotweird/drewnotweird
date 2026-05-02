@@ -11,16 +11,16 @@ export default function WhiskyBlender() {
       tags="Product / UI / UX / Print / Digital / HTML / CSS"
       credit={`<a href="https://www.whiskyblender.com" target="_blank">whiskyblender.com</a>`}
     >
-      <section>
-        <p>Whisky Blender started with a drunken conversation between me and my best friend, Andy, about how closed-off whisky felt. Blending – the thing that defines most whiskies – was a secret world for experts. We wondered: what if anyone could make their own?</p>
-        <p>There was no brief, no client, no plan. We just decided to try it. I designed and built the first version from scratch – the website, the product, the brand – all evolving together. People could experiment, tweak ratios, save blends, name them, and eventually buy a bottle that felt like theirs.</p>
-      </section>
-
       <ImageSection images={[
         { src: `${BASE}/whiskyblender-01.jpg`, layout: 'half', alt: 'Whisky Blender brand identity' },
         { src: `${BASE}/whiskyblender-02.jpg`, layout: 'half', alt: 'Whisky Blender website design' },
         { src: `${BASE}/whiskyblender-03.jpg`, layout: 'full', alt: 'Whisky Blender product overview' },
       ]} />
+
+      <section>
+        <p>Whisky Blender started with a drunken conversation between me and my best friend, Andy, about how closed-off whisky felt. Blending – the thing that defines most whiskies – was a secret world for experts. We wondered: what if anyone could make their own?</p>
+        <p>There was no brief, no client, no plan. We just decided to try it. I designed and built the first version from scratch – the website, the product, the brand – all evolving together. People could experiment, tweak ratios, save blends, name them, and eventually buy a bottle that felt like theirs.</p>
+      </section>
 
       <section>
         <p>Over time, Whisky Blender became more than just personal blends. We launched our own bottlings: the award-winning Yer Aunt Fanny's Cat's Arsehole, the playful Wee Man's Blend, and Doctor's Special, a mid-20th-century brand we revived. We also explored storytelling through art, like the paired Scotsman &amp; Englishman bottles inspired by Rex Whistler, and licensed works from the National Galleries of Scotland to celebrate iconic Scottish cities and figures, from Robert Burns to Mary Queen of Scots.</p>
@@ -51,13 +51,13 @@ export default function WhiskyBlender() {
         { src: `${BASE}/whiskyblender-12.gif`, layout: 'full', alt: 'Whisky Blender Ryanair ad campaign animation' },
       ]} />
 
-      <section>
-        <p>That's Whisky Blender in a nutshell. From personal blends to limited releases, collaborations, and playful marketing, it's never about doing the obvious. It's about understanding behaviour, context, and memory – and designing around it. Built messy, evolving, and entirely hands-on, it's a project that proves a half-serious idea can become something people genuinely connect with.</p>
-      </section>
-
       <ImageSection images={[
         { src: `${BASE}/whiskyblender-10.jpg`, layout: 'full', alt: 'Whisky Blender brand collection' },
       ]} />
+
+      <section>
+        <p>That's Whisky Blender in a nutshell. From personal blends to limited releases, collaborations, and playful marketing, it's never about doing the obvious. It's about understanding behaviour, context, and memory – and designing around it. Built messy, evolving, and entirely hands-on, it's a project that proves a half-serious idea can become something people genuinely connect with.</p>
+      </section>
     </ProjectLayout>
   )
 }

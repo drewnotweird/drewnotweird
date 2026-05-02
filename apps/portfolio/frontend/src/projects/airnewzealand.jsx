@@ -11,13 +11,13 @@ export default function AirNewZealand() {
       tags="VR app / UI / illustration"
       credit={`Work created at <a href="http://www.frontpage.co.uk" target="_blank">Front Page</a>`}
     >
-      <section>
-        <p>My first project with Air New Zealand explored how emerging technology could help people better understand what they were buying before committing to a long-haul flight. We worked on a Google Cardboard app and custom viewer that allowed customers to virtually step inside the aircraft and look around different cabin classes.</p>
-      </section>
-
       <ImageSection images={[
         { src: `${BASE}/anzcabinviewer01.jpg`, layout: 'full', alt: 'Air New Zealand Google Cardboard VR headset' },
       ]} />
+
+      <section>
+        <p>My first project with Air New Zealand explored how emerging technology could help people better understand what they were buying before committing to a long-haul flight. We worked on a Google Cardboard app and custom viewer that allowed customers to virtually step inside the aircraft and look around different cabin classes.</p>
+      </section>
 
       <section>
         <p>The idea was simple but powerful. Using a smartphone mounted inside a low-cost cardboard headset, users could experience a 360° view of the cabin interiors. The app split the screen for each eye and used the phone's gyroscope to respond to head movement, creating a surprisingly immersive sense of space. It wasn't VR for novelty's sake — it was a practical tool to remove uncertainty, letting customers understand layout, comfort, and atmosphere before booking.</p>

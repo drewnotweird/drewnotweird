@@ -11,13 +11,13 @@ export default function Introducing() {
       tags="Project Management / Branding / Copywriting / Motion graphics"
       credit={`Self-initiated project (in collaboration with <a href="https://linkedin.com/in/eilidh-mackay-ab168417b" target="_blank">Eilidh MacKay</a>)`}
     >
-      <section>
-        <p>What started as a lockdown-induced brainfart quickly became a very real, labour-of-love collaboration between Eilidh Mackay and me.</p>
-      </section>
-
       <ImageSection images={[
         { src: `${BASE}/introducing01.jpg`, layout: 'full', alt: 'Introducing Instagram feed' },
       ]} />
+
+      <section>
+        <p>What started as a lockdown-induced brainfart quickly became a very real, labour-of-love collaboration between Eilidh Mackay and me.</p>
+      </section>
 
       <section>
         <p>The project is an Instagram feed built around short introductions to creative people — brief glimpses into their careers, how they got started, and what they've learned along the way. The aim was to showcase a diverse mix of individuals from all over the world, at different stages in their careers, working across a wide range of roles and disciplines, all of whom were open to being contacted by people just starting out.</p>

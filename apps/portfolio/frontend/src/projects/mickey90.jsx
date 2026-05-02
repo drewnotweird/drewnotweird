@@ -31,6 +31,10 @@ export default function Mickey90() {
         { src: `${BASE}/mickey9004.jpg`, layout: 'full', alt: 'Mickey Mouse emerging from layered crowd-sourced drawings' },
         { src: `${BASE}/mickey9001.jpg`, layout: 'full', alt: 'Mickey\'s 90th anniversary poster' },
       ]} />
+      
+      <section>
+        <p>Layering ninety drawings proved the power of collective creativity — Mickey emerges unmistakably from the crowd.</p>
+      </section>
     </ProjectLayout>
   )
 }
