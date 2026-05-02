@@ -247,10 +247,10 @@ export default function Navbar() {
                     <div className="divide-y divide-gray-900">
                       {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="flex items-center gap-4 px-4 py-3 animate-pulse">
-                          <div className="w-14 h-20 bg-gray-900 flex-shrink-0" />
+                          <div className="w-14 h-20 bg-gray-800 flex-shrink-0" />
                           <div className="flex-1 space-y-3">
-                            <div className="h-5 bg-gray-900 w-3/4" />
-                            <div className="h-4 bg-gray-900 w-1/4" />
+                            <div className="h-5 bg-gray-600 w-3/4" />
+                            <div className="h-4 bg-gray-600 w-1/4" />
                           </div>
                         </div>
                       ))}

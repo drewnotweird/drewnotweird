@@ -93,22 +93,22 @@ export default function MovieDetail() {
     return (
       <div>
         {/* Hero skeleton — matches actual hero dimensions */}
-        <div className="relative bg-gray-900 animate-pulse" style={{ minHeight: '320px', maxHeight: '600px', height: '70vw' }}>
+        <div className="relative bg-gray-800 animate-pulse" style={{ minHeight: '320px', maxHeight: '600px', height: '70vw' }}>
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
           <div className="absolute inset-0 flex flex-col items-end justify-end px-6 pb-6">
             <div className="w-full text-center space-y-3">
-              <div className="h-5 bg-gray-700 w-40 mx-auto" />
-              <div className="h-24 bg-gray-700 w-1/2 mx-auto" />
+              <div className="h-5 bg-gray-600 w-40 mx-auto" />
+              <div className="h-24 bg-gray-600 w-1/2 mx-auto" />
             </div>
           </div>
         </div>
 
         {/* Body skeleton — centred to match actual layout */}
         <div className="px-4 pt-0 pb-6 max-w-2xl mx-auto">
-          <div className="h-14 bg-gray-900 animate-pulse w-full mt-0" />
+          <div className="h-14 bg-gray-800 animate-pulse w-full mt-0" />
           <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 justify-center py-4">
             {[120, 90, 140, 80, 110, 70, 100].map((w, i) => (
-              <div key={i} className="h-10 bg-gray-900 animate-pulse" style={{ width: w }} />
+              <div key={i} className="h-10 bg-gray-800 animate-pulse" style={{ width: w }} />
             ))}
           </div>
         </div>

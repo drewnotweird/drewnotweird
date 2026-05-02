@@ -93,10 +93,10 @@ export default function Search() {
         <div className="space-y-4">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3 animate-pulse">
-              <div className="w-10 h-14 bg-gray-900 flex-shrink-0" />
+              <div className="w-10 h-14 bg-gray-800 flex-shrink-0" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 bg-gray-900 w-3/4" />
-                <div className="h-3 bg-gray-900 w-1/4" />
+                <div className="h-4 bg-gray-600 w-3/4" />
+                <div className="h-3 bg-gray-600 w-1/4" />
               </div>
             </div>
           ))}

@@ -43,11 +43,11 @@ export default function Profile() {
   if (authLoading || loading) {
     return (
       <div className="px-4 py-6">
-        <div className="h-8 bg-gray-900 animate-pulse w-48 mb-2" />
-        <div className="h-4 bg-gray-900 animate-pulse w-32 mb-8" />
+        <div className="h-8 bg-gray-800 animate-pulse w-48 mb-2" />
+        <div className="h-4 bg-gray-800 animate-pulse w-32 mb-8" />
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="aspect-square bg-gray-900 animate-pulse" />
+            <div key={i} className="aspect-square bg-gray-800 animate-pulse" />
           ))}
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function Profile() {
             <div key={w.id} className="relative group">
               <Link
                 to={`/movie/${w.movie.tmdbId}`}
-                className="block relative aspect-square bg-gray-900 overflow-hidden"
+                className="block relative aspect-square bg-gray-900 overflow-hidden group"
               >
                 {posterUrl ? (
                   <img
@@ -119,6 +119,7 @@ export default function Profile() {
                 ) : (
                   <div className="w-full h-full bg-gray-800" />
                 )}
+                <div className="absolute inset-0 bg-black/40 pointer-events-none" />
                 {/* Their word overlaid */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
@@ -130,7 +131,7 @@ export default function Profile() {
                 </div>
                 {/* Movie title at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 pt-6">
-                  <p className="text-[#FF1493] text-lg uppercase leading-tight font-bold text-center line-clamp-2">
+                  <p className="text-white group-hover:text-[#FF1493] transition-colors text-lg uppercase leading-tight font-bold text-center line-clamp-2">
                     {w.movie.title}
                   </p>
                 </div>

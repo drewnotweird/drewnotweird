@@ -39,14 +39,14 @@ export default function MovieCard({ movie, simple = false, index = 0 }) {
         <div className="w-full h-full bg-gray-800" />
       )}
 
-      {/* Base gradient */}
+      {/* Base gradient (stronger) */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 55%)' }}
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 55%)' }}
       />
 
-      {/* Hover: dark overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-black opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
+      {/* Hover: dark overlay (stronger) */}
+      <div className="absolute inset-0 pointer-events-none bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
 
       {/* Hover: white border */}
       <div className="absolute inset-0 pointer-events-none border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -70,9 +70,7 @@ export default function MovieCard({ movie, simple = false, index = 0 }) {
       {/* Word / title at bottom — always visible */}
       <div className="absolute bottom-0 left-0 right-0 p-3 text-center pointer-events-none">
         <span
-          className={`font-bold uppercase leading-none block transition-colors duration-300 ${
-            simple ? 'text-[#FF1493] group-hover:text-white' : 'text-[#FF1493] group-hover:text-white'
-          }`}
+          className={`font-bold uppercase leading-none block transition-colors duration-300 ${'text-white group-hover:text-[#FF1493]'}`}
           style={{
             fontSize: 'clamp(1.75rem, 5vw, 2.75rem)',
             lineHeight: 0.85,
