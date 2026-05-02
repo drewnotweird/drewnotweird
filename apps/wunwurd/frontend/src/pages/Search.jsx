@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import { apiFetch } from '../api'
@@ -10,6 +10,27 @@ export default function Search() {
   const debouncedQuery = useDebounce(query, 300)
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
+  const [allWords, setAllWords] = useState([])
+  const allWordsFetchedRef = useRef(false)
+  const [allMovies, setAllMovies] = useState([])
+  const allMoviesFetchedRef = useRef(false)
+
+  useEffect(() => {
+    if (searchType === 'wunwurds' && !allWordsFetchedRef.current) {
+      allWordsFetchedRef.current = true
+      apiFetch('/api/words')
+        .then((r) => r.json())
+        .then((data) => setAllWords(Array.isArray(data) ? data : []))
+        .catch(() => {})
+    }
+    if (searchType === 'movies' && !allMoviesFetchedRef.current) {
+      allMoviesFetchedRef.current = true
+      apiFetch('/api/movies/trending?page=1')
+        .then((r) => r.json())
+        .then((data) => setAllMovies(Array.isArray(data) ? data : []))
+        .catch(() => {})
+    }
+  }, [searchType])
 
   useEffect(() => {
     if (!debouncedQuery.trim()) {
@@ -89,11 +110,42 @@ export default function Search() {
         </p>
       )}
 
-      {/* Prompt before typing */}
+      {/* Prompt before typing / all wurds */}
       {!loading && !debouncedQuery.trim() && (
-        <p className="text-gray-400 uppercase text-center py-12 text-base">
-          START TYPING TO SEARCH {searchType === 'movies' ? 'MOVIES' : 'WUNWURDS'}
-        </p>
+        searchType === 'wunwurds'
+          ? (
+            <div className="flex flex-wrap gap-x-8 gap-y-3 justify-center py-4">
+              {allWords.map(({ word }, i) => (
+                <Link
+                  key={word}
+                  to={`/word/${word}`}
+                  className="font-bold uppercase text-4xl text-white hover:text-[#FF1493] transition-colors"
+                  style={{ animation: 'fadeIn 400ms ease both', animationDelay: `${Math.min(i, 20) * 40}ms` }}
+                >
+                  {word.toUpperCase()}
+                </Link>
+              ))}
+            </div>
+          )
+          : (
+            <div className="space-y-1">
+              {allMovies.map((movie) => {
+                const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : null
+                const year = movie.release_date ? movie.release_date.slice(0, 4) : null
+                return (
+                  <Link key={movie.id} to={`/movie/${movie.id}`} className="flex items-center gap-4 p-2 hover:bg-gray-900 transition-colors">
+                    {poster
+                      ? <img src={poster} alt={movie.title} className="w-10 h-14 object-cover flex-shrink-0" />
+                      : <div className="w-10 h-14 bg-gray-800 flex-shrink-0" />}
+                    <div>
+                      <p className="text-white font-bold text-lg uppercase leading-none">{movie.title}</p>
+                      {year && <p className="text-[#FF1493] text-sm font-bold">{year}</p>}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          )
       )}
 
       {/* Results */}
@@ -142,7 +194,7 @@ export default function Search() {
                   {word.word}
                 </p>
                 {word.count && (
-                  <p className="text-[#FF1493] text-sm font-bold">{word.count} review{word.count !== 1 ? 's' : ''}</p>
+                  <p className="text-[#FF1493] text-sm font-bold">{word.count} wurd{word.count !== 1 ? 's' : ''}</p>
                 )}
               </div>
             </Link>

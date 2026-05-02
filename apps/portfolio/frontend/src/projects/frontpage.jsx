@@ -17,9 +17,9 @@ export default function FrontPage() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/frontpage02.gif`, layout: 'half' },
-        { src: `${BASE}/frontpage03.jpg`, layout: 'half' },
-        { src: `${BASE}/frontpage01.jpg`, layout: 'full' },
+        { src: `${BASE}/frontpage02.gif`, layout: 'half', alt: 'Front Page logo animation' },
+        { src: `${BASE}/frontpage03.jpg`, layout: 'half', alt: 'Front Page brand guidelines' },
+        { src: `${BASE}/frontpage01.jpg`, layout: 'full', alt: 'Front Page rebrand identity' },
       ]} />
 
       <section>
@@ -27,9 +27,9 @@ export default function FrontPage() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/frontpage04.jpg`, layout: 'half' },
-        { src: `${BASE}/frontpage05.gif`, layout: 'half' },
-        { src: `${BASE}/frontpage06.jpg`, layout: 'full' },
+        { src: `${BASE}/frontpage04.jpg`, layout: 'half', alt: 'Front Page tone of voice guidelines' },
+        { src: `${BASE}/frontpage05.gif`, layout: 'half', alt: 'Front Page brand in use' },
+        { src: `${BASE}/frontpage06.jpg`, layout: 'full', alt: 'Front Page website' },
       ]} />
 
       <section>

@@ -4,6 +4,21 @@ const { PrismaClient } = require('@prisma/client');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// GET /api/words — all submitted words ordered by count, limit 100
+router.get('/', async (req, res) => {
+  try {
+    const grouped = await prisma.wunwurd.groupBy({
+      by: ['word'],
+      _count: { word: true },
+      orderBy: { _count: { word: 'desc' } },
+      take: 100,
+    });
+    res.json(grouped.map((g) => ({ word: g.word, count: g._count.word })));
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch words' });
+  }
+});
+
 // GET /api/words/search?q= — find words matching a query, return [{ word, count }]
 router.get('/search', async (req, res) => {
   const q = (req.query.q || '').toLowerCase().replace(/[^a-z]/g, '');

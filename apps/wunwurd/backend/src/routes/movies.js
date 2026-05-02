@@ -9,6 +9,9 @@ const { isBlocked } = require('../services/blocklist');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const trendingCache = new Map(); // page -> { movies, ts }
+const TRENDING_TTL = 60 * 60 * 1000; // 1 hour
+
 // 10 wunwurd submissions per user per hour
 const wunwurdLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -25,6 +28,12 @@ const wunwurdLimiter = rateLimit({
 // Search still covers all TMDB movies regardless of submissions.
 router.get('/trending', async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
+
+  const hit = trendingCache.get(page);
+  if (hit && Date.now() - hit.ts < TRENDING_TTL) {
+    return res.json(hit.movies);
+  }
+
   const PAGE_SIZE = 20;
   const startTmdbPage = (page - 1) * 4 + 1;
   try {
@@ -40,7 +49,9 @@ router.get('/trending', async (req, res) => {
       const hasWords = new Set(withWords.map(m => m.tmdbId));
       filtered.push(...movies.filter(m => hasWords.has(m.id)));
     }
-    res.json(filtered.slice(0, PAGE_SIZE));
+    const result = filtered.slice(0, PAGE_SIZE);
+    trendingCache.set(page, { movies: result, ts: Date.now() });
+    res.json(result);
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch trending movies' });
   }

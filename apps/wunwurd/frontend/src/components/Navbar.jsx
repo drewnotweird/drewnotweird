@@ -4,10 +4,11 @@ import { useAuth } from '../context/AuthContext'
 import { useDebounce } from '../hooks/useDebounce'
 import { apiFetch } from '../api'
 
+const svgStyle = { transition: 'width 0.35s ease, height 0.35s ease' }
+
 function SearchIcon({ size }) {
   return (
-    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
-      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+    <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" style={svgStyle}>
       <circle cx="11" cy="11" r="8" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
@@ -16,8 +17,7 @@ function SearchIcon({ size }) {
 
 function CloseIcon({ size }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"
-      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={svgStyle}>
       <line x1="4" y1="4" x2="20" y2="20" />
       <line x1="20" y1="4" x2="4" y2="20" />
     </svg>
@@ -26,8 +26,7 @@ function CloseIcon({ size }) {
 
 function ProfileIcon({ size }) {
   return (
-    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
-      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+    <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" style={svgStyle}>
       <circle cx="12" cy="8" r="4" fill="none" />
       <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="square" />
     </svg>
@@ -36,8 +35,7 @@ function ProfileIcon({ size }) {
 
 function LoginIcon({ size }) {
   return (
-    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
-      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+    <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" style={svgStyle}>
       <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" strokeLinecap="square" />
       <polyline points="10 17 15 12 10 7" />
       <line x1="15" y1="12" x2="3" y2="12" />
@@ -47,21 +45,19 @@ function LoginIcon({ size }) {
 
 function RandomIcon({ size }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"
-      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={svgStyle}>
       <rect x="3" y="3" width="18" height="18" rx="3" />
-      <circle cx="8.5" cy="8.5" r="1.5" fill="black" stroke="none" />
-      <circle cx="15.5" cy="8.5" r="1.5" fill="black" stroke="none" />
-      <circle cx="8.5" cy="15.5" r="1.5" fill="black" stroke="none" />
-      <circle cx="15.5" cy="15.5" r="1.5" fill="black" stroke="none" />
+      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   )
 }
 
 function InfoIcon({ size }) {
   return (
-    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
-      style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
+    <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" style={svgStyle}>
       <circle cx="12" cy="12" r="9" />
       <line x1="12" y1="11" x2="12" y2="16" strokeLinecap="square" />
       <line x1="12" y1="8" x2="12.01" y2="8" strokeLinecap="round" strokeWidth="3" />
@@ -180,50 +176,54 @@ export default function Navbar() {
         {/* Icon row — buttons grow to fill equally when expanded, shrink to sides when minimised */}
         <div className="flex items-center h-full px-4" style={{ gap: `${iconGap}px` }}>
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={() => navigate('/search')}
             disabled={!serverReady}
             aria-label="Search"
           >
-            <SearchIcon size={iconSize} />
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
+            <div className="transition-transform duration-200 group-hover:scale-110"><SearchIcon size={iconSize} /></div>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
           </button>
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={handleRandom}
             disabled={!serverReady}
             aria-label="Random movie"
           >
-            {randomLoading
-              ? <div style={{ width: iconSize, height: iconSize, border: '2.5px solid black', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
-              : <RandomIcon size={iconSize} />}
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>RANDOM</span>
+            <div className="transition-transform duration-200 group-hover:scale-110">
+              {randomLoading
+                ? <div style={{ width: iconSize, height: iconSize, border: '2.5px solid currentColor', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
+                : <RandomIcon size={iconSize} />}
+            </div>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>RANDOM</span>
           </button>
 
           {/* Spacer — expands when minimised to push right icons to the right */}
           <div style={{ flexGrow: spacerGrow, flexShrink: 1, flexBasis: 0, minWidth: 0 }} />
 
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={() => navigate('/about')}
             disabled={!serverReady}
             aria-label="About"
           >
-            <InfoIcon size={iconSize} />
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
+            <div className="transition-transform duration-200 group-hover:scale-110"><InfoIcon size={iconSize} /></div>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
           </button>
           <button
-            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300 text-black hover:text-white"
             style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={handleProfileClick}
             disabled={!serverReady}
             aria-label={user ? 'Profile' : 'Log in'}
           >
-            {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
-            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>{user ? 'ACCOUNT' : 'LOGIN'}</span>
+            <div className="transition-transform duration-200 group-hover:scale-110">
+              {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
+            </div>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-white bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>{user ? 'ACCOUNT' : 'LOGIN'}</span>
           </button>
         </div>
 

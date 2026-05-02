@@ -140,6 +140,15 @@ export default function Home() {
     }
   }, [])
 
+  // Restore scroll position when returning from a movie page
+  useEffect(() => {
+    const saved = sessionStorage.getItem('home_scroll')
+    if (saved) {
+      sessionStorage.removeItem('home_scroll')
+      requestAnimationFrame(() => window.scrollTo(0, parseInt(saved, 10)))
+    }
+  }, [])
+
   // Scroll to bottom check
   useEffect(() => {
     const handleScroll = () => {
@@ -221,7 +230,10 @@ export default function Home() {
 
       {/* Grid */}
       <div className="px-2 py-2">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+        <div
+          className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5"
+          onClick={() => sessionStorage.setItem('home_scroll', window.scrollY)}
+        >
           {loading
             ? Array.from({ length: COLS * ROWS }).map((_, i) => <SkeletonCard key={i} />)
             : movies.map((movie, i) => <MovieCard key={movie.id || movie.tmdbId} movie={movie} index={i} />)}

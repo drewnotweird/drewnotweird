@@ -17,7 +17,7 @@ export default function RumBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/rumblenderjourney01.jpg`, layout: 'full' },
+        { src: `${BASE}/rumblenderjourney01.jpg`, layout: 'full', alt: 'Rum tasting and blending session at Front Page' },
       ]} />
 
       <section>
@@ -25,8 +25,8 @@ export default function RumBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/rumblenderjourney03.jpg`, layout: 'half' },
-        { src: `${BASE}/rumblenderjourney05.jpg`, layout: 'half' },
+        { src: `${BASE}/rumblenderjourney03.jpg`, layout: 'half', alt: 'Rum Blender bottle illustration — Caribbean island' },
+        { src: `${BASE}/rumblenderjourney05.jpg`, layout: 'half', alt: 'Rum Blender bottle label design' },
       ]} />
 
       <section>
@@ -35,7 +35,7 @@ export default function RumBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/rumblenderjourney04.gif`, layout: 'full' },
+        { src: `${BASE}/rumblenderjourney04.gif`, layout: 'full', alt: 'Rum Blender Journey Collection — three bottles' },
       ]} />
 
     </ProjectLayout>

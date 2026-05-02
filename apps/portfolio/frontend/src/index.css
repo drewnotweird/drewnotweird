@@ -192,40 +192,40 @@ figcaption {
 /* Project prev/next nav */
 section#project-nav {
   display: flex;
-  gap: 14px;
   margin: 5vw;
+  padding-top: 3vw;
+  border-top: 1px solid #000000;
 }
 
 .project-nav-tile {
   flex: 1;
-  height: 25vw;
-  position: relative;
-  overflow: hidden;
   display: block;
   text-decoration: none;
-  background: #cccccc;
+  color: #000000;
 }
 
-.project-nav-tile span {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 20px;
-  color: #ffffff;
+.project-nav-tile:last-child {
+  text-align: right;
+}
+
+.project-nav-tile .nav-label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 0.4em;
+}
+
+.project-nav-tile .nav-title {
+  display: block;
+  font-size: clamp(20px, 3vw, 42px);
   font-weight: 500;
-  font-size: clamp(14px, 2vw, 22px);
-  background: linear-gradient(transparent, rgba(0,0,0,0.55));
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 10px;
+  line-height: 1.1;
 }
 
-.project-nav-tile span em {
-  font-style: normal;
-  flex-shrink: 0;
-  opacity: 0.7;
+.project-nav-tile:hover .nav-title {
+  text-decoration: underline;
 }
 
 /* Contact footer */

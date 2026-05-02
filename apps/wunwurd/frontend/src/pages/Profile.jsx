@@ -13,6 +13,7 @@ export default function Profile() {
   }
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [confirmingId, setConfirmingId] = useState(null)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -31,14 +32,12 @@ export default function Profile() {
   }, [user, authLoading])
 
   async function handleRemove(tmdbId) {
-    await apiFetch(`/api/movies/${tmdbId}/wunwurds`, {
-      method: 'DELETE',
-      
-    })
+    await apiFetch(`/api/movies/${tmdbId}/wunwurds`, { method: 'DELETE' })
     setProfile((prev) => ({
       ...prev,
       wunwurds: prev.wunwurds.filter((w) => w.movie.tmdbId !== tmdbId),
     }))
+    setConfirmingId(null)
   }
 
   if (authLoading || loading) {
@@ -138,12 +137,29 @@ export default function Profile() {
               </Link>
 
               {/* Remove button — appears on hover */}
-              <button
-                onClick={() => handleRemove(w.movie.tmdbId)}
-                className="absolute top-2 right-2 bg-black/90 text-gray-500 text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 uppercase"
-              >
-                ✕
-              </button>
+              {confirmingId === w.movie.tmdbId ? (
+                <div className="absolute top-2 right-2 flex gap-1 bg-black/90">
+                  <button
+                    onClick={() => handleRemove(w.movie.tmdbId)}
+                    className="text-red-500 text-xs px-2 py-1 uppercase font-bold hover:text-white transition-colors"
+                  >
+                    SURE?
+                  </button>
+                  <button
+                    onClick={() => setConfirmingId(null)}
+                    className="text-gray-400 text-xs px-2 py-1 uppercase hover:text-white transition-colors"
+                  >
+                    NO
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmingId(w.movie.tmdbId)}
+                  className="absolute top-2 right-2 bg-black/90 text-gray-500 text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 uppercase"
+                >
+                  ✕
+                </button>
+              )}
             </div>
           )
         })}

@@ -18,10 +18,10 @@ export default function RoyalCaribbean() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/royalcaribbean01.jpg`, layout: 'full' },
-        { src: `${BASE}/royalcaribbean02.jpg`, layout: 'full' },
-        { src: `${BASE}/royalcaribbean03.gif`, layout: 'full' },
-        { src: `${BASE}/royalcaribbean04.jpg`, layout: 'full' },
+        { src: `${BASE}/royalcaribbean01.jpg`, layout: 'full', alt: 'Royal Caribbean responsive website redesign' },
+        { src: `${BASE}/royalcaribbean02.jpg`, layout: 'full', alt: 'Royal Caribbean global navigation redesign' },
+        { src: `${BASE}/royalcaribbean03.gif`, layout: 'full', alt: 'Royal Caribbean responsive modules across breakpoints' },
+        { src: `${BASE}/royalcaribbean04.jpg`, layout: 'full', alt: 'Royal Caribbean mobile interface' },
       ]} />
     </ProjectLayout>
   )

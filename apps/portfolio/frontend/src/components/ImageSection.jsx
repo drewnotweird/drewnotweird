@@ -5,7 +5,7 @@ export default function ImageSection({ images }) {
         <img
           key={i}
           src={img.src}
-          alt=""
+          alt={img.alt || ''}
           className={`${img.layout}-width`}
           loading="lazy"
         />

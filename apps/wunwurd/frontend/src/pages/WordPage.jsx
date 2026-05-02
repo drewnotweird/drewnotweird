@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import MovieCard from '../components/MovieCard'
 import SkeletonCard from '../components/SkeletonCard'
+import WordCloud from '../components/WordCloud'
 import { apiFetch } from '../api'
 
 export default function WordPage() {
@@ -16,6 +17,33 @@ export default function WordPage() {
   const [hasMore, setHasMore] = useState(false)
   const pageRef = useRef(1)
   const fetchingRef = useRef(false)
+  const [allWords, setAllWords] = useState([])
+  const allWordsFetchedRef = useRef(false)
+  const [allMovies, setAllMovies] = useState([])
+  const allMoviesFetchedRef = useRef(false)
+
+  useEffect(() => {
+    setSearchTerm(word || '')
+    setSearchMode('wunwurds')
+    pageRef.current = 1
+  }, [word])
+
+  useEffect(() => {
+    if (searchMode === 'wunwurds' && !allWordsFetchedRef.current) {
+      allWordsFetchedRef.current = true
+      apiFetch('/api/words')
+        .then((r) => r.json())
+        .then((data) => setAllWords(Array.isArray(data) ? data : []))
+        .catch(() => {})
+    }
+    if (searchMode === 'movies' && !allMoviesFetchedRef.current) {
+      allMoviesFetchedRef.current = true
+      apiFetch('/api/movies/trending?page=1')
+        .then((r) => r.json())
+        .then((data) => setAllMovies(Array.isArray(data) ? data : []))
+        .catch(() => {})
+    }
+  }, [searchMode])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -119,10 +147,13 @@ export default function WordPage() {
               No {searchMode === 'movies' ? 'movies' : 'wunwurds'} found.
             </p>
           )}
-          {!loading && !searchTerm.trim() && (
-            <p className="text-center text-gray-400 uppercase py-16">
-              Start typing to search for {searchMode === 'movies' ? 'movies' : 'wunwurds'}.
-            </p>
+          {!loading && !searchTerm.trim() && searchMode === 'movies' && (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 max-w-full mx-auto">
+              {allMovies.map((movie, i) => <MovieCard key={movie.id || movie.tmdbId} movie={movie} index={i} simple />)}
+            </div>
+          )}
+          {!loading && !searchTerm.trim() && searchMode === 'wunwurds' && (
+            <WordCloud words={allWords} />
           )}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 max-w-full mx-auto">
             {loading

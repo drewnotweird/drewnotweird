@@ -16,7 +16,7 @@ export default function Introducing() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/introducing01.jpg`, layout: 'full' },
+        { src: `${BASE}/introducing01.jpg`, layout: 'full', alt: 'Introducing Instagram feed' },
       ]} />
 
       <section>
@@ -24,9 +24,9 @@ export default function Introducing() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/introducing02.jpg`, layout: 'half' },
-        { src: `${BASE}/introducing03.gif`, layout: 'half' },
-        { src: `${BASE}/introducing04.jpg`, layout: 'full' },
+        { src: `${BASE}/introducing02.jpg`, layout: 'half', alt: 'Introducing creative profile post' },
+        { src: `${BASE}/introducing03.gif`, layout: 'half', alt: 'Introducing post motion design' },
+        { src: `${BASE}/introducing04.jpg`, layout: 'full', alt: 'Introducing feed grid layout' },
       ]} />
 
       <section>
@@ -35,7 +35,7 @@ export default function Introducing() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/introducing05.gif`, layout: 'full' },
+        { src: `${BASE}/introducing05.gif`, layout: 'full', alt: 'Introducing video content' },
       ]} />
 
       <section>
@@ -44,7 +44,7 @@ export default function Introducing() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/introducing09.jpg`, layout: 'full' },
+        { src: `${BASE}/introducing09.jpg`, layout: 'full', alt: 'Introducing showcase collection' },
       ]} />
 
       <section>

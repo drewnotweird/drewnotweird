@@ -80,22 +80,22 @@ export default function ProjectLayout({ slug, title, subtitle, tags, credit, chi
 
         <section id="project-nav">
           <Link to={`/work/${prevProject.slug}`} className="project-nav-tile">
-            <div className="project-bg" style={{ backgroundImage: `url(${prevProject.cover})` }} />
-            <span><em>←</em>{prevProject.title}</span>
+            <span className="nav-label">← Previous</span>
+            <span className="nav-title">{prevProject.title}</span>
           </Link>
           <Link to={`/work/${nextProject.slug}`} className="project-nav-tile">
-            <div className="project-bg" style={{ backgroundImage: `url(${nextProject.cover})` }} />
-            <span>{nextProject.title}<em>→</em></span>
+            <span className="nav-label">Next →</span>
+            <span className="nav-title">{nextProject.title}</span>
           </Link>
         </section>
 
         <section>
           <ul id="contact">
-            <li><a href="mailto:drewnotweird@gmail.com">@</a></li>
-            <li><a href="https://twitter.com/drewnotweird" target="_blank" rel="noreferrer">X</a></li>
-            <li><a href="https://www.linkedin.com/in/drewnotweird/" target="_blank" rel="noreferrer">LI</a></li>
-            <li><a href="https://www.instagram.com/drewnotweird/" target="_blank" rel="noreferrer">IG</a></li>
-            <li><a href="https://github.com/drewnotweird/" target="_blank" rel="noreferrer">GH</a></li>
+            <li><a href="mailto:drewnotweird@gmail.com" aria-label="Email">@</a></li>
+            <li><a href="https://twitter.com/drewnotweird" target="_blank" rel="noreferrer" aria-label="X (Twitter)">X</a></li>
+            <li><a href="https://www.linkedin.com/in/drewnotweird/" target="_blank" rel="noreferrer" aria-label="LinkedIn">LI</a></li>
+            <li><a href="https://www.instagram.com/drewnotweird/" target="_blank" rel="noreferrer" aria-label="Instagram">IG</a></li>
+            <li><a href="https://github.com/drewnotweird/" target="_blank" rel="noreferrer" aria-label="GitHub">GH</a></li>
           </ul>
         </section>
       </main>

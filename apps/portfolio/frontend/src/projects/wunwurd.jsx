@@ -13,7 +13,7 @@ export default function Wunwurd() {
     >
 
       <ImageSection images={[
-        { src: `${BASE}/wunwurd02.jpg`, layout: 'full' },
+        { src: `${BASE}/wunwurd02.jpg`, layout: 'full', alt: 'WUNWURD film listing interface' },
       ]} />
       <section>
         <p>When you search for a film you get numbers. IMDb gives you a score out of 10. Rotten Tomatoes gives you a percentage. Metacritic has its own number as well. You can tell if something is broadly "good" or "bad", but that's about it. If you actually want anything more, you have to start exploring deeper — video reviews, articles from critics, user-submitted comments — and it can be difficult to do this and avoid spoilers, when most of the time you're just looking for the tiniest bit of context.</p>
@@ -21,7 +21,7 @@ export default function Wunwurd() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/wunwurd06.jpg`, layout: 'full' },
+        { src: `${BASE}/wunwurd06.jpg`, layout: 'full', alt: 'WUNWURD browse by word feature' },
       ]} />
 
       <section>
@@ -31,8 +31,8 @@ export default function Wunwurd() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/wunwurd04.jpg`, layout: 'half' },
-        { src: `${BASE}/wunwurd05.jpg`, layout: 'half' },
+        { src: `${BASE}/wunwurd04.jpg`, layout: 'half', alt: 'WUNWURD mobile view' },
+        { src: `${BASE}/wunwurd05.jpg`, layout: 'half', alt: 'WUNWURD word submission' },
       ]} />
 
       <section>
@@ -41,7 +41,7 @@ export default function Wunwurd() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/wunwurd03.jpg`, layout: 'full' },
+        { src: `${BASE}/wunwurd03.jpg`, layout: 'full', alt: 'WUNWURD film page' },
       ]} />
 
       <section>

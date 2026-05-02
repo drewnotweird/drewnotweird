@@ -13,7 +13,7 @@ export default function Mickey90() {
     >
 
       <ImageSection images={[
-        { src: `${BASE}/mickey9003.gif`, layout: 'full' },
+        { src: `${BASE}/mickey9003.gif`, layout: 'full', alt: 'Ninety crowd-sourced Mickey Mouse drawings layered together' },
       ]} />
 
       <section>
@@ -21,15 +21,15 @@ export default function Mickey90() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/mickey9002.jpg`, layout: 'full' },
+        { src: `${BASE}/mickey9002.jpg`, layout: 'full', alt: 'Individual Mickey Mouse drawings from memory' },
       ]} />
       <section>
         <p>It paid off. Layering all ninety drawings on top of each other, the noise cancelled out and Mickey emerged &ndash; unmistakable.</p>
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/mickey9004.jpg`, layout: 'full' },
-        { src: `${BASE}/mickey9001.jpg`, layout: 'full' },
+        { src: `${BASE}/mickey9004.jpg`, layout: 'full', alt: 'Mickey Mouse emerging from layered crowd-sourced drawings' },
+        { src: `${BASE}/mickey9001.jpg`, layout: 'full', alt: 'Mickey\'s 90th anniversary poster' },
       ]} />
     </ProjectLayout>
   )

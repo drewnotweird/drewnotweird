@@ -13,7 +13,7 @@ export default function MakeItHappen() {
     >
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen01.jpg`, layout: 'full' },
+        { src: `${BASE}/makeithappen01.jpg`, layout: 'full', alt: 'Make it Happen app design competition' },
       ]} />
       <section>
         <p>Make it Happen is a charity that inspires digital learning in children. They run an app design competition for Primary Schools across Scotland, and I've been part of it for several years.</p>
@@ -21,7 +21,7 @@ export default function MakeItHappen() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen02.jpg`, layout: 'full' },
+        { src: `${BASE}/makeithappen02.jpg`, layout: 'full', alt: 'School visit for Make it Happen' },
       ]} />
 
       <section>
@@ -29,9 +29,9 @@ export default function MakeItHappen() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen03.jpg`, layout: 'full' },
-        { src: `${BASE}/makeithappen04.jpg`, layout: 'full' },
-        { src: `${BASE}/makeithappen03.gif`, layout: 'full' },
+        { src: `${BASE}/makeithappen03.jpg`, layout: 'full', alt: 'Student app concept designs' },
+        { src: `${BASE}/makeithappen04.jpg`, layout: 'full', alt: 'App UI screens designed by students' },
+        { src: `${BASE}/makeithappen03.gif`, layout: 'full', alt: 'App prototype walkthrough' },
       ]} />
 
       <section>
@@ -39,7 +39,7 @@ export default function MakeItHappen() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/makeithappen05.gif`, layout: 'full' },
+        { src: `${BASE}/makeithappen05.gif`, layout: 'full', alt: 'Finished app in the App Store' },
       ]} />
 
       <section>

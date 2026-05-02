@@ -17,9 +17,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender-01.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-02.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-03.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-01.jpg`, layout: 'half', alt: 'Whisky Blender brand identity' },
+        { src: `${BASE}/whiskyblender-02.jpg`, layout: 'half', alt: 'Whisky Blender website design' },
+        { src: `${BASE}/whiskyblender-03.jpg`, layout: 'full', alt: 'Whisky Blender product overview' },
       ]} />
 
       <section>
@@ -27,9 +27,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender-04.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-05.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-06.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-04.jpg`, layout: 'half', alt: 'Limited edition Whisky Blender bottles' },
+        { src: `${BASE}/whiskyblender-05.jpg`, layout: 'half', alt: 'Whisky Blender label designs' },
+        { src: `${BASE}/whiskyblender-06.jpg`, layout: 'full', alt: 'Scotsman and Englishman paired bottle labels' },
       ]} />
 
       <section>
@@ -37,9 +37,9 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender-07.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-08.jpg`, layout: 'half' },
-        { src: `${BASE}/whiskyblender-09.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-07.jpg`, layout: 'half', alt: 'The Golden Drop whisky for The Canny Man\'s pub' },
+        { src: `${BASE}/whiskyblender-08.jpg`, layout: 'half', alt: 'The Golden Drop label design' },
+        { src: `${BASE}/whiskyblender-09.jpg`, layout: 'full', alt: 'The Golden Drop bottles' },
       ]} />
 
       <section>
@@ -47,8 +47,8 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender-11.jpg`, layout: 'full' },
-        { src: `${BASE}/whiskyblender-12.gif`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-11.jpg`, layout: 'full', alt: 'Whisky Blender Ryanair inflight magazine advertisement' },
+        { src: `${BASE}/whiskyblender-12.gif`, layout: 'full', alt: 'Whisky Blender Ryanair ad campaign animation' },
       ]} />
 
       <section>
@@ -56,7 +56,7 @@ export default function WhiskyBlender() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/whiskyblender-10.jpg`, layout: 'full' },
+        { src: `${BASE}/whiskyblender-10.jpg`, layout: 'full', alt: 'Whisky Blender brand collection' },
       ]} />
     </ProjectLayout>
   )

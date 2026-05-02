@@ -16,7 +16,7 @@ export default function AirNewZealand() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/anzcabinviewer01.jpg`, layout: 'full' },
+        { src: `${BASE}/anzcabinviewer01.jpg`, layout: 'full', alt: 'Air New Zealand Google Cardboard VR headset' },
       ]} />
 
       <section>
@@ -24,8 +24,8 @@ export default function AirNewZealand() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/anzcabinviewer05.gif`, layout: 'half' },
-        { src: `${BASE}/anzcabinviewer08.jpg`, layout: 'half' },
+        { src: `${BASE}/anzcabinviewer05.gif`, layout: 'half', alt: 'Air New Zealand cabin viewer 360° experience' },
+        { src: `${BASE}/anzcabinviewer08.jpg`, layout: 'half', alt: 'Air New Zealand cabin viewer app interface' },
       ]} />
 
       <section>
@@ -33,7 +33,7 @@ export default function AirNewZealand() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/anzcabinviewer04.jpg`, layout: 'full' },
+        { src: `${BASE}/anzcabinviewer04.jpg`, layout: 'full', alt: 'Air New Zealand cabin viewer interior view' },
       ]} />
 
       <section>
@@ -41,7 +41,7 @@ export default function AirNewZealand() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/anzbetyoudidntknow01.gif`, layout: 'full' },
+        { src: `${BASE}/anzbetyoudidntknow01.gif`, layout: 'full', alt: 'Bet You Didn\'t Know campaign animation' },
       ]} />
 
       <section>
@@ -49,9 +49,9 @@ export default function AirNewZealand() {
       </section>
 
       <ImageSection images={[
-        { src: `${BASE}/anzbetyoudidntknow02.jpg`, layout: 'full' },
-        { src: `${BASE}/anzbetyoudidntknow03.gif`, layout: 'full' },
-        { src: `${BASE}/anzbetyoudidntknow04.gif`, layout: 'full' },
+        { src: `${BASE}/anzbetyoudidntknow02.jpg`, layout: 'full', alt: 'Bet You Didn\'t Know London Underground posters' },
+        { src: `${BASE}/anzbetyoudidntknow03.gif`, layout: 'full', alt: 'Bet You Didn\'t Know animated poster' },
+        { src: `${BASE}/anzbetyoudidntknow04.gif`, layout: 'full', alt: 'Bet You Didn\'t Know campaign creative' },
       ]} />
 
       <section>
