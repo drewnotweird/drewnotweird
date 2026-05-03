@@ -16,9 +16,18 @@ export default function PintGlass({ onPhotoClick }) {
     const el   = layerRef.current
     const fgEl = fgLayerRef.current
 
+    const activeIndices = new Set()
+
     function spawnPhoto(seeded = false) {
-      const imgIndex = Math.floor(Math.random() * images.length)
-      const img      = images[imgIndex]
+      // Pick an index not currently on screen
+      let imgIndex
+      let attempts = 0
+      do {
+        imgIndex = Math.floor(Math.random() * images.length)
+        attempts++
+      } while (activeIndices.has(imgIndex) && attempts < images.length)
+      activeIndices.add(imgIndex)
+      const img = images[imgIndex]
       const size     = 56 + Math.random() * 54
       const dur      = 12 + Math.random() * 10
       const x        = 5  + Math.random() * 90
@@ -38,22 +47,18 @@ export default function PintGlass({ onPhotoClick }) {
       if (baseFilter) b.style.filter = baseFilter
 
       b.addEventListener('mouseenter', () => {
-        b.style.transition = ''
-        b.style.scale  = '1.1'
-        b.style.filter = baseFilter ? `${baseFilter} brightness(1.08)` : 'brightness(1.08)'
+        b.style.scale  = '1.12'
+        b.style.filter = baseFilter ? `${baseFilter} brightness(1.10)` : 'brightness(1.10)'
       })
       b.addEventListener('mousemove', (e) => {
         const r  = b.getBoundingClientRect()
         const rx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2)
-        b.style.transition = 'scale 0.06s ease-out, rotate 0.08s ease-out'
-        b.style.scale  = '1.1'
-        b.style.rotate = `${rx * 6}deg`
+        b.style.rotate = `${rx * 5}deg`
       })
       b.addEventListener('mouseleave', () => {
-        b.style.transition = ''
         b.style.scale  = ''
         b.style.rotate = ''
-        b.style.filter = baseFilter
+        b.style.filter = baseFilter || ''
       })
 
       b.addEventListener('click', () => {
@@ -61,10 +66,9 @@ export default function PintGlass({ onPhotoClick }) {
         onClickRef.current(imgIndex, rect)
       })
       b.addEventListener('animationend', (e) => {
-        if (e.animationName === 'rise') { b.remove(); photoCount-- }
+        if (e.animationName === 'rise') { activeIndices.delete(imgIndex); b.remove() }
       })
       el.appendChild(b)
-      photoCount++
     }
 
     function spawnPlain(seeded = false) {
@@ -114,23 +118,22 @@ export default function PintGlass({ onPhotoClick }) {
       }
     }
 
-    let photoCount = 0
-    for (let i = 0; i < 16; i++) spawnPhoto(true)
-    for (let i = 0; i < 14; i++) spawnPlain(true)
-    for (let i = 0; i < 8;  i++) spawnCluster(true)
+    for (let i = 0; i < 18; i++) spawnPhoto(true)
+    for (let i = 0; i < 16; i++) spawnPlain(true)
+    for (let i = 0; i < 10; i++) spawnCluster(true)
 
     function tick(t) {
-      if (photoCount < 6 || t >= nextPhotoAt.current) {
+      if (t >= nextPhotoAt.current) {
         spawnPhoto()
-        nextPhotoAt.current = t + (photoCount < 6 ? 600 : 1200 + Math.random() * 1400)
+        nextPhotoAt.current = t + 1700 + Math.random() * 400
       }
       if (t >= nextPlainAt.current) {
         spawnPlain()
-        nextPlainAt.current = t + 350 + Math.random() * 750
+        nextPlainAt.current = t + 450 + Math.random() * 200
       }
       if (t >= nextClusterAt.current) {
         spawnCluster()
-        nextClusterAt.current = t + 250 + Math.random() * 450
+        nextClusterAt.current = t + 300 + Math.random() * 150
       }
       rafRef.current = requestAnimationFrame(tick)
     }
