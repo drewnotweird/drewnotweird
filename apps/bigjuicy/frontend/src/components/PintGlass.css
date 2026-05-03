@@ -190,47 +190,27 @@
   );
 }
 
-/* ─── foam: two-layer system ───
-   foam-bubbles (z 39): tiny circles; fine bumpy texture at bottom edge
-   foam-body    (z 40): cream block with SVG noise filter for micro-bubble look
+/* ─── foam head ───
+   Single element; JS computes a wavy clip-path for the organic bottom edge.
+   drop-shadow filter follows the clipped shape automatically.
 ─── */
-.foam-bubbles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 90px;
-  z-index: 39;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.foam-bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 33% 28%,
-    rgba(255, 255, 255, 1.00) 0%,
-    rgba(252, 249, 243, 0.97) 48%,
-    rgba(242, 235, 220, 0.90) 100%
-  );
-  box-shadow: 0 0 0 0.5px rgba(200, 168, 100, 0.22);
-}
-
 .foam-body {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 66px;
+  height: 100px; /* accommodates base height + deepest bubble bump */
   z-index: 40;
   pointer-events: none;
-  /* Two offset repeating-radial layers create a hexagonal bubble-cell pattern */
   background:
-    radial-gradient(circle, rgba(224,212,188,0.70) 42%, transparent 43%) 0    0    / 11px 11px,
-    radial-gradient(circle, rgba(216,204,178,0.58) 40%, transparent 41%) 5.5px 5.5px / 11px 11px,
-    linear-gradient(to bottom, #ffffff 0%, #faf5ec 55%, #f2e8d3 100%);
-  box-shadow: 0 5px 28px rgba(155, 90, 0, 0.26);
+    /* subtle dome highlight — foam head catches light at top */
+    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 100%),
+    /* warm edge shading — foam thins against glass */
+    radial-gradient(ellipse 12% 100% at 0%   50%, rgba(240,225,195,0.40) 0%, transparent 100%),
+    radial-gradient(ellipse 12% 100% at 100% 50%, rgba(240,225,195,0.40) 0%, transparent 100%),
+    /* base gradient */
+    linear-gradient(to bottom, #ffffff 0%, #faf5ec 55%, #f1e7d2 100%);
+  filter: drop-shadow(0 7px 18px rgba(148, 82, 0, 0.30));
 }
 
 /* ─── foreground glass highlights ─── */
