@@ -19,7 +19,7 @@ export default function PintGlass({ onPhotoClick }) {
     function spawnPhoto(seeded = false) {
       const imgIndex = Math.floor(Math.random() * images.length)
       const img      = images[imgIndex]
-      const size     = 40 + Math.random() * 60
+      const size     = 56 + Math.random() * 54
       const dur      = 12 + Math.random() * 10
       const x        = 5  + Math.random() * 90
       const drift    = (Math.random() - 0.5) * 80
