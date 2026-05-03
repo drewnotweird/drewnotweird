@@ -59,7 +59,7 @@ export default function PintGlass({ onPhotoClick }) {
       b.addEventListener('click', () => {
         const rect = b.getBoundingClientRect()
         onClickRef.current(imgIndex, rect)
-      }, { once: true })
+      })
       b.addEventListener('animationend', (e) => {
         if (e.animationName === 'rise') { b.remove(); photoCount-- }
       })
