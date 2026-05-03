@@ -22,6 +22,7 @@
 
 .fg-layer {
   pointer-events: none;
+  z-index: 2;
 }
 
 /* ─── shared bubble base ─── */
@@ -29,10 +30,13 @@
   position: absolute;
   bottom: -200px;
   border-radius: 50%;
-  animation: rise linear forwards;
+  animation-name: rise;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
   transform: translateX(-50%) scale(0.1);
   overflow: hidden;
-  will-change: bottom, transform, opacity;
+  will-change: bottom, transform, translate, opacity;
 }
 
 /* ─── photo bubble ─── */
@@ -42,12 +46,18 @@
   box-shadow:
     0 0 0 1.5px rgba(255, 255, 255, 0.45),
     0 6px 28px rgba(0, 0, 0, 0.26);
+  /* three concurrent animations: rise + wobble + sway */
+  animation-name: rise, wobble, sway;
+  animation-timing-function: linear, ease-in-out, ease-in-out;
+  animation-fill-mode: forwards, none, none;
+  animation-iteration-count: 1, infinite, infinite;
+  animation-direction: normal, alternate, alternate;
   /* spring easing for hover scale/rotate snap-back */
   transition:
-    scale    0.5s  cubic-bezier(0.34, 1.56, 0.64, 1),
-    rotate   0.4s  cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale      0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate     0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.2s,
-    filter   0.25s;
+    filter     0.25s;
 }
 
 .bubble--photo:hover {
@@ -71,6 +81,11 @@
 .bubble--plain {
   background-color: rgba(255, 200, 50, 0.04);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+  animation-name: rise, wobble, sway;
+  animation-timing-function: linear, ease-in-out, ease-in-out;
+  animation-fill-mode: forwards, none, none;
+  animation-iteration-count: 1, infinite, infinite;
+  animation-direction: normal, alternate, alternate;
 }
 
 /* ─── glass highlight layer (photo + plain) ─── */
@@ -81,43 +96,42 @@
   border-radius: 50%;
   pointer-events: none;
   background:
-    /* ① wide top-arc crescent — the unmistakable bubble signature */
+    /* ① wide top-arc crescent */
     radial-gradient(
       ellipse 75% 24% at 50% 3%,
       rgba(255, 255, 255, 0.97) 0%,
       rgba(255, 255, 255, 0.22) 55%,
       transparent 100%
     ),
-    /* ② primary catchlight — bright ellipse upper-left */
+    /* ② primary catchlight */
     radial-gradient(
       ellipse 32% 28% at 30% 26%,
       rgba(255, 255, 255, 0.92) 0%,
       transparent 100%
     ),
-    /* ③ secondary tiny sparkle */
+    /* ③ tiny sparkle */
     radial-gradient(
       circle 8% at 63% 30%,
       rgba(255, 255, 255, 0.55) 0%,
       transparent 100%
     ),
-    /* ④ subtle bottom caustic shadow */
+    /* ④ bottom caustic shadow */
     radial-gradient(
       ellipse 55% 18% at 50% 97%,
       rgba(50, 18, 0, 0.3) 0%,
       transparent 60%
     ),
-    /* ⑤ iridescent rim — thicker, brighter, slight warm tint on one side */
+    /* ⑤ iridescent rim */
     radial-gradient(
       circle at 50% 50%,
-      transparent           43%,
+      transparent            43%,
       rgba(255,255,255,0.82) 48%,
       rgba(255,240,180,0.28) 54%,
       rgba(255,255,255,0.06) 60%,
-      transparent           64%
+      transparent            64%
     );
 }
 
-/* plain bubbles: highlights only, no photo competing */
 .bubble--plain::after {
   background:
     radial-gradient(
@@ -133,22 +147,19 @@
     ),
     radial-gradient(
       circle at 50% 50%,
-      transparent           45%,
+      transparent            45%,
       rgba(255,255,255,0.60) 49%,
       rgba(255,240,180,0.20) 55%,
       rgba(255,255,255,0.04) 61%,
-      transparent           65%
+      transparent            65%
     );
 }
 
 /* ─── micro bubbles (foreground layer) ─── */
-.fg-layer { pointer-events: none; }
-
 .bubble--micro {
-  overflow: visible;       /* no clipping needed — just a dot */
+  overflow: visible;
   animation-name: rise-micro;
   pointer-events: none;
-  /* per-bubble randomised highlight — set via JS custom props */
   background-color: rgba(255, 215, 55, var(--ba, 0.05));
   background-image: radial-gradient(
     circle at var(--hx, 38%) var(--hy, 30%),
@@ -156,10 +167,40 @@
     rgba(255, 255, 255, calc(var(--hop, 0.75) * 0.25)) 48%,
     transparent 100%
   );
-  /* no box-shadow — at 1–7px it would dominate and look like a blob */
+}
+
+/* ─── foam head ─── */
+.foam-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 110px;
+  z-index: 40;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 18px rgba(100, 40, 0, 0.28));
+  animation: foam-bob 5s ease-in-out infinite alternate;
 }
 
 /* ─── keyframes ─── */
+
+/* Bubble wobble: subtle border-radius morph to break perfect-circle look */
+@keyframes wobble {
+  0%   { border-radius: 50%; }
+  20%  { border-radius: 53% 47% 52% 48% / 48% 52% 47% 53%; }
+  40%  { border-radius: 47% 53% 49% 51% / 52% 48% 53% 47%; }
+  60%  { border-radius: 51% 49% 54% 46% / 47% 53% 49% 51%; }
+  80%  { border-radius: 48% 52% 47% 53% / 53% 47% 51% 49%; }
+  100% { border-radius: 50%; }
+}
+
+/* Side-to-side sway using CSS individual translate property */
+@keyframes sway {
+  from { translate: calc(var(--sway-amp, 8px) * -1) 0; }
+  to   { translate: var(--sway-amp, 8px) 0; }
+}
+
+/* Main rise — bubbles float up and pop into the foam */
 @keyframes rise {
   0% {
     bottom: -200px;
@@ -168,19 +209,24 @@
   }
   7% {
     opacity: 1;
-    transform: translateX(calc(-50% + calc(var(--drift) * 0.05))) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.05)) scale(1);
   }
   50% {
-    transform: translateX(calc(-50% + calc(var(--drift) * 0.50))) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.50)) scale(1);
+  }
+  86% {
+    opacity: 1;
+    transform: translateX(calc(-50% + var(--drift) * 0.92)) scale(1);
   }
   93% {
-    opacity: 1;
-    transform: translateX(calc(-50% + calc(var(--drift) * 0.95))) scale(1);
+    /* pop flash as bubble hits the foam */
+    opacity: 0.5;
+    transform: translateX(calc(-50% + var(--drift) * 0.97)) scale(1.18);
   }
   100% {
-    bottom: 110vh;
+    bottom: calc(100vh - 80px);
     opacity: 0;
-    transform: translateX(calc(-50% + var(--drift))) scale(0.9);
+    transform: translateX(calc(-50% + var(--drift))) scale(0.25);
   }
 }
 
@@ -192,14 +238,20 @@
   }
   10% {
     opacity: 0.85;
-    transform: translateX(calc(-50% + calc(var(--drift) * 0.08))) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.08)) scale(1);
   }
   88% {
     opacity: 0.85;
   }
   100% {
-    bottom: 104vh;
+    bottom: calc(100vh - 90px);
     opacity: 0;
     transform: translateX(calc(-50% + var(--drift)));
   }
+}
+
+/* Foam layer very gently bobs to feel liquid, not static */
+@keyframes foam-bob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-4px); }
 }

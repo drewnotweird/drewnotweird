@@ -3,14 +3,14 @@ import PintGlass from './components/PintGlass'
 import Lightbox from './components/Lightbox'
 
 export default function App() {
-  const [lightbox, setLightbox] = useState(null) // { src, rect }
+  const [lightbox, setLightbox] = useState(null) // { imgIndex, rect }
 
   return (
     <>
-      <PintGlass onPhotoClick={(src, rect) => setLightbox({ src, rect })} />
+      <PintGlass onPhotoClick={(imgIndex, rect) => setLightbox({ imgIndex, rect })} />
       {lightbox && (
         <Lightbox
-          src={lightbox.src}
+          imgIndex={lightbox.imgIndex}
           clickRect={lightbox.rect}
           onClose={() => setLightbox(null)}
         />
