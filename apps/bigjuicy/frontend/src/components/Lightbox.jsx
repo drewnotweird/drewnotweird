@@ -9,14 +9,18 @@ export default function Lightbox({ imgIndex, clickRect, onClose }) {
   const [navFading, setNavFading]     = useState(false)
   const navFadingRef                  = useRef(false)
   const touchStartX                   = useRef(null)
+  const touchStartY                   = useRef(null)
 
   const src = `${import.meta.env.BASE_URL}photos/${images[currentIndex].src}`
 
+  const isMobile = window.innerWidth <= 600
   const bx       = clickRect.left + clickRect.width  / 2
   const by       = clickRect.top  + clickRect.height / 2
-  const openSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.85)
+  // On mobile: constrain height more so arrows have clear space below the image
+  const openSize = Math.min(window.innerWidth * 0.9, window.innerHeight * (isMobile ? 0.60 : 0.85))
   const cx       = window.innerWidth  / 2
-  const cy       = window.innerHeight / 2
+  // On mobile: centre image in the upper portion, leaving room for arrows below
+  const cy       = isMobile ? window.innerHeight * 0.38 : window.innerHeight / 2
 
   // Open: two rAFs so closed styles paint before transition starts
   useEffect(() => {
@@ -56,13 +60,19 @@ export default function Lightbox({ imgIndex, clickRect, onClose }) {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
-  // Touch swipe to navigate
+  // Touch: horizontal swipe → navigate, vertical swipe down → close
   useEffect(() => {
-    const onStart = (e) => { touchStartX.current = e.touches[0].clientX }
-    const onEnd   = (e) => {
+    const onStart = (e) => {
+      touchStartX.current = e.touches[0].clientX
+      touchStartY.current = e.touches[0].clientY
+    }
+    const onEnd = (e) => {
       if (touchStartX.current === null) return
       const dx = e.changedTouches[0].clientX - touchStartX.current
+      const dy = e.changedTouches[0].clientY - touchStartY.current
       touchStartX.current = null
+      touchStartY.current = null
+      if (dy > 80 && Math.abs(dy) > Math.abs(dx)) { close(); return }
       if (Math.abs(dx) > 50) navigate(dx < 0 ? +1 : -1)
     }
     document.addEventListener('touchstart', onStart)

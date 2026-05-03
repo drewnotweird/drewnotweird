@@ -64,3 +64,19 @@
 
 .lightbox-nav--prev { left: 20px; }
 .lightbox-nav--next { right: 20px; }
+
+@media (max-width: 600px) {
+  .lightbox-nav {
+    top: auto;
+    bottom: max(36px, env(safe-area-inset-bottom, 0px) + 24px);
+    transform: none;
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+  .lightbox-nav:hover {
+    transform: scale(1.1);
+  }
+  .lightbox-nav--prev { left: calc(50% - 68px); }
+  .lightbox-nav--next { right: calc(50% - 68px); }
+}
