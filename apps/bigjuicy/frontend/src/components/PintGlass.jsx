@@ -5,6 +5,8 @@ import './PintGlass.css'
 export default function PintGlass({ onPhotoClick }) {
   const layerRef    = useRef(null)
   const fgLayerRef  = useRef(null)
+  const foamRef     = useRef(null)
+  const dripLayerRef = useRef(null)
   const rafRef      = useRef(null)
   const nextPhotoAt = useRef(0)
   const nextPlainAt = useRef(0)
@@ -138,60 +140,86 @@ export default function PintGlass({ onPhotoClick }) {
     return () => cancelAnimationFrame(rafRef.current)
   }, [])
 
-  // Foam scallop path — viewBox 0 0 1000 110, baseline y=72, scallops dip to ~y=86
-  const foamPath = 'M 0,0 H 1000 V 72 Q 978,100 956,72 Q 940,90 924,72 Q 902,103 880,72 Q 866,88 852,72 Q 829,102 806,72 Q 792,91 778,72 Q 757,99 736,72 Q 723,87 710,72 Q 687.5,101 665,72 Q 650.5,92 636,72 Q 615,97 594,72 Q 580.5,89 567,72 Q 545.5,102 524,72 Q 511,90 498,72 Q 476,101 454,72 Q 440,91 426,72 Q 405,98 384,72 Q 370.5,88 357,72 Q 335.5,101 314,72 Q 300.5,91 287,72 Q 265.5,99 244,72 Q 231,87 218,72 Q 196,103 174,72 Q 160.5,90 147,72 Q 125.5,97 104,72 Q 90.5,88 77,72 Q 55.5,102 34,72 Q 17,92 0,72 Z'
+  // Condensation: static droplets + periodic drips sliding down the foreground glass
+  useEffect(() => {
+    const el = dripLayerRef.current
+    if (!el) return
+    const topMargin = 80 // avoid foam area
+
+    // Static water droplets scattered across the glass surface
+    const count = 55 + Math.floor(Math.random() * 20)
+    for (let i = 0; i < count; i++) {
+      const size = 2.5 + Math.random() * 7
+      const x    = 1  + Math.random() * 98
+      const y    = topMargin + Math.random() * (window.innerHeight - topMargin - 40)
+      const d = document.createElement('div')
+      d.className = 'cond-drop'
+      d.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${y}px`
+      el.appendChild(d)
+    }
+
+    function spawnDrip() {
+      const x   = 2 + Math.random() * 96
+      const y   = topMargin + 10 + Math.random() * 80
+      const w   = 2 + Math.random() * 2
+      const h   = 28 + Math.random() * 36
+      const dur = 3.5 + Math.random() * 4.5
+
+      const d = document.createElement('div')
+      d.className = 'cond-drip'
+      d.style.cssText = `left:${x}%;top:${y}px;width:${w}px;height:${h}px;animation-duration:${dur}s`
+      d.addEventListener('animationend', () => d.remove(), { once: true })
+      el.appendChild(d)
+
+      setTimeout(spawnDrip, 1200 + Math.random() * 2800)
+    }
+
+    // Stagger 3 initial drips
+    setTimeout(spawnDrip, 800)
+    setTimeout(spawnDrip, 2200)
+    setTimeout(spawnDrip, 4100)
+  }, [])
+
+  // Foam head: overlapping circles create an organic, realistic foam edge.
+  // A solid white block (foam-body) covers the top portion and hides the upper
+  // halves of these circles; only the lower arcs peek out, forming the bumpy edge.
+  useEffect(() => {
+    const el = foamRef.current
+    if (!el) return
+    const bodyHeight = 62 // must match .foam-body height in CSS
+
+    // Bottom row — large circles centred just above bodyHeight; lower arcs visible
+    const bottomCount = Math.max(48, Math.ceil(window.innerWidth / 24))
+    for (let i = 0; i < bottomCount; i++) {
+      const size = 28 + Math.random() * 18         // 28–46px diameter
+      const x    = (i / bottomCount) * 100 + (Math.random() - 0.5) * 2
+      const cy   = bodyHeight - size * 0.38 + (Math.random() - 0.5) * 10
+      const b = document.createElement('div')
+      b.className = 'foam-bubble'
+      b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${cy - size / 2}px`
+      el.appendChild(b)
+    }
+    // Upper fill — smaller circles that give the foam body some depth/texture
+    const upperCount = Math.max(32, Math.ceil(window.innerWidth / 34))
+    for (let i = 0; i < upperCount; i++) {
+      const size = 16 + Math.random() * 16         // 16–32px
+      const x    = (i / upperCount) * 100 + (Math.random() - 0.5) * 3
+      const cy   = bodyHeight * 0.5 + (Math.random() - 0.5) * 20
+      const b = document.createElement('div')
+      b.className = 'foam-bubble'
+      b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${cy - size / 2}px`
+      el.appendChild(b)
+    }
+  }, [])
 
   return (
     <div className="scene">
       <div className="bubble-layer" ref={layerRef} />
       <div className="fg-layer"     ref={fgLayerRef} />
-      <svg
-        className="foam-head"
-        viewBox="0 0 1000 110"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="foam-inner" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="rgba(255,252,235,0.18)" />
-            <stop offset="100%" stopColor="rgba(210,165,90,0.12)" />
-          </linearGradient>
-        </defs>
-
-        {/* Main cream foam shape */}
-        <path d={foamPath} fill="#fff9ec" />
-
-        {/* Subtle shading gradient over the foam */}
-        <rect x="0" y="0" width="1000" height="72" fill="url(#foam-inner)" />
-
-        {/* Foam bubble circles for texture */}
-        <circle cx="68"  cy="52" r="14" fill="rgba(255,255,255,0.4)" />
-        <circle cx="148" cy="34" r="21" fill="rgba(255,255,255,0.34)" />
-        <circle cx="238" cy="54" r="12" fill="rgba(255,255,255,0.42)" />
-        <circle cx="308" cy="38" r="18" fill="rgba(255,255,255,0.32)" />
-        <circle cx="405" cy="26" r="23" fill="rgba(255,255,255,0.37)" />
-        <circle cx="482" cy="50" r="13" fill="rgba(255,255,255,0.41)" />
-        <circle cx="568" cy="33" r="20" fill="rgba(255,255,255,0.36)" />
-        <circle cx="644" cy="54" r="12" fill="rgba(255,255,255,0.43)" />
-        <circle cx="724" cy="29" r="22" fill="rgba(255,255,255,0.35)" />
-        <circle cx="812" cy="50" r="15" fill="rgba(255,255,255,0.4)" />
-        <circle cx="890" cy="36" r="19" fill="rgba(255,255,255,0.34)" />
-        <circle cx="960" cy="51" r="14" fill="rgba(255,255,255,0.39)" />
-
-        {/* Catchlight highlights on bubbles */}
-        <circle cx="63"  cy="47" r="4"  fill="rgba(255,255,255,0.72)" />
-        <circle cx="142" cy="28" r="5"  fill="rgba(255,255,255,0.68)" />
-        <circle cx="234" cy="49" r="3"  fill="rgba(255,255,255,0.7)"  />
-        <circle cx="303" cy="33" r="4"  fill="rgba(255,255,255,0.66)" />
-        <circle cx="399" cy="20" r="6"  fill="rgba(255,255,255,0.7)"  />
-        <circle cx="477" cy="44" r="3"  fill="rgba(255,255,255,0.72)" />
-        <circle cx="562" cy="27" r="5"  fill="rgba(255,255,255,0.67)" />
-        <circle cx="639" cy="49" r="3"  fill="rgba(255,255,255,0.71)" />
-        <circle cx="718" cy="23" r="5"  fill="rgba(255,255,255,0.69)" />
-        <circle cx="806" cy="44" r="4"  fill="rgba(255,255,255,0.7)"  />
-        <circle cx="884" cy="30" r="5"  fill="rgba(255,255,255,0.67)" />
-        <circle cx="955" cy="45" r="4"  fill="rgba(255,255,255,0.71)" />
-      </svg>
+      <div className="drip-layer"   ref={dripLayerRef} />
+      {/* foam-bubbles sits behind foam-body; only the circle arcs below bodyHeight show */}
+      <div className="foam-bubbles" ref={foamRef} />
+      <div className="foam-body" />
     </div>
   )
 }
