@@ -103,9 +103,6 @@ export default function Lightbox({ imgIndex, clickRect, onClose }) {
             className="lightbox-nav lightbox-nav--next"
             onClick={e => { e.stopPropagation(); navigate(+1) }}
           >›</button>
-          <div className="lightbox-counter" onClick={e => e.stopPropagation()}>
-            {currentIndex + 1} / {images.length}
-          </div>
         </>
       )}
     </div>
