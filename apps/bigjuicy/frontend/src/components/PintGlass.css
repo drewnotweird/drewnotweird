@@ -225,55 +225,51 @@
   height: 66px;
   z-index: 40;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    #ffffff       0%,
-    #faf6ee      60%,
-    #f4ecda      100%
-  );
-  filter: url(#foam-texture);
-  box-shadow: 0 5px 26px rgba(160, 95, 0, 0.24);
+  /* Two offset repeating-radial layers create a hexagonal bubble-cell pattern */
+  background:
+    radial-gradient(circle, rgba(224,212,188,0.70) 42%, transparent 43%) 0    0    / 11px 11px,
+    radial-gradient(circle, rgba(216,204,178,0.58) 40%, transparent 41%) 5.5px 5.5px / 11px 11px,
+    linear-gradient(to bottom, #ffffff 0%, #faf5ec 55%, #f2e8d3 100%);
+  box-shadow: 0 5px 28px rgba(155, 90, 0, 0.26);
 }
 
-/* ─── condensation layer ─── */
-.drip-layer {
+/* ─── foreground glass highlights ─── */
+.glass-fg {
   position: absolute;
   inset: 0;
-  z-index: 50;
+  z-index: 60;
   pointer-events: none;
-  overflow: hidden;
-}
-
-/* Static water droplets */
-.cond-drop {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 24%,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 250, 230, 0.72) 28%,
-    rgba(255, 240, 200, 0.36) 55%,
-    rgba(255, 225, 160, 0.10) 100%
-  );
-  box-shadow:
-    0 3px 8px  rgba(190, 120, 10, 0.20),
-    0 1px 3px  rgba(200, 140, 20, 0.14),
-    inset 0 -2px 5px rgba(255, 195, 60, 0.16);
-}
-
-/* Drip: rivulet sliding down the glass */
-.cond-drip {
-  position: absolute;
-  border-radius: 40% 40% 50% 50% / 10% 10% 50% 50%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.75) 0%,
-    rgba(255, 248, 220, 0.50) 40%,
-    rgba(255, 235, 180, 0.25) 75%,
-    transparent 100%
-  );
-  animation: drip-fall linear forwards;
-  pointer-events: none;
+  background:
+    /* Left edge — main curved-glass-wall reflection */
+    linear-gradient(to right,
+      rgba(255, 255, 255, 0.72)  0%,
+      rgba(255, 255, 255, 0.38)  1.2%,
+      rgba(255, 255, 255, 0.14)  3%,
+      rgba(255, 255, 255, 0.04)  5.5%,
+      transparent                8%
+    ),
+    /* Left inner secondary highlight — glass thickness */
+    linear-gradient(to right,
+      transparent                8.5%,
+      rgba(255, 255, 255, 0.09)  9.8%,
+      rgba(255, 255, 255, 0.03)  11.5%,
+      transparent                14%
+    ),
+    /* Right edge — main curved-glass-wall reflection */
+    linear-gradient(to left,
+      rgba(255, 255, 255, 0.82)  0%,
+      rgba(255, 255, 255, 0.44)  1.2%,
+      rgba(255, 255, 255, 0.16)  3%,
+      rgba(255, 255, 255, 0.05)  5.5%,
+      transparent                8%
+    ),
+    /* Right inner secondary highlight */
+    linear-gradient(to left,
+      transparent                8.5%,
+      rgba(255, 255, 255, 0.11)  9.8%,
+      rgba(255, 255, 255, 0.04)  11.5%,
+      transparent                14%
+    );
 }
 
 /* ─── keyframes ─── */
@@ -344,10 +340,4 @@
   }
 }
 
-@keyframes drip-fall {
-  0%   { transform: translateY(0);      opacity: 0; }
-  6%   { opacity: 0.75; }
-  90%  { opacity: 0.55; }
-  100% { transform: translateY(105vh);  opacity: 0; }
-}
 

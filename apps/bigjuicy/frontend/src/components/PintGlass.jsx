@@ -6,7 +6,6 @@ export default function PintGlass({ onPhotoClick }) {
   const layerRef    = useRef(null)
   const fgLayerRef  = useRef(null)
   const foamRef     = useRef(null)
-  const dripLayerRef = useRef(null)
   const rafRef      = useRef(null)
   const nextPhotoAt = useRef(0)
   const nextPlainAt = useRef(0)
@@ -140,48 +139,6 @@ export default function PintGlass({ onPhotoClick }) {
     return () => cancelAnimationFrame(rafRef.current)
   }, [])
 
-  // Condensation: static droplets + periodic drips sliding down the foreground glass
-  useEffect(() => {
-    const el = dripLayerRef.current
-    if (!el) return
-    const topMargin = 80 // avoid foam area
-
-    // Static water droplets — mix of small beads and chunky drops
-    const count = 60 + Math.floor(Math.random() * 20)
-    for (let i = 0; i < count; i++) {
-      // Most drops are medium; ~20% are large statement drops
-      const big  = Math.random() < 0.20
-      const size = big ? 16 + Math.random() * 18 : 6 + Math.random() * 12
-      const x    = 1  + Math.random() * 98
-      const y    = topMargin + Math.random() * (window.innerHeight - topMargin - 40)
-      const d = document.createElement('div')
-      d.className = 'cond-drop'
-      d.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${y}px`
-      el.appendChild(d)
-    }
-
-    function spawnDrip() {
-      const x   = 2 + Math.random() * 96
-      const y   = topMargin + 10 + Math.random() * 80
-      const w   = 3 + Math.random() * 3
-      const h   = 40 + Math.random() * 60
-      const dur = 3.5 + Math.random() * 4.5
-
-      const d = document.createElement('div')
-      d.className = 'cond-drip'
-      d.style.cssText = `left:${x}%;top:${y}px;width:${w}px;height:${h}px;animation-duration:${dur}s`
-      d.addEventListener('animationend', () => d.remove(), { once: true })
-      el.appendChild(d)
-
-      setTimeout(spawnDrip, 1200 + Math.random() * 2800)
-    }
-
-    // Stagger 3 initial drips
-    setTimeout(spawnDrip, 800)
-    setTimeout(spawnDrip, 2200)
-    setTimeout(spawnDrip, 4100)
-  }, [])
-
   // Foam head: dense tiny circles at the bottom edge create fine foam texture.
   // foam-body covers the main area; SVG filter adds micro-bubble appearance.
   useEffect(() => {
@@ -189,23 +146,23 @@ export default function PintGlass({ onPhotoClick }) {
     if (!el) return
     const bodyHeight = 66 // must match .foam-body height in CSS
 
-    // Bottom edge — tight pack of small circles; only tiny lower arcs poke below bodyHeight
+    // Bottom edge — circles centred just at bodyHeight so a clear arc protrudes below
     const bottomCount = Math.max(120, Math.ceil(window.innerWidth / 9))
     for (let i = 0; i < bottomCount; i++) {
-      const size = 8 + Math.random() * 10          // 8–18px
+      const size = 10 + Math.random() * 10         // 10–20px
       const x    = (i / bottomCount) * 100 + (Math.random() - 0.5) * 1.2
-      const cy   = bodyHeight - size * 0.30 + (Math.random() - 0.5) * 5
+      const cy   = bodyHeight + (Math.random() - 0.5) * 5  // centred ~at the edge
       const b = document.createElement('div')
       b.className = 'foam-bubble'
       b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${cy - size / 2}px`
       el.appendChild(b)
     }
-    // Second row — offset for denser coverage
+    // Second row — offset, slightly higher, fills gaps
     const midCount = Math.max(80, Math.ceil(window.innerWidth / 13))
     for (let i = 0; i < midCount; i++) {
-      const size = 6 + Math.random() * 8           // 6–14px
+      const size = 7 + Math.random() * 8           // 7–15px
       const x    = (i / midCount) * 100 + (50 / midCount) + (Math.random() - 0.5) * 1.5
-      const cy   = bodyHeight - size * 0.55 + (Math.random() - 0.5) * 4
+      const cy   = bodyHeight - size * 0.4 + (Math.random() - 0.5) * 4
       const b = document.createElement('div')
       b.className = 'foam-bubble'
       b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${cy - size / 2}px`
@@ -215,27 +172,13 @@ export default function PintGlass({ onPhotoClick }) {
 
   return (
     <div className="scene">
-      {/* SVG filter: feTurbulence noise makes foam-body look like densely packed micro-bubbles */}
-      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden>
-        <defs>
-          <filter id="foam-texture" x="0%" y="0%" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.82 0.68" numOctaves="4" stitchTiles="stitch" result="noise"/>
-            <feColorMatrix type="matrix"
-              values="0 0 0 0 1
-                      0 0 0 0 0.97
-                      0 0 0 0 0.92
-                      0 0 0 28 -11"
-              result="cells"/>
-            <feComposite in="cells" in2="SourceAlpha" operator="in"/>
-          </filter>
-        </defs>
-      </svg>
       <div className="bubble-layer" ref={layerRef} />
       <div className="fg-layer"     ref={fgLayerRef} />
-      <div className="drip-layer"   ref={dripLayerRef} />
       {/* foam-bubbles sits behind foam-body; fine circle arcs at bottom edge show below */}
       <div className="foam-bubbles" ref={foamRef} />
       <div className="foam-body" />
+      {/* glass-fg: edge highlights simulating cylindrical glass curvature */}
+      <div className="glass-fg" />
     </div>
   )
 }
