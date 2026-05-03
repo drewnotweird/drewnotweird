@@ -46,19 +46,34 @@ export default function PintGlass({ onPhotoClick }) {
       b.style.setProperty('--photo-url', `url('${import.meta.env.BASE_URL}photos/${img.src}')`)
       if (baseFilter) b.style.filter = baseFilter
 
+      let rotTarget = 0
+      let rotCurrent = 0
+      let rotRaf = null
+      const lerp = () => {
+        rotCurrent += (rotTarget - rotCurrent) * 0.18
+        b.style.rotate = `${rotCurrent.toFixed(2)}deg`
+        if (Math.abs(rotTarget - rotCurrent) > 0.05) {
+          rotRaf = requestAnimationFrame(lerp)
+        } else {
+          b.style.rotate = rotTarget === 0 ? '' : `${rotTarget.toFixed(2)}deg`
+          rotRaf = null
+        }
+      }
+
       b.addEventListener('mouseenter', () => {
         b.style.scale  = '1.12'
         b.style.filter = baseFilter ? `${baseFilter} brightness(1.10)` : 'brightness(1.10)'
       })
       b.addEventListener('mousemove', (e) => {
         const r  = b.getBoundingClientRect()
-        const rx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2)
-        b.style.rotate = `${rx * 5}deg`
+        rotTarget = ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * 5
+        if (!rotRaf) rotRaf = requestAnimationFrame(lerp)
       })
       b.addEventListener('mouseleave', () => {
+        rotTarget = 0
         b.style.scale  = ''
-        b.style.rotate = ''
         b.style.filter = baseFilter || ''
+        if (!rotRaf) rotRaf = requestAnimationFrame(lerp)
       })
 
       b.addEventListener('click', () => {
