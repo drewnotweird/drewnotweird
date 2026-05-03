@@ -36,6 +36,7 @@ export default function Home() {
             className="project"
           >
             <div className="project-bg" style={{ backgroundImage: `url(${project.cover})` }} />
+            <div className="project-scrim" style={{ '--scrim-color': project.scrimColor }} />
             <span>{project.title}</span>
           </Link>
         </section>

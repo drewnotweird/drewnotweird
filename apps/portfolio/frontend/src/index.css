@@ -111,11 +111,24 @@ section.work {
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: transform 0.6s ease;
+  transition: transform 3s ease;
 }
 
 .project:hover .project-bg {
-  transform: scale(1.05);
+  transform: scale(1.1);
+}
+
+.project-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim-color, #000000);
+  opacity: 0;
+  transition: opacity 3s ease;
+  z-index: 1;
+}
+
+.project:hover .project-scrim {
+  opacity: 0.35;
 }
 
 /* Title is fixed to viewport but clipped by the .project container above */
