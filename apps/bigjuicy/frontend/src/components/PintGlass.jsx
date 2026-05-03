@@ -140,15 +140,15 @@ export default function PintGlass({ onPhotoClick }) {
     function tick(t) {
       if (t >= nextPhotoAt.current) {
         spawnPhoto()
-        nextPhotoAt.current = t + 1700 + Math.random() * 400
+        nextPhotoAt.current = t + 900 + Math.random() * 300
       }
       if (t >= nextPlainAt.current) {
         spawnPlain()
-        nextPlainAt.current = t + 450 + Math.random() * 200
+        nextPlainAt.current = t + 350 + Math.random() * 150
       }
       if (t >= nextClusterAt.current) {
         spawnCluster()
-        nextClusterAt.current = t + 300 + Math.random() * 150
+        nextClusterAt.current = t + 240 + Math.random() * 120
       }
       rafRef.current = requestAnimationFrame(tick)
     }
