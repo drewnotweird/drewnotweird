@@ -5,7 +5,6 @@ import './PintGlass.css'
 export default function PintGlass({ onPhotoClick }) {
   const layerRef    = useRef(null)
   const fgLayerRef  = useRef(null)
-  const foamRef     = useRef(null)
   const rafRef      = useRef(null)
   const nextPhotoAt = useRef(0)
   const nextPlainAt = useRef(0)
@@ -85,8 +84,8 @@ export default function PintGlass({ onPhotoClick }) {
       el.appendChild(b)
     }
 
-    function spawnCluster(seeded = false) {
-      const cx    = 4 + Math.random() * 92
+    function spawnCluster(seeded = false, clickX = null) {
+      const cx    = clickX ?? (4 + Math.random() * 92)
       const count = 12 + Math.floor(Math.random() * 14)
 
       for (let i = 0; i < count; i++) {
@@ -135,49 +134,22 @@ export default function PintGlass({ onPhotoClick }) {
       }
       rafRef.current = requestAnimationFrame(tick)
     }
+    // Clicking empty beer spawns a bubble cluster at that point
+    el.addEventListener('click', (e) => {
+      if (e.target !== el) return
+      spawnCluster(false, (e.clientX / window.innerWidth) * 100)
+    })
+
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
   }, [])
 
-  // Foam head: dense tiny circles at the bottom edge create fine foam texture.
-  // foam-body covers the main area; SVG filter adds micro-bubble appearance.
-  useEffect(() => {
-    const el = foamRef.current
-    if (!el) return
-    const bodyHeight = 66 // must match .foam-body height in CSS
-
-    // Bottom edge — circles centred just at bodyHeight so a clear arc protrudes below
-    const bottomCount = Math.max(120, Math.ceil(window.innerWidth / 9))
-    for (let i = 0; i < bottomCount; i++) {
-      const size = 10 + Math.random() * 10         // 10–20px
-      const x    = (i / bottomCount) * 100 + (Math.random() - 0.5) * 1.2
-      const cy   = bodyHeight + (Math.random() - 0.5) * 5  // centred ~at the edge
-      const b = document.createElement('div')
-      b.className = 'foam-bubble'
-      b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${cy - size / 2}px`
-      el.appendChild(b)
-    }
-    // Second row — offset, slightly higher, fills gaps
-    const midCount = Math.max(80, Math.ceil(window.innerWidth / 13))
-    for (let i = 0; i < midCount; i++) {
-      const size = 7 + Math.random() * 8           // 7–15px
-      const x    = (i / midCount) * 100 + (50 / midCount) + (Math.random() - 0.5) * 1.5
-      const cy   = bodyHeight - size * 0.4 + (Math.random() - 0.5) * 4
-      const b = document.createElement('div')
-      b.className = 'foam-bubble'
-      b.style.cssText = `width:${size}px;height:${size}px;left:${x}%;top:${cy - size / 2}px`
-      el.appendChild(b)
-    }
-  }, [])
 
   return (
     <div className="scene">
       <div className="bubble-layer" ref={layerRef} />
       <div className="fg-layer"     ref={fgLayerRef} />
-      {/* foam-bubbles sits behind foam-body; fine circle arcs at bottom edge show below */}
-      <div className="foam-bubbles" ref={foamRef} />
       <div className="foam-body" />
-      {/* glass-fg: edge highlights simulating cylindrical glass curvature */}
       <div className="glass-fg" />
     </div>
   )

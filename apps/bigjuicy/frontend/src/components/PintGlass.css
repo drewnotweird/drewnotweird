@@ -190,27 +190,31 @@
   );
 }
 
-/* ─── foam head ───
-   Single element; JS computes a wavy clip-path for the organic bottom edge.
-   drop-shadow filter follows the clipped shape automatically.
-─── */
+/* ─── foam head ─── */
 .foam-body {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 100px; /* accommodates base height + deepest bubble bump */
+  height: 68px;
   z-index: 40;
   pointer-events: none;
-  background:
-    /* subtle dome highlight — foam head catches light at top */
-    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 100%),
-    /* warm edge shading — foam thins against glass */
-    radial-gradient(ellipse 12% 100% at 0%   50%, rgba(240,225,195,0.40) 0%, transparent 100%),
-    radial-gradient(ellipse 12% 100% at 100% 50%, rgba(240,225,195,0.40) 0%, transparent 100%),
-    /* base gradient */
-    linear-gradient(to bottom, #ffffff 0%, #faf5ec 55%, #f1e7d2 100%);
-  filter: drop-shadow(0 7px 18px rgba(148, 82, 0, 0.30));
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(140, 78, 0, 0.22);
+}
+
+/* ─── scene vignette — dark rim makes it feel like looking through a glass ─── */
+.scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 65;
+  background: radial-gradient(ellipse 95% 95% at 50% 50%,
+    transparent              50%,
+    rgba(100, 45, 0, 0.18)   72%,
+    rgba(60,  22, 0, 0.42)   100%
+  );
 }
 
 /* ─── foreground glass highlights ─── */

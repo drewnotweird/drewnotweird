@@ -64,3 +64,16 @@
 
 .lightbox-nav--prev { left: 20px; }
 .lightbox-nav--next { right: 20px; }
+
+.lightbox-counter {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 102;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  letter-spacing: 0.10em;
+  pointer-events: none;
+  user-select: none;
+}
