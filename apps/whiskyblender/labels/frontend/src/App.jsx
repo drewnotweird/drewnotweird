@@ -154,6 +154,32 @@ function LabelPage({ dims, cropsFile, pageBackground, children }) {
   );
 }
 
+// ─── Reference tag (small rotated monospace text on right edge) ─────────────
+
+function ReferenceTag({ dims, value, color }) {
+  if (!value) return null;
+  return (
+    <div style={{
+      position: 'absolute',
+      right: dims.refRight,
+      top: dims.refTop,
+      height: 20,
+      width: 80,
+      transform: 'rotate(-90deg)',
+      textAlign: 'right',
+      zIndex: 2,
+      opacity: 0.6,
+      fontFamily: '"Roboto Mono", monospace',
+      fontSize: dims.refFontSize,
+      lineHeight: `${dims.refFontSize + 2}px`,
+      color: color || '#000000',
+      textShadow: 'none',
+    }}>
+      {value}
+    </div>
+  );
+}
+
 // ─── Tampa Whisky Club label ──────────────────────────────────────────────────
 
 const TAMPA_COLORS = {
@@ -293,6 +319,7 @@ function TampaOutput({ formData, onBack }) {
         }}>
           <div ref={seriesRef}>{formData.series}</div>
         </div>
+        <ReferenceTag dims={dims} value={formData.reference} color="#000000" />
       </LabelPage>
     </OutputWrapper>
   );
@@ -366,6 +393,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
           baseUrl={baseUrl}
           {...roundelPanelProps(dims)}
         />
+        <ReferenceTag dims={dims} value={formData.reference} color="#ffffff" />
       </LabelPage>
     </OutputWrapper>
   );
@@ -446,6 +474,7 @@ function BlendedMaltOutput({ baseLabel, formData, onBack }) {
             {formData.createdBy}
           </div>
         </div>
+        <ReferenceTag dims={dims} value={formData.reference} color={fgColor} />
       </LabelPage>
     </OutputWrapper>
   );
@@ -470,6 +499,7 @@ function BlendedSingleImageOutput({ baseLabel, formData, onBack }) {
             zIndex: 1,
           }} />
         )}
+        <ReferenceTag dims={dims} value={formData.reference} color="#000000" />
       </LabelPage>
     </OutputWrapper>
   );
@@ -609,6 +639,7 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
             baseUrl={baseUrl}
           />
         )}
+        <ReferenceTag dims={dims} value={formData.reference} color={fgColor} />
       </LabelPage>
     </OutputWrapper>
   );
