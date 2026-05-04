@@ -689,6 +689,13 @@ const BASE_TABS = [
   { heading: '500ml', filter: b => b.size === '500ml' },
   { heading: '200ml', filter: b => b.size === '200ml' },
   { heading: 'Other', filter: b => b.size !== '500ml' && b.size !== '200ml' },
+  { heading: 'Legacy', legacy: true },
+];
+
+const LEGACY_LINKS = [
+  { label: 'Core label generator', url: 'https://www.drewnotweird.com/whiskyblender/label/' },
+  { label: 'Tampa label generator', url: 'https://www.drewnotweird.com/whiskyblender/tampa/' },
+  { label: 'Single malts label generator', url: 'https://www.drewnotweird.com/whiskyblender/singlemalts/' },
 ];
 
 function StepOne() {
@@ -714,13 +721,23 @@ function StepOne() {
             </button>
           ))}
         </div>
-        <div className="base-grid">
-          {BASE_LABELS.filter(tab.filter).map(base => (
-            <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
-              <span className="base-card__name">{base.name.charAt(0).toUpperCase() + base.name.slice(1)}</span>
-            </button>
-          ))}
-        </div>
+        {tab.legacy ? (
+          <div className="legacy-links">
+            {LEGACY_LINKS.map(({ label, url }) => (
+              <a key={url} href={url} className="legacy-link" target="_blank" rel="noopener noreferrer">
+                {label}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="base-grid">
+            {BASE_LABELS.filter(tab.filter).map(base => (
+              <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
+                <span className="base-card__name">{base.name.charAt(0).toUpperCase() + base.name.slice(1)}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </AppShell>
   );

@@ -61,8 +61,8 @@ button {
   margin: 0 auto;
   padding: 14px 20px;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 14px;
 }
 
 .app-header__brand {
@@ -87,6 +87,9 @@ button {
   font-size: 0.75rem;
   color: var(--text-dim);
   letter-spacing: 0.03em;
+  padding-left: 14px;
+  border-left: 1px solid rgba(200, 160, 74, 0.25);
+  line-height: 1;
 }
 
 /* ─── Main content ─────────────────────────────────────────────────────────── */
@@ -169,6 +172,32 @@ button {
 .base-tab--active {
   color: var(--gold);
   border-bottom-color: var(--gold);
+}
+
+/* ─── Legacy links ─────────────────────────────────────────────────────────── */
+
+.legacy-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legacy-link {
+  display: block;
+  padding: 14px 20px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.legacy-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 /* ─── Base label cards ─────────────────────────────────────────────────────── */
