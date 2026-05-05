@@ -57,11 +57,11 @@
   animation-iteration-count: 1;
   transform: translateX(-50%) translateY(200px) scale(0.1);
   overflow: hidden;
-  will-change: transform, translate, opacity;
 }
 
 /* ─── photo bubble ─── */
 .bubble--photo {
+  will-change: transform, translate, opacity;
   cursor: pointer;
   background-color: rgba(255, 195, 80, 0.05);
   box-shadow:

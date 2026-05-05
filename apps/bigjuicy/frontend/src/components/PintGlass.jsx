@@ -12,6 +12,10 @@ export default function PintGlass({ onPhotoClick }) {
   const onClickRef  = useRef(onPhotoClick)
   useEffect(() => { onClickRef.current = onPhotoClick }, [onPhotoClick])
 
+  const isMobile  = window.innerWidth <= 768 || ('ontouchstart' in window)
+  const isLowPerf = isMobile || !!(navigator.connection &&
+    ['slow-2g', '2g'].includes(navigator.connection.effectiveType))
+
   useEffect(() => {
     const el   = layerRef.current
     const fgEl = fgLayerRef.current
@@ -37,7 +41,7 @@ export default function PintGlass({ onPhotoClick }) {
       const swayDur   = 2.5 + Math.random() * 3.5
       const swayAmp   = 6   + Math.random() * 12
       // depth-of-field: smaller bubbles appear slightly out of focus
-      const blurPx    = Math.max(0, (75 - size) / 60 * 0.7)
+      const blurPx    = isLowPerf ? 0 : Math.max(0, (75 - size) / 60 * 0.7)
       const baseFilter = blurPx > 0.05 ? `blur(${blurPx.toFixed(2)}px)` : ''
 
       const b = document.createElement('div')
@@ -60,21 +64,23 @@ export default function PintGlass({ onPhotoClick }) {
         }
       }
 
-      b.addEventListener('mouseenter', () => {
-        b.style.scale  = '1.12'
-        b.style.filter = baseFilter ? `${baseFilter} brightness(1.10)` : 'brightness(1.10)'
-      })
-      b.addEventListener('mousemove', (e) => {
-        const r  = b.getBoundingClientRect()
-        rotTarget = ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * 5
-        if (!rotRaf) rotRaf = requestAnimationFrame(lerp)
-      })
-      b.addEventListener('mouseleave', () => {
-        rotTarget = 0
-        b.style.scale  = ''
-        b.style.filter = baseFilter || ''
-        if (!rotRaf) rotRaf = requestAnimationFrame(lerp)
-      })
+      if (!isMobile) {
+        b.addEventListener('mouseenter', () => {
+          b.style.scale  = '1.12'
+          b.style.filter = baseFilter ? `${baseFilter} brightness(1.10)` : 'brightness(1.10)'
+        })
+        b.addEventListener('mousemove', (e) => {
+          const r  = b.getBoundingClientRect()
+          rotTarget = ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * 5
+          if (!rotRaf) rotRaf = requestAnimationFrame(lerp)
+        })
+        b.addEventListener('mouseleave', () => {
+          rotTarget = 0
+          b.style.scale  = ''
+          b.style.filter = baseFilter || ''
+          if (!rotRaf) rotRaf = requestAnimationFrame(lerp)
+        })
+      }
 
       b.addEventListener('click', () => {
         const rect = b.getBoundingClientRect()
@@ -105,7 +111,7 @@ export default function PintGlass({ onPhotoClick }) {
 
     function spawnCluster(seeded = false, clickX = null) {
       const cx    = clickX ?? (4 + Math.random() * 92)
-      const count = 12 + Math.floor(Math.random() * 14)
+      const count = isLowPerf ? 5 + Math.floor(Math.random() * 6) : 12 + Math.floor(Math.random() * 14)
 
       for (let i = 0; i < count; i++) {
         const size  = 1.5 + Math.random() ** 1.8 * 5.5
@@ -133,22 +139,22 @@ export default function PintGlass({ onPhotoClick }) {
       }
     }
 
-    for (let i = 0; i < 18; i++) spawnPhoto(true)
-    for (let i = 0; i < 16; i++) spawnPlain(true)
-    for (let i = 0; i < 10; i++) spawnCluster(true)
+    for (let i = 0; i < (isLowPerf ? 8 : 18); i++) spawnPhoto(true)
+    for (let i = 0; i < (isLowPerf ? 6 : 16); i++) spawnPlain(true)
+    for (let i = 0; i < (isLowPerf ? 3 : 10); i++) spawnCluster(true)
 
     function tick(t) {
       if (t >= nextPhotoAt.current) {
         spawnPhoto()
-        nextPhotoAt.current = t + 900 + Math.random() * 300
+        nextPhotoAt.current = t + (isLowPerf ? 1800 : 900) + Math.random() * (isLowPerf ? 600 : 300)
       }
       if (t >= nextPlainAt.current) {
         spawnPlain()
-        nextPlainAt.current = t + 350 + Math.random() * 150
+        nextPlainAt.current = t + (isLowPerf ? 700 : 350) + Math.random() * (isLowPerf ? 300 : 150)
       }
       if (t >= nextClusterAt.current) {
         spawnCluster()
-        nextClusterAt.current = t + 240 + Math.random() * 120
+        nextClusterAt.current = t + (isLowPerf ? 700 : 240) + Math.random() * (isLowPerf ? 280 : 120)
       }
       rafRef.current = requestAnimationFrame(tick)
     }
