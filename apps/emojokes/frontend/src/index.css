@@ -1,8 +1,18 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+@keyframes anchor-swivel {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(8deg); }
+  75%  { transform: rotate(-8deg); }
+  100% { transform: rotate(0deg); }
+}
+.anchor-idle {
+  animation: anchor-swivel 2.8s ease-in-out infinite;
+}
+
 @keyframes anchor-spin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 .anchor-spinning {
   animation: anchor-spin 1.2s ease-in-out;

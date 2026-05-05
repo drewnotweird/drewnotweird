@@ -3,13 +3,27 @@ import Matter from 'matter-js'
 import { JOKES } from '../data/jokes.js'
 
 const WIDE = window.innerWidth >= 1024
-const R = WIDE ? 80 : 40
+const MOBILE = window.innerWidth < 768
+const BATCH_SIZE = MOBILE ? Math.ceil(JOKES.length / 2) : JOKES.length
+const PASTELS = [
+  'hsl(0,60%,94%)',   'hsl(14,62%,94%)',  'hsl(28,64%,94%)',  'hsl(42,62%,94%)',
+  'hsl(56,58%,94%)',  'hsl(72,54%,94%)',  'hsl(88,50%,94%)',  'hsl(104,50%,94%)',
+  'hsl(120,50%,94%)', 'hsl(138,50%,94%)', 'hsl(154,50%,94%)', 'hsl(170,50%,94%)',
+  'hsl(186,52%,94%)', 'hsl(202,55%,94%)', 'hsl(218,55%,94%)', 'hsl(234,54%,94%)',
+  'hsl(250,56%,94%)', 'hsl(266,58%,94%)', 'hsl(282,58%,94%)', 'hsl(298,58%,94%)',
+  'hsl(314,60%,94%)', 'hsl(330,62%,94%)', 'hsl(346,62%,94%)',
+  'hsl(60,70%,91%)',  'hsl(180,70%,91%)', 'hsl(300,70%,91%)', 'hsl(0,70%,91%)',
+  'hsl(120,70%,91%)', 'hsl(240,70%,91%)',
+]
+const PASTEL = (id) => PASTELS[id % PASTELS.length]
+const R = Math.max(24, Math.min(72, Math.floor(Math.sqrt(window.innerWidth * window.innerHeight * 1.0 / (BATCH_SIZE * Math.PI)))))
 const EXP_W = WIDE ? 460 : 340
 const EXP_H = WIDE ? 400 : 360
-const REPEL_R = WIDE ? 120 : 90
+const REPEL_R = Math.round(R * 1.5)
 const REPEL_F = 0.0025
 const TRANSITION = 380
 const STAGGER = 180
+const POP_STAGGER = 55
 const CAT_NORMAL = 0x0001
 
 export default function PhysicsScene() {
@@ -29,7 +43,9 @@ export default function PhysicsScene() {
   const nextRestoreRef = useRef(0)
   const restoreIdxRef = useRef(0)
   const shuffleTimerIds = useRef([])
+  const nextDropIdxRef = useRef(BATCH_SIZE)
   const [expandedId, setExpandedId] = useState(null)
+  const [scrimVisible, setScrimVisible] = useState(false)
   const [textVisibleId, setTextVisibleId] = useState(null)
   const [punchlineVisibleId, setPunchlineVisibleId] = useState(null)
   const TEXT_FADE = 220  // ms for text fade in/out
@@ -39,6 +55,7 @@ export default function PhysicsScene() {
   useEffect(() => {
     const container = containerRef.current
     const engine = Matter.Engine.create()
+    engine.gravity.y = 1.0
     const world = engine.world
     engineRef.current = engine
     worldRef.current = world
@@ -82,27 +99,29 @@ export default function PhysicsScene() {
     shuffleAnchorRef.current = anchor
     Matter.World.add(world, anchor)
 
-    // Create all bodies high off-screen but don't add to world yet — stagger the drops
-    const staggerIds = []
+    // Create all bodies (don't add to world yet)
     JOKES.forEach((joke, i) => {
       const cols = Math.max(1, Math.floor(W / (R * 2 + 10)))
       const col = i % cols
       const row = Math.floor(i / cols)
       const x = R + 10 + col * (R * 2 + 10) + (row % 2) * R
       const y = -R * 2
-
-      const body = Matter.Bodies.circle(x, y, R, {
-        restitution: 0.65,
+      bodyMap.current[joke.id] = Matter.Bodies.circle(x, y, R, {
+        restitution: 0.35,
         friction: 0.05,
-        frictionAir: 0.008,
+        frictionAir: 0.02,
         label: String(joke.id),
         collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
       })
-      bodyMap.current[joke.id] = body
+    })
 
+    // Stagger-drop only the initial batch
+    const staggerIds = []
+    const initialBatch = MOBILE ? JOKES.slice(0, BATCH_SIZE) : JOKES
+    initialBatch.forEach((joke, i) => {
       staggerIds.push(setTimeout(() => {
         if (worldRef.current) {
-          Matter.World.add(worldRef.current, body)
+          Matter.World.add(worldRef.current, bodyMap.current[joke.id])
           const el = elMap.current[joke.id]
           if (el) el.style.opacity = '1'
         }
@@ -191,8 +210,9 @@ export default function PhysicsScene() {
       })
       .sort((a, b) => bodyMap.current[b.id].position.y - bodyMap.current[a.id].position.y)
 
-    const half = Math.ceil(active.length / 2)
-    active.slice(0, half).forEach(({ id }, i) => {
+    const popBodies = active.slice(0, 25)
+
+    popBodies.forEach(({ id }, i) => {
       const tid = setTimeout(() => {
         const body = bodyMap.current[id]
         const el = elMap.current[id]
@@ -210,19 +230,38 @@ export default function PhysicsScene() {
         setTimeout(() => ring.remove(), 380)
         setTimeout(() => {
           Matter.World.remove(worldRef.current, body)
+          el.style.opacity = '0'
           el.style.animation = ''
           el.style.transition = ''
-          restoreQueueRef.current.push(id)
+          if (!MOBILE) restoreQueueRef.current.push(id)
         }, 300)
-      }, i * STAGGER)
+      }, i * POP_STAGGER)
       shuffleTimerIds.current.push(tid)
     })
+
+    if (MOBILE) {
+      const nextIdx = nextDropIdxRef.current % JOKES.length
+      nextDropIdxRef.current = (nextDropIdxRef.current + 25) % JOKES.length
+      const totalPopTime = (popBodies.length - 1) * POP_STAGGER + 350
+      const restoreTid = setTimeout(() => {
+        restoreIdxRef.current = 0
+        for (let i = 0; i < 25; i++) {
+          const { id } = JOKES[(nextIdx + i) % JOKES.length]
+          handsOffRef.current.delete(id)
+          shufflingRef.current.delete(id)
+          restoreQueueRef.current.push(id)
+        }
+        nextRestoreRef.current = performance.now()
+      }, totalPopTime)
+      shuffleTimerIds.current.push(restoreTid)
+    }
 
     const el = anchorSpinnerRef.current
     if (el) {
       el.classList.remove('anchor-spinning')
       void el.offsetWidth
       el.classList.add('anchor-spinning')
+      setTimeout(() => el.classList.remove('anchor-spinning'), 1200)
     }
   }, [])
 
@@ -234,7 +273,7 @@ export default function PhysicsScene() {
     const W = containerRef.current.clientWidth
 
     handsOffRef.current.add(id)
-    // Fade text out and card out simultaneously
+    setScrimVisible(false)
     setTextVisibleId(null)
     setPunchlineVisibleId(null)
     el.style.transition = `opacity ${TEXT_FADE}ms ease`
@@ -249,7 +288,7 @@ export default function PhysicsScene() {
       el.style.height = `${R * 2}px`
       el.style.borderRadius = '50%'
       el.style.zIndex = '1'
-      el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
+      el.style.boxShadow = 'none'
       el.style.left = '0'
       el.style.top = '0'
       el.style.transition = ''
@@ -289,16 +328,16 @@ export default function PhysicsScene() {
     void el.offsetWidth // force reflow so browser registers starting position
 
     const expW = Math.min(EXP_W, W - 32)
-    el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease, box-shadow ${TRANSITION}ms ease`
+    el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease`
     el.style.width = `${expW}px`
     el.style.height = `${EXP_H}px`
     el.style.borderRadius = '24px'
     el.style.left = `${W / 2 - expW / 2}px`
     el.style.top = `${H / 2 - EXP_H / 2}px`
     el.style.zIndex = '10'
-    el.style.boxShadow = '0 8px 40px rgba(0,0,0,0.2)'
 
     setExpandedId(id)
+    setScrimVisible(true)
     // Fade setup in after card has finished opening, then punchline 1s later
     setTimeout(() => setTextVisibleId(id), TRANSITION + 40)
     setTimeout(() => setPunchlineVisibleId(id), TRANSITION + 40 + 1000)
@@ -346,7 +385,14 @@ export default function PhysicsScene() {
 
   const handleMouseMove = useCallback((e) => {
     const rect = containerRef.current.getBoundingClientRect()
-    cursorRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    cursorRef.current = { x, y }
+    const W = containerRef.current.clientWidth
+    const H = containerRef.current.clientHeight
+    const dx = x - W / 2
+    const dy = y - H / 2
+    containerRef.current.style.cursor = Math.sqrt(dx * dx + dy * dy) <= R ? 'pointer' : ''
   }, [])
 
   const handleTouchMove = useCallback((e) => {
@@ -358,7 +404,7 @@ export default function PhysicsScene() {
   return (
     <div
       ref={containerRef}
-      style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#f6f0d1', overflow: 'hidden' }}
+      style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#fefdf9', overflow: 'hidden' }}
       onClick={handleContainerClick}
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
@@ -374,8 +420,8 @@ export default function PhysicsScene() {
               width: R * 2,
               height: R * 2,
               borderRadius: '50%',
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+              background: PASTEL(joke.id),
+              boxShadow: 'none',
               cursor: 'pointer',
               userSelect: 'none',
               WebkitUserSelect: 'none',
@@ -462,6 +508,7 @@ export default function PhysicsScene() {
       }}>
         <div
           ref={anchorSpinnerRef}
+          className="anchor-idle"
           style={{ width: R * 2, height: R * 2, borderRadius: '50%', background: '#111', position: 'relative' }}
         >
           <svg
@@ -494,9 +541,11 @@ export default function PhysicsScene() {
       <div
         style={{
           position: 'absolute', inset: 0,
-          background: 'rgba(0,0,0,0.25)',
-          opacity: expandedId !== null ? 1 : 0,
-          transition: 'opacity 0.3s ease',
+          background: 'rgba(255,255,255,0.6)',
+          opacity: scrimVisible ? 1 : 0,
+          backdropFilter: scrimVisible ? 'blur(6px)' : 'blur(0px)',
+          WebkitBackdropFilter: scrimVisible ? 'blur(6px)' : 'blur(0px)',
+          transition: 'opacity 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease',
           pointerEvents: expandedId !== null ? 'all' : 'none',
           zIndex: 5,
         }}

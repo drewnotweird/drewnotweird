@@ -49,15 +49,15 @@
 /* ─── shared bubble base ─── */
 .bubble {
   position: absolute;
-  bottom: -200px;
+  bottom: 0;
   border-radius: 50%;
   animation-name: rise;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
-  transform: translateX(-50%) scale(0.1);
+  transform: translateX(-50%) translateY(200px) scale(0.1);
   overflow: hidden;
-  will-change: bottom, transform, translate, opacity;
+  will-change: transform, translate, opacity;
 }
 
 /* ─── photo bubble ─── */
@@ -257,52 +257,50 @@
 }
 
 /* Main rise — bubbles float up and pop into the foam */
+/* Y values computed so translateY(200px) at bottom:0 = 200px below viewport,
+   translateY(calc(80px - 100vh)) = just below foam at 80px from top */
 @keyframes rise {
   0% {
-    bottom: -200px;
     opacity: 0;
-    transform: translateX(-50%) scale(0.12);
+    transform: translateX(-50%) translateY(200px) scale(0.12);
   }
   7% {
     opacity: 1;
-    transform: translateX(calc(-50% + var(--drift) * 0.05)) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.05)) translateY(calc(191.6px - 7vh)) scale(1);
   }
   50% {
-    transform: translateX(calc(-50% + var(--drift) * 0.50)) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.50)) translateY(calc(140px - 50vh)) scale(1);
   }
   86% {
     opacity: 1;
-    transform: translateX(calc(-50% + var(--drift) * 0.92)) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.92)) translateY(calc(96.8px - 86vh)) scale(1);
   }
   93% {
     /* pop flash as bubble hits the foam */
     opacity: 0.5;
-    transform: translateX(calc(-50% + var(--drift) * 0.97)) scale(1.18);
+    transform: translateX(calc(-50% + var(--drift) * 0.97)) translateY(calc(88.4px - 93vh)) scale(1.18);
   }
   100% {
-    bottom: calc(100vh - 80px);
     opacity: 0;
-    transform: translateX(calc(-50% + var(--drift))) scale(0.25);
+    transform: translateX(calc(-50% + var(--drift))) translateY(calc(80px - 100vh)) scale(0.25);
   }
 }
 
 @keyframes rise-micro {
   0% {
-    bottom: -6px;
     opacity: 0;
-    transform: translateX(-50%) scale(0.4);
+    transform: translateX(-50%) translateY(6px) scale(0.4);
   }
   10% {
     opacity: 0.85;
-    transform: translateX(calc(-50% + var(--drift) * 0.08)) scale(1);
+    transform: translateX(calc(-50% + var(--drift) * 0.08)) translateY(calc(13.8px - 10vh)) scale(1);
   }
   88% {
     opacity: 0.85;
   }
   100% {
-    bottom: calc(100vh - 90px);
     opacity: 0;
-    transform: translateX(calc(-50% + var(--drift)));
+    transform: translateX(calc(-50% + var(--drift))) translateY(calc(90px - 100vh));
   }
 }
 

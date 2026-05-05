@@ -6,11 +6,12 @@ import { BASE_LABELS, ALL_TEMPLATES, getTemplatesForBase, LABEL_DIMS, COLOR_PALE
 
 // Form field key → URL param name
 const FIELD_TO_PARAM = {
-  blendName:    'blend-name',
-  createdBy:    'created-by',
-  distillery:   'distillery',
-  reference:    'reference',
-  color:        'color',
+  blendName:      'blend-name',
+  createdBy:      'created-by',
+  distillery:     'distillery',
+  reference:      'reference',
+  referenceOnDark: 'reference-on-dark',
+  color:          'color',
   artwork:      'artwork',
   singleCask:   'single-cask',
   series:       'series',
@@ -41,7 +42,7 @@ function decodeFormData(template, searchParams) {
   template.fields.forEach(f => {
     if (f.type === 'select' || f.type === 'color-swatch' || f.type === 'preset-image')
       formData[f.key] = f.default ?? f.options[0].value;
-    else if (f.type === 'checkbox') formData[f.key] = false;
+    else if (f.type === 'checkbox' || f.type === 'checkbox-inline') formData[f.key] = false;
     else if (f.type === 'strength') formData[f.key] = f.default ?? '';
     else formData[f.key] = f.default ?? '';
   });
@@ -156,7 +157,7 @@ function LabelPage({ dims, cropsFile, pageBackground, children }) {
 
 // ─── Reference tag (small rotated monospace text on right edge) ─────────────
 
-function ReferenceTag({ dims, value, color }) {
+function ReferenceTag({ dims, value, onDark }) {
   if (!value) return null;
   return (
     <div style={{
@@ -172,7 +173,7 @@ function ReferenceTag({ dims, value, color }) {
       fontFamily: '"Roboto Mono", monospace',
       fontSize: dims.refFontSize,
       lineHeight: `${dims.refFontSize + 2}px`,
-      color: color || '#000000',
+      color: onDark ? '#ffffff' : '#000000',
       textShadow: 'none',
     }}>
       {value}
@@ -319,7 +320,6 @@ function TampaOutput({ formData, onBack }) {
         }}>
           <div ref={seriesRef}>{formData.series}</div>
         </div>
-        <ReferenceTag dims={dims} value={formData.reference} color="#000000" />
       </LabelPage>
     </OutputWrapper>
   );
@@ -332,7 +332,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
   const baseUrl = import.meta.env.BASE_URL;
   const fgColor = formData.fgColor || '#111111';
   const bgColor = formData.bgColor || '#ffffff';
-  const artwork = formData.artwork || SINGLEMALT_ARTWORKS[0].value;
+  const artwork = formData.artwork;
 
   const blendNameRef = useRef(null);
   useAutoFontSize(blendNameRef, formData.blendName);
@@ -344,7 +344,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
   return (
     <OutputWrapper onBack={onBack}>
       <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}${dims.barsFile})`}>
-        <div style={{
+        {artwork && <div style={{
           position: 'absolute',
           top: dims.roundelTop, left: dims.roundelLeft, width: dims.roundelW, height: dims.roundelH,
           backgroundImage: `url(${baseUrl}images/${artwork})`,
@@ -352,7 +352,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
           backgroundSize: 'cover',
           zIndex: 1,
           pointerEvents: 'none',
-        }} />
+        }} />}
         {/* Whisky name */}
         <div style={{
           fontFamily: '"trimPosterCompressed", sans-serif',
@@ -393,7 +393,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
           baseUrl={baseUrl}
           {...roundelPanelProps(dims)}
         />
-        <ReferenceTag dims={dims} value={formData.reference} color="#ffffff" />
+        <ReferenceTag dims={dims} value={formData.reference} onDark={!!formData.referenceOnDark} />
       </LabelPage>
     </OutputWrapper>
   );
@@ -419,7 +419,7 @@ function BlendedMaltOutput({ baseLabel, formData, onBack }) {
   const dims = LABEL_DIMS[baseLabel.size];
   const baseUrl = import.meta.env.BASE_URL;
   const fgColor = formData.fgColor || '#111111';
-  const artwork = formData.artwork || SINGLEMALT_ARTWORKS[0].value;
+  const artwork = formData.artwork;
 
   const blendNameRef = useRef(null);
   useAutoFontSize(blendNameRef, formData.blendName);
@@ -433,7 +433,7 @@ function BlendedMaltOutput({ baseLabel, formData, onBack }) {
   return (
     <OutputWrapper onBack={onBack}>
       <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}${dims.barsFile})`}>
-        <div style={{
+        {artwork && <div style={{
           position: 'absolute',
           top: dims.roundelTop, left: dims.roundelLeft, width: dims.roundelW, height: dims.roundelH,
           backgroundImage: `url(${baseUrl}images/${artwork})`,
@@ -441,7 +441,7 @@ function BlendedMaltOutput({ baseLabel, formData, onBack }) {
           backgroundSize: 'cover',
           zIndex: 1,
           pointerEvents: 'none',
-        }} />
+        }} />}
         {/* Whisky name */}
         <div style={{
           fontFamily: '"trimPosterCompressed", sans-serif',
@@ -474,7 +474,7 @@ function BlendedMaltOutput({ baseLabel, formData, onBack }) {
             {formData.createdBy}
           </div>
         </div>
-        <ReferenceTag dims={dims} value={formData.reference} color={fgColor} />
+        <ReferenceTag dims={dims} value={formData.reference} onDark={!!formData.referenceOnDark} />
       </LabelPage>
     </OutputWrapper>
   );
@@ -499,7 +499,7 @@ function BlendedSingleImageOutput({ baseLabel, formData, onBack }) {
             zIndex: 1,
           }} />
         )}
-        <ReferenceTag dims={dims} value={formData.reference} color="#000000" />
+        <ReferenceTag dims={dims} value={formData.reference} onDark={!!formData.referenceOnDark} />
       </LabelPage>
     </OutputWrapper>
   );
@@ -639,7 +639,7 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
             baseUrl={baseUrl}
           />
         )}
-        <ReferenceTag dims={dims} value={formData.reference} color={fgColor} />
+        <ReferenceTag dims={dims} value={formData.reference} onDark={!!formData.referenceOnDark} />
       </LabelPage>
     </OutputWrapper>
   );
@@ -811,7 +811,7 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
     template.fields.forEach(f => {
       if (f.type === 'select' || f.type === 'color-swatch' || f.type === 'preset-image')
         defaults[f.key] = f.default ?? f.options[0].value;
-      else if (f.type === 'checkbox') defaults[f.key] = false;
+      else if (f.type === 'checkbox' || f.type === 'checkbox-inline') defaults[f.key] = false;
       else if (f.type === 'strength') defaults[f.key] = f.default ?? '';
       else defaults[f.key] = f.default ?? '';
     });
@@ -859,7 +859,12 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
         </div>
         <button type="button" className="back-btn" onClick={onBack}>← Back</button>
         <form className="label-form" onSubmit={handleSubmit}>
-          {template.fields.map(field => (
+          {template.fields.map(field => {
+            if (field.type === 'checkbox-inline') return null;
+            const inlineCheckbox = field.key === 'reference'
+              ? template.fields.find(f => f.type === 'checkbox-inline')
+              : null;
+            return (
             <div key={field.key} className="form-field">
               <label className="form-label" htmlFor={field.key}>{field.label}</label>
 
@@ -872,7 +877,10 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
                       className={`color-swatch${values[field.key] === opt.value ? ' color-swatch--selected' : ''}`}
                       onClick={() => handleChange(field.key, opt.value)}
                     >
-                      <span className="color-swatch__dot" style={{
+                      <span className="color-swatch__dot" style={opt.value === '' ? {
+                        backgroundColor: '#ffffff',
+                        height: '72px',
+                      } : {
                         backgroundImage: `url(${import.meta.env.BASE_URL}images/${opt.value})`,
                         backgroundSize: '600%',
                         backgroundPosition: 'center center',
@@ -933,13 +941,28 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
                     onChange={e => handleChange(field.key, e.target.value)} />
                   <span className="strength-unit">% abv.</span>
                 </div>
+              ) : inlineCheckbox ? (
+                <div className="input-with-inline-checkbox">
+                  <input id={field.key} type="text" className="form-input"
+                    placeholder={field.placeholder} value={values[field.key]}
+                    onChange={e => handleChange(field.key, e.target.value)} />
+                  <label className="form-checkbox form-checkbox--inline">
+                    <input
+                      type="checkbox"
+                      checked={values[inlineCheckbox.key]}
+                      onChange={e => handleChange(inlineCheckbox.key, e.target.checked)}
+                    />
+                    <span>{inlineCheckbox.label}</span>
+                  </label>
+                </div>
               ) : (
                 <input id={field.key} type="text" className="form-input"
                   placeholder={field.placeholder} value={values[field.key]}
                   onChange={e => handleChange(field.key, e.target.value)} />
               )}
             </div>
-          ))}
+            );
+          })}
           <div className="form-actions">
             <button type="submit" className="generate-btn">Generate label →</button>
             {template.sample && (

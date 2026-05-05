@@ -347,6 +347,23 @@ button {
   cursor: pointer;
 }
 
+.input-with-inline-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.input-with-inline-checkbox .form-input {
+  flex: 1;
+}
+
+.form-checkbox--inline {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
 /* File input */
 .file-field {
   display: flex;

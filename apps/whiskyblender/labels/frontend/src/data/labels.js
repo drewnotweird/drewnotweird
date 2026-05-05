@@ -88,6 +88,7 @@ const TAMPA_IMAGE_OPTIONS = [
 ];
 
 export const SINGLEMALT_ARTWORKS = [
+  { value: '', label: 'None' },
   { value: 'singlemalt500ml-option_1.jpg', label: 'Style 1' },
   { value: 'singlemalt500ml-option_2.jpg', label: 'Style 2' },
   { value: 'singlemalt500ml-option_3.jpg', label: 'Style 3' },
@@ -116,7 +117,6 @@ export const ALL_TEMPLATES = {
       blendName: 'Orchard Galore',
       customerName: 'Andy Davidson',
       description: 'Inchmurrin Distilled at Loch Lomond Distillery / First Fill Bourbon / Cask No.66 / Distilled 6 January 2014 / Bottled 20 March 2026 /  46% abv / 500ml ℮',
-      reference: '#3023',
       color: 'red',
       keyImage: 'ship',
     },
@@ -125,7 +125,6 @@ export const ALL_TEMPLATES = {
       { key: 'blendName',    label: 'Expression',       type: 'text',   placeholder: 'Name of the expression' },
       { key: 'customerName', label: "Customer's name",  type: 'text',   placeholder: 'Firstname Lastname' },
       { key: 'description',  label: 'Description',      type: 'text',   placeholder: 'Distillery / Cask type / Cask No. / Dates' },
-      { key: 'reference',    label: 'Reference',        type: 'text',   placeholder: 'e.g. #3023' },
       { key: 'color',        label: 'Accent color',     type: 'select', options: TAMPA_COLOR_OPTIONS },
       { key: 'keyImage',     label: 'Key image',        type: 'select', options: TAMPA_IMAGE_OPTIONS },
     ],
@@ -145,14 +144,15 @@ export const ALL_TEMPLATES = {
       bgColor: '#ffffff',
     },
     fields: [
-      { key: 'artwork',     label: 'Label artwork',      type: 'preset-image',  options: SINGLEMALT_ARTWORKS, default: 'singlemalt500ml-option_1.jpg' },
+      { key: 'artwork',     label: 'Label artwork',      type: 'preset-image',  options: SINGLEMALT_ARTWORKS, default: '' },
       { key: 'blendName',  label: 'Whisky name',        type: 'text',          placeholder: 'Name of the whisky' },
       { key: 'distillery', label: 'Distilled at',       type: 'text',          default: '[Name of] Distillery' },
       { key: 'strength',   label: 'Strength',           type: 'strength',      default: '46' },
       { key: 'singleCask', label: 'Single cask',        type: 'checkbox' },
-      { key: 'reference',  label: 'Reference',          type: 'text',          placeholder: 'e.g. #3023' },
-      { key: 'fgColor',    label: 'Foreground colour',  type: 'color-swatch',  options: COLOR_PALETTE, default: '#111111' },
-      { key: 'bgColor',    label: 'Background colour',  type: 'color-swatch',  options: COLOR_PALETTE, default: '#ffffff' },
+      { key: 'reference',      label: 'Reference',          type: 'text',           placeholder: 'e.g. #3023' },
+      { key: 'referenceOnDark', label: 'On dark',            type: 'checkbox-inline' },
+      { key: 'fgColor',        label: 'Foreground colour',  type: 'color-swatch',   options: COLOR_PALETTE, default: '#111111' },
+      { key: 'bgColor',        label: 'Background colour',  type: 'color-swatch',   options: COLOR_PALETTE, default: '#ffffff' },
     ],
   },
 
@@ -167,11 +167,12 @@ export const ALL_TEMPLATES = {
       fgColor: '#1c3320',
     },
     fields: [
-      { key: 'artwork',    label: 'Label artwork',      type: 'preset-image',  options: SINGLEMALT_ARTWORKS, default: 'singlemalt500ml-option_1.jpg' },
+      { key: 'artwork',    label: 'Label artwork',      type: 'preset-image',  options: SINGLEMALT_ARTWORKS, default: '' },
       { key: 'blendName',  label: 'Whisky name',        type: 'text',          placeholder: 'Name of the whisky' },
       { key: 'createdBy',  label: 'Created by',         type: 'text',          placeholder: 'Blender name' },
-      { key: 'reference',  label: 'Reference',          type: 'text',          placeholder: 'e.g. #3023' },
-      { key: 'fgColor',    label: 'Text colour',        type: 'color-swatch',  options: COLOR_PALETTE, default: '#111111' },
+      { key: 'reference',       label: 'Reference',  type: 'text',           placeholder: 'e.g. #3023' },
+      { key: 'referenceOnDark', label: 'On dark',    type: 'checkbox-inline' },
+      { key: 'fgColor',         label: 'Text colour', type: 'color-swatch',   options: COLOR_PALETTE, default: '#111111' },
     ],
   },
 
@@ -200,9 +201,10 @@ export const ALL_TEMPLATES = {
       { key: 'image',      label: 'Background image',  type: 'file',     accept: 'image/*' },
       { key: 'strength',   label: 'Strength',           type: 'strength', default: '46' },
       { key: 'singleCask', label: 'Single cask',        type: 'checkbox' },
-      { key: 'reference',  label: 'Reference',          type: 'text',     placeholder: 'e.g. #3023' },
-      { key: 'fgColor',    label: 'Foreground colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#111111' },
-      { key: 'bgColor',    label: 'Background colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#ffffff' },
+      { key: 'reference',       label: 'Reference',          type: 'text',         placeholder: 'e.g. #3023' },
+      { key: 'referenceOnDark', label: 'On dark',            type: 'checkbox-inline' },
+      { key: 'fgColor',         label: 'Foreground colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#111111' },
+      { key: 'bgColor',         label: 'Background colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#ffffff' },
     ],
   },
 
@@ -211,8 +213,9 @@ export const ALL_TEMPLATES = {
     name: 'Single image',
     sample: null,
     fields: [
-      { key: 'image',     label: 'Background image',  type: 'file', accept: 'image/*' },
-      { key: 'reference', label: 'Reference',         type: 'text', placeholder: 'e.g. #3023' },
+      { key: 'image',           label: 'Background image',  type: 'file',           accept: 'image/*' },
+      { key: 'reference',       label: 'Reference',         type: 'text',           placeholder: 'e.g. #3023' },
+      { key: 'referenceOnDark', label: 'On dark',           type: 'checkbox-inline' },
     ],
   },
 };
