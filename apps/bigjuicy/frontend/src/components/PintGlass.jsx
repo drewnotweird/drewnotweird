@@ -140,7 +140,7 @@ export default function PintGlass({ onPhotoClick }) {
     }
 
     for (let i = 0; i < (isLowPerf ? 8 : 18); i++) spawnPhoto(true)
-    for (let i = 0; i < (isLowPerf ? 6 : 16); i++) spawnPlain(true)
+    if (!isLowPerf) for (let i = 0; i < 16; i++) spawnPlain(true)
     for (let i = 0; i < (isLowPerf ? 3 : 10); i++) spawnCluster(true)
 
     function tick(t) {
@@ -148,9 +148,9 @@ export default function PintGlass({ onPhotoClick }) {
         spawnPhoto()
         nextPhotoAt.current = t + (isLowPerf ? 1800 : 900) + Math.random() * (isLowPerf ? 600 : 300)
       }
-      if (t >= nextPlainAt.current) {
+      if (!isLowPerf && t >= nextPlainAt.current) {
         spawnPlain()
-        nextPlainAt.current = t + (isLowPerf ? 700 : 350) + Math.random() * (isLowPerf ? 300 : 150)
+        nextPlainAt.current = t + 350 + Math.random() * 150
       }
       if (t >= nextClusterAt.current) {
         spawnCluster()
@@ -171,7 +171,7 @@ export default function PintGlass({ onPhotoClick }) {
 
   return (
     <div className="scene">
-      <div className="bubble-layer" ref={layerRef} />
+      <div className={`bubble-layer${isLowPerf ? ' bubble-layer--lite' : ''}`} ref={layerRef} />
       <div className="fg-layer"     ref={fgLayerRef} />
       <div className="foam-body" />
       <div className="glass-fg" />

@@ -39,6 +39,7 @@
 .fg-layer {
   position: absolute;
   inset: 0;
+  contain: layout paint;
 }
 
 .fg-layer {
@@ -285,6 +286,21 @@
     transform: translateX(calc(-50% + var(--drift))) translateY(calc(80px - 100vh)) scale(0.25);
   }
 }
+
+/* ─── lite mode: mobile / slow connection ───────────────────────────────── */
+/* Strips border-radius animation, blurred shadows, gradient highlights,
+   and CSS filters — leaving only GPU-composited transform/translate/opacity */
+.bubble-layer--lite .bubble--photo {
+  animation-name: rise, sway;
+  animation-timing-function: linear, ease-in-out;
+  animation-fill-mode: forwards, none;
+  animation-iteration-count: 1, infinite;
+  animation-direction: normal, alternate;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.52);
+  will-change: auto;
+}
+.bubble-layer--lite .bubble--photo::after { display: none; }
+.bubble-layer--lite .bubble--photo::before { filter: none; }
 
 @keyframes rise-micro {
   0% {
