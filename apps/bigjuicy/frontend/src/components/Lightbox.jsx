@@ -22,6 +22,14 @@ export default function Lightbox({ imgIndex, clickRect, onClose }) {
   // On mobile: centre image in the upper portion, leaving room for arrows below
   const cy       = isMobile ? window.innerHeight * 0.38 : window.innerHeight / 2
 
+  // Preload adjacent images so navigation doesn't stall on cache miss
+  useEffect(() => {
+    const prev = new Image()
+    const next = new Image()
+    prev.src = `${import.meta.env.BASE_URL}photos/${images[(currentIndex - 1 + images.length) % images.length].src}`
+    next.src = `${import.meta.env.BASE_URL}photos/${images[(currentIndex + 1) % images.length].src}`
+  }, [currentIndex])
+
   // Open: two rAFs so closed styles paint before transition starts
   useEffect(() => {
     const id = requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -46,7 +54,7 @@ export default function Lightbox({ imgIndex, clickRect, onClose }) {
       setCurrentIndex(prev => (prev + delta + images.length) % images.length)
       navFadingRef.current = false
       setNavFading(false)
-    }, 160)
+    }, 80)
   }
 
   // Keyboard: arrows navigate, Escape closes
@@ -87,7 +95,7 @@ export default function Lightbox({ imgIndex, clickRect, onClose }) {
 
   const style =
     phase === 'open'    ? { ...base, opacity: navFading ? 0 : 1, filter: 'blur(0px)',  transform: 'translate(-50%, -50%) scale(1)'    } :
-    phase === 'closing' ? { ...base, opacity: 0,                  filter: 'blur(16px)', transform: 'translate(-50%, -50%) scale(1.06)' } :
+    phase === 'closing' ? { ...base, opacity: 0,                  filter: 'blur(0px)',  transform: 'translate(-50%, -50%) scale(1.06)' } :
     /* closed */          { left: bx, top: by, width: clickRect.width, height: clickRect.height, clipPath: 'circle(50%)',
                             opacity: 1, filter: 'blur(0px)', transform: 'translate(-50%, -50%) scale(1)' }
 
