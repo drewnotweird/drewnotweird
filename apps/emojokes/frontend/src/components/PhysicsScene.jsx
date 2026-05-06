@@ -27,11 +27,12 @@ const POP_STAGGER = 55
 const CAT_NORMAL = 0x0001
 
 const CATEGORIES = [
-  { id: 'animals',  label: 'ANIMALS',  color: '#3a8c4a' },
-  { id: 'groaners', label: 'GROANERS', color: '#2478b5' },
-  { id: 'food',     label: 'FOOD',     color: '#d4631e' },
-  { id: 'science',  label: 'SCIENCE',  color: '#0d9488' },
-  { id: 'people',   label: 'PEOPLE',   color: '#8e44b8' },
+  { id: 'animals',    label: 'ANIMALS',    color: '#3a8c4a' },
+  { id: 'puns',       label: 'PUNS',       color: '#2478b5' },
+  { id: 'people',     label: 'PEOPLE',     color: '#8e44b8' },
+  { id: 'science',    label: 'SCIENCE',    color: '#0d9488' },
+  { id: 'quips', label: 'QUIPS', color: '#c4294e' },
+  { id: 'food',       label: 'FOOD',       color: '#d4631e' },
 ]
 // Canonical stack order top→bottom: emojokes first, then categories in array order.
 // When a category is active it rotates to position 0; the rest follow from the next item, wrapping.
@@ -44,9 +45,10 @@ const menuStaggerPos = (elId, activeCatId) => {
 
 const MENU_RING_R = R * 2.7
 const toRad = d => d * Math.PI / 180
-// 6 positions: index 0 = refresh (bottom), indices 1-5 = categories
-// angles from top, clockwise: bottom=180, bottom-left=240, top-left=300, top=0, top-right=60, bottom-right=120
-const MENU_POS = [180, 240, 300, 0, 60, 120].map(d => ({
+// 7 positions: index 0 = emojokes (bottom), indices 1-6 = categories
+// evenly spaced heptagon: 360/7 ≈ 51.4° apart, starting at 180 (bottom)
+const MENU_ANGLES = [180, 231, 283, 334, 26, 77, 129]
+const MENU_POS = MENU_ANGLES.map(d => ({
   dx: Math.round(Math.sin(toRad(d)) * MENU_RING_R),
   dy: Math.round(-Math.cos(toRad(d)) * MENU_RING_R),
 }))
@@ -229,7 +231,7 @@ export default function PhysicsScene() {
     }
   }, [])
 
-  const popVisible = useCallback((jokesToPop, onDone) => {
+  const popVisible = useCallback((jokesToPop, onDone, customDelay) => {
     jokesToPop.forEach(({ id }, i) => {
       const tid = setTimeout(() => {
         const body = bodyMap.current[id]
@@ -265,7 +267,8 @@ export default function PhysicsScene() {
       shuffleTimerIds.current.push(tid)
     })
     if (onDone) {
-      const delay = jokesToPop.length > 0 ? 300 : 0
+      const delay = customDelay != null ? customDelay
+        : jokesToPop.length > 0 ? 300 : 0
       const tid = setTimeout(onDone, delay)
       shuffleTimerIds.current.push(tid)
     }
@@ -318,10 +321,11 @@ export default function PhysicsScene() {
       const remainingIds = new Set(allVisible.filter(j => !toPopIds.has(j.id)).map(j => j.id))
       const needed = BATCH_SIZE - remainingIds.size
 
+      const popDelay = (toPop.length - 1) * POP_STAGGER + 100
       popVisible(toPop, () => {
         // Candidates: everything except what's still on screen — shuffle for variety
         const candidates = JOKES
-          .filter(j => !remainingIds.has(j.id))
+          .filter(j => !remainingIds.has(j.id) && !inWorldRef.current.has(j.id))
           .sort(() => Math.random() - 0.5)
         restoreIdxRef.current = 0
         candidates.slice(0, needed).forEach(({ id }) => {
@@ -330,13 +334,14 @@ export default function PhysicsScene() {
           restoreQueueRef.current.push(id)
         })
         nextRestoreRef.current = performance.now()
-      })
+      }, popDelay)
     } else {
       // Normal mode: pop 25 (bottommost first)
       const toPop = [...allVisible]
         .sort((a, b) => bodyMap.current[b.id].position.y - bodyMap.current[a.id].position.y)
         .slice(0, 25)
 
+      const popDelay2 = (toPop.length - 1) * POP_STAGGER + 100
       popVisible(toPop, () => {
         if (MOBILE) {
           // Mobile: drop next 25 from sequence
@@ -358,7 +363,7 @@ export default function PhysicsScene() {
           })
         }
         nextRestoreRef.current = performance.now()
-      })
+      }, popDelay2)
     }
 
     // Spin anchor
@@ -651,7 +656,7 @@ export default function PhysicsScene() {
         const { dx, dy } = MENU_POS[i + 1]
         const isActive = activeCategory === cat.id
         const staggerPos = menuStaggerPos(cat.id, activeCategory)
-        const delay = staggerPos * 40
+        const delay = staggerPos * 35
         return (
           <div
             key={cat.id}
@@ -674,13 +679,13 @@ export default function PhysicsScene() {
               background: cat.color,
               cursor: 'pointer',
               transform: menuOpen
-                ? `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`
-                : 'translate(-50%, -50%)',
+                ? `translate(-50%, -50%) rotate(-180deg) translate(${-dx}px, ${-dy}px) rotate(190deg)`
+                : `translate(-50%, -50%) rotate(0deg) translate(0px, 0px) rotate(0deg)`,
               pointerEvents: menuOpen ? 'all' : (isActive ? 'all' : 'none'),
               transition: menuOpen
-                ? `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, filter 0.15s ease`
-                : 'transform 0.25s cubic-bezier(0.4, 0, 1, 1), filter 0.15s ease',
-              zIndex: menuOpen ? 12 - staggerPos : (isActive ? 4 : 2),
+                ? `transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}ms, filter 0.15s ease`
+                : 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1), filter 0.15s ease',
+              zIndex: menuOpen ? 14 - staggerPos : (isActive ? 4 : 2),
               userSelect: 'none',
               WebkitUserSelect: 'none',
             }}
@@ -709,20 +714,20 @@ export default function PhysicsScene() {
           width: R * 2,
           height: R * 2,
           borderRadius: '50%',
-          background: '#666',
+          background: '#fff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
           pointerEvents: menuOpen ? 'all' : 'none',
           transition: 'filter 0.15s ease',
-          zIndex: menuOpen ? 6 : 1,  // always bottom of stack
+          zIndex: menuOpen ? 6 : 1,
           userSelect: 'none',
           WebkitUserSelect: 'none',
         }}
         className="menu-circle"
       >
-        <span style={{ color: 'white', fontSize: R * 0.55, lineHeight: 1, fontFamily: 'system-ui, sans-serif', fontWeight: 300 }}>✕</span>
+        <span style={{ color: '#111', fontSize: R * 0.55, lineHeight: 1, fontFamily: "'DynaPuff', cursive", fontWeight: 700 }}>X</span>
       </div>
 
       {/* Anchor — always EMOJOKES/black; sits behind active category when one is selected */}
@@ -733,12 +738,12 @@ export default function PhysicsScene() {
           left: '50%',
           top: '50%',
           transform: menuOpen
-            ? `translate(calc(-50% + ${MENU_POS[0].dx}px), calc(-50% + ${MENU_POS[0].dy}px))`
-            : 'translate(-50%, -50%)',
+            ? `translate(-50%, -50%) rotate(-180deg) translate(0px, ${-MENU_RING_R}px) rotate(190deg)`
+            : `translate(-50%, -50%) rotate(0deg) translate(0px, 0px) rotate(0deg)`,
           transition: menuOpen
-            ? `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${menuStaggerPos('emojokes', activeCategory) * 40}ms`
-            : 'transform 0.25s cubic-bezier(0.4, 0, 1, 1)',
-          zIndex: menuOpen ? 12 - menuStaggerPos('emojokes', activeCategory) : 3,
+            ? `transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${menuStaggerPos('emojokes', activeCategory) * 35}ms`
+            : 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)',
+          zIndex: menuOpen ? 14 - menuStaggerPos('emojokes', activeCategory) : 3,
           pointerEvents: 'all',
           cursor: 'pointer',
         }}
