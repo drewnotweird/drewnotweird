@@ -27,12 +27,21 @@ const POP_STAGGER = 55
 const CAT_NORMAL = 0x0001
 
 const CATEGORIES = [
-  { id: 'animals', label: 'ANIMALS', color: '#3a8c4a' },
-  { id: 'food',    label: 'FOOD',    color: '#d4631e' },
-  { id: 'nature',  label: 'NATURE',  color: '#2478b5' },
-  { id: 'people',  label: 'PEOPLE',  color: '#8e44b8' },
-  { id: 'cheeky',  label: 'CHEEKY',  color: '#c0334a' },
+  { id: 'animals',  label: 'ANIMALS',  color: '#3a8c4a' },
+  { id: 'groaners', label: 'GROANERS', color: '#2478b5' },
+  { id: 'food',     label: 'FOOD',     color: '#d4631e' },
+  { id: 'science',  label: 'SCIENCE',  color: '#0d9488' },
+  { id: 'people',   label: 'PEOPLE',   color: '#8e44b8' },
 ]
+// Canonical stack order top→bottom: emojokes first, then categories in array order.
+// When a category is active it rotates to position 0; the rest follow from the next item, wrapping.
+const MENU_ORDER = ['emojokes', ...CATEGORIES.map(c => c.id)]
+const menuStaggerPos = (elId, activeCatId) => {
+  const start = MENU_ORDER.indexOf(activeCatId || 'emojokes')
+  const el    = MENU_ORDER.indexOf(elId)
+  return (el - start + MENU_ORDER.length) % MENU_ORDER.length
+}
+
 const MENU_RING_R = R * 2.7
 const toRad = d => d * Math.PI / 180
 // 6 positions: index 0 = refresh (bottom), indices 1-5 = categories
@@ -233,12 +242,14 @@ export default function PhysicsScene() {
         ring.style.cssText = `position:absolute;left:${tx + R}px;top:${ty + R}px;width:${R * 2}px;height:${R * 2}px;border-radius:50%;border:${WIDE ? 3 : 2}px solid rgba(0,0,0,0.25);pointer-events:none;z-index:2;animation:pop-ring-expand 0.32s ease-out forwards;`
         containerRef.current.appendChild(ring)
         setTimeout(() => ring.remove(), 380)
-        setTimeout(() => {
+        const innerTid = setTimeout(() => {
+          if (!shufflingRef.current.has(id)) return
           Matter.World.remove(worldRef.current, body)
           el.style.opacity = '0'
           el.style.animation = ''
           el.style.transition = ''
         }, 300)
+        shuffleTimerIds.current.push(innerTid)
       }, i * POP_STAGGER)
       shuffleTimerIds.current.push(tid)
     })
@@ -252,6 +263,13 @@ export default function PhysicsScene() {
   const handleRefresh = useCallback(() => {
     setMenuOpen(false)
 
+    ;[...shufflingRef.current].forEach(id => {
+      if (id === expandedRef.current) return
+      const el = elMap.current[id]
+      if (el) { el.style.animation = ''; el.style.transition = '' }
+      shufflingRef.current.delete(id)
+      handsOffRef.current.delete(id)
+    })
     shuffleTimerIds.current.forEach(clearTimeout)
     shuffleTimerIds.current = []
     restoreQueueRef.current = []
@@ -329,6 +347,13 @@ export default function PhysicsScene() {
   const handleCategorySelect = useCallback((catId) => {
     setMenuOpen(false)
 
+    ;[...shufflingRef.current].forEach(id => {
+      if (id === expandedRef.current) return
+      const el = elMap.current[id]
+      if (el) { el.style.animation = ''; el.style.transition = '' }
+      shufflingRef.current.delete(id)
+      handsOffRef.current.delete(id)
+    })
     shuffleTimerIds.current.forEach(clearTimeout)
     shuffleTimerIds.current = []
     restoreQueueRef.current = []
@@ -471,11 +496,6 @@ export default function PhysicsScene() {
       return
     }
 
-    if (dist <= R) {
-      setMenuOpen(true)
-      return
-    }
-
     const bodies = Matter.Query.point(Matter.Composite.allBodies(worldRef.current), { x, y })
     const jokeBody = bodies.find(b => {
       const id = Number(b.label)
@@ -602,10 +622,20 @@ export default function PhysicsScene() {
       {CATEGORIES.map((cat, i) => {
         const { dx, dy } = MENU_POS[i + 1]
         const isActive = activeCategory === cat.id
+        const staggerPos = menuStaggerPos(cat.id, activeCategory)
+        const delay = staggerPos * 40
         return (
           <div
             key={cat.id}
-            onClick={(e) => { e.stopPropagation(); handleCategorySelect(cat.id) }}
+            onClick={(e) => {
+              e.stopPropagation()
+              if (menuOpenRef.current) {
+                handleCategorySelect(cat.id)
+              } else if (isActive) {
+                setMenuOpen(true)
+                menuOpenRef.current = true
+              }
+            }}
             style={{
               position: 'absolute',
               left: '50%',
@@ -618,13 +648,15 @@ export default function PhysicsScene() {
               transform: menuOpen
                 ? `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`
                 : 'translate(-50%, -50%)',
-              opacity: menuOpen ? 1 : 0,
-              pointerEvents: menuOpen ? 'all' : 'none',
-              transition: `transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${(i + 1) * 60}ms, opacity 0.2s ease ${(i + 1) * 60}ms`,
-              zIndex: menuOpen ? 6 : 2,
+              pointerEvents: menuOpen ? 'all' : (isActive ? 'all' : 'none'),
+              transition: menuOpen
+                ? `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, filter 0.15s ease`
+                : 'transform 0.25s cubic-bezier(0.4, 0, 1, 1), filter 0.15s ease',
+              zIndex: menuOpen ? 12 - staggerPos : (isActive ? 4 : 2),
               userSelect: 'none',
               WebkitUserSelect: 'none',
             }}
+            className="menu-circle"
           >
             <svg width={R * 2} height={R * 2} viewBox={`0 0 ${R * 2} ${R * 2}`} style={{ position: 'absolute', top: 0, left: 0 }}>
               <defs>
@@ -654,20 +686,20 @@ export default function PhysicsScene() {
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? 'all' : 'none',
-          transition: 'opacity 0.2s ease 0.2s',
-          zIndex: menuOpen ? 6 : 2,
+          transition: 'filter 0.15s ease',
+          zIndex: menuOpen ? 6 : 1,  // always bottom of stack
           userSelect: 'none',
           WebkitUserSelect: 'none',
         }}
+        className="menu-circle"
       >
         <span style={{ color: 'white', fontSize: R * 0.55, lineHeight: 1, fontFamily: 'system-ui, sans-serif', fontWeight: 300 }}>✕</span>
       </div>
 
-      {/* Anchor — slides to bottom ring position on open, always shows EMOJOKES */}
+      {/* Anchor — always EMOJOKES/black; sits behind active category when one is selected */}
       <div
-        onClick={menuOpen ? (e) => { e.stopPropagation(); handleRefresh() } : undefined}
+        onClick={(e) => { e.stopPropagation(); menuOpenRef.current ? handleRefresh() : setMenuOpen(true) }}
         style={{
           position: 'absolute',
           left: '50%',
@@ -675,16 +707,18 @@ export default function PhysicsScene() {
           transform: menuOpen
             ? `translate(calc(-50% + ${MENU_POS[0].dx}px), calc(-50% + ${MENU_POS[0].dy}px))`
             : 'translate(-50%, -50%)',
-          transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          zIndex: menuOpen ? 6 : 3,
-          pointerEvents: menuOpen ? 'all' : 'none',
-          cursor: menuOpen ? 'pointer' : 'default',
+          transition: menuOpen
+            ? `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${menuStaggerPos('emojokes', activeCategory) * 40}ms`
+            : 'transform 0.25s cubic-bezier(0.4, 0, 1, 1)',
+          zIndex: menuOpen ? 12 - menuStaggerPos('emojokes', activeCategory) : 3,
+          pointerEvents: 'all',
+          cursor: 'pointer',
         }}
       >
         <div
           ref={anchorSpinnerRef}
-          className="anchor-idle"
-          style={{ width: R * 2, height: R * 2, borderRadius: '50%', background: '#111', position: 'relative' }}
+          className="anchor-idle menu-circle"
+          style={{ width: R * 2, height: R * 2, borderRadius: '50%', background: '#111', position: 'relative', transition: 'filter 0.15s ease' }}
         >
           <svg
             width={R * 2}

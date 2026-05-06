@@ -64,6 +64,7 @@ export const BASE_LABELS = [
     size: '50ml',
     extraTemplates: [],
     websiteTemplate: 'website-options',
+    singleImageTemplate: 'single-image-contact',
   },
 ];
 
@@ -205,6 +206,15 @@ export const ALL_TEMPLATES = {
       { key: 'referenceOnDark', label: 'On dark',            type: 'checkbox-inline' },
       { key: 'fgColor',         label: 'Foreground colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#111111' },
       { key: 'bgColor',         label: 'Background colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#ffffff' },
+    ],
+  },
+
+  'single-image-contact': {
+    id: 'single-image-contact',
+    name: 'Single image',
+    sample: null,
+    fields: [
+      { key: 'image', label: 'Background image', type: 'file', accept: 'image/*' },
     ],
   },
 
