@@ -26,6 +26,22 @@ const STAGGER = 180
 const POP_STAGGER = 55
 const CAT_NORMAL = 0x0001
 
+const CATEGORIES = [
+  { id: 'animals', label: 'ANIMALS', color: '#3a8c4a' },
+  { id: 'food',    label: 'FOOD',    color: '#d4631e' },
+  { id: 'nature',  label: 'NATURE',  color: '#2478b5' },
+  { id: 'people',  label: 'PEOPLE',  color: '#8e44b8' },
+  { id: 'cheeky',  label: 'CHEEKY',  color: '#c0334a' },
+]
+const MENU_RING_R = R * 2.7
+const toRad = d => d * Math.PI / 180
+// 6 positions: index 0 = refresh (bottom), indices 1-5 = categories
+// angles from top, clockwise: bottom=180, bottom-left=240, top-left=300, top=0, top-right=60, bottom-right=120
+const MENU_POS = [180, 240, 300, 0, 60, 120].map(d => ({
+  dx: Math.round(Math.sin(toRad(d)) * MENU_RING_R),
+  dy: Math.round(-Math.cos(toRad(d)) * MENU_RING_R),
+}))
+
 export default function PhysicsScene() {
   const containerRef = useRef(null)
   const engineRef = useRef(null)
@@ -44,13 +60,19 @@ export default function PhysicsScene() {
   const restoreIdxRef = useRef(0)
   const shuffleTimerIds = useRef([])
   const nextDropIdxRef = useRef(BATCH_SIZE)
+  const menuOpenRef = useRef(false)
+  const activeCategoryRef = useRef(null)
   const [expandedId, setExpandedId] = useState(null)
   const [scrimVisible, setScrimVisible] = useState(false)
   const [textVisibleId, setTextVisibleId] = useState(null)
   const [punchlineVisibleId, setPunchlineVisibleId] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [activeCategory, setActiveCategory] = useState(null)
   const TEXT_FADE = 220  // ms for text fade in/out
 
   useEffect(() => { expandedRef.current = expandedId }, [expandedId])
+  useEffect(() => { menuOpenRef.current = menuOpen }, [menuOpen])
+  useEffect(() => { activeCategoryRef.current = activeCategory }, [activeCategory])
 
   useEffect(() => {
     const container = containerRef.current
@@ -194,25 +216,8 @@ export default function PhysicsScene() {
     }
   }, [])
 
-  const handleShuffle = useCallback(() => {
-    if (!worldRef.current) return
-
-    shuffleTimerIds.current.forEach(clearTimeout)
-    shuffleTimerIds.current = []
-    restoreQueueRef.current = []
-    nextRestoreRef.current = 0
-    restoreIdxRef.current = 0
-
-    const active = JOKES
-      .filter(({ id }) => {
-        const body = bodyMap.current[id]
-        return body && !body.isStatic && !shufflingRef.current.has(id) && expandedRef.current !== id
-      })
-      .sort((a, b) => bodyMap.current[b.id].position.y - bodyMap.current[a.id].position.y)
-
-    const popBodies = active.slice(0, 25)
-
-    popBodies.forEach(({ id }, i) => {
+  const popVisible = useCallback((jokesToPop, onDone) => {
+    jokesToPop.forEach(({ id }, i) => {
       const tid = setTimeout(() => {
         const body = bodyMap.current[id]
         const el = elMap.current[id]
@@ -233,29 +238,85 @@ export default function PhysicsScene() {
           el.style.opacity = '0'
           el.style.animation = ''
           el.style.transition = ''
-          if (!MOBILE) restoreQueueRef.current.push(id)
         }, 300)
       }, i * POP_STAGGER)
       shuffleTimerIds.current.push(tid)
     })
+    if (onDone) {
+      const delay = jokesToPop.length > 0 ? 300 : 0
+      const tid = setTimeout(onDone, delay)
+      shuffleTimerIds.current.push(tid)
+    }
+  }, [])
 
-    if (MOBILE) {
-      const nextIdx = nextDropIdxRef.current % JOKES.length
-      nextDropIdxRef.current = (nextDropIdxRef.current + 25) % JOKES.length
-      const totalPopTime = (popBodies.length - 1) * POP_STAGGER + 350
-      const restoreTid = setTimeout(() => {
+  const handleRefresh = useCallback(() => {
+    setMenuOpen(false)
+
+    shuffleTimerIds.current.forEach(clearTimeout)
+    shuffleTimerIds.current = []
+    restoreQueueRef.current = []
+    nextRestoreRef.current = 0
+    restoreIdxRef.current = 0
+
+    const cat = activeCategoryRef.current
+
+    const allVisible = JOKES.filter(({ id }) => {
+      const body = bodyMap.current[id]
+      return body && !body.isStatic && !shufflingRef.current.has(id) && expandedRef.current !== id
+    })
+
+    if (cat) {
+      // Exit category mode — pop up to 25, then fill screen back to BATCH_SIZE from full mix
+      setActiveCategory(null)
+      const toPop = allVisible.slice(0, 25)
+      const toPopIds = new Set(toPop.map(j => j.id))
+      const remainingIds = new Set(allVisible.filter(j => !toPopIds.has(j.id)).map(j => j.id))
+      const needed = BATCH_SIZE - remainingIds.size
+
+      popVisible(toPop, () => {
+        // Candidates: everything except what's still on screen — shuffle for variety
+        const candidates = JOKES
+          .filter(j => !remainingIds.has(j.id))
+          .sort(() => Math.random() - 0.5)
         restoreIdxRef.current = 0
-        for (let i = 0; i < 25; i++) {
-          const { id } = JOKES[(nextIdx + i) % JOKES.length]
+        candidates.slice(0, needed).forEach(({ id }) => {
           handsOffRef.current.delete(id)
           shufflingRef.current.delete(id)
           restoreQueueRef.current.push(id)
+        })
+        nextRestoreRef.current = performance.now()
+      })
+    } else {
+      // Normal mode: pop 25 (bottommost first)
+      const toPop = [...allVisible]
+        .sort((a, b) => bodyMap.current[b.id].position.y - bodyMap.current[a.id].position.y)
+        .slice(0, 25)
+
+      popVisible(toPop, () => {
+        if (MOBILE) {
+          // Mobile: drop next 25 from sequence
+          const nextIdx = nextDropIdxRef.current % JOKES.length
+          nextDropIdxRef.current = (nextDropIdxRef.current + 25) % JOKES.length
+          restoreIdxRef.current = 0
+          for (let i = 0; i < 25; i++) {
+            const { id } = JOKES[(nextIdx + i) % JOKES.length]
+            handsOffRef.current.delete(id)
+            shufflingRef.current.delete(id)
+            restoreQueueRef.current.push(id)
+          }
+        } else {
+          // Desktop: restore same 25
+          toPop.forEach(({ id }) => {
+            handsOffRef.current.delete(id)
+            shufflingRef.current.delete(id)
+            restoreQueueRef.current.push(id)
+          })
         }
         nextRestoreRef.current = performance.now()
-      }, totalPopTime)
-      shuffleTimerIds.current.push(restoreTid)
+      })
     }
 
+    // Spin anchor
     const el = anchorSpinnerRef.current
     if (el) {
       el.classList.remove('anchor-spinning')
@@ -263,7 +324,44 @@ export default function PhysicsScene() {
       el.classList.add('anchor-spinning')
       setTimeout(() => el.classList.remove('anchor-spinning'), 1200)
     }
-  }, [])
+  }, [popVisible])
+
+  const handleCategorySelect = useCallback((catId) => {
+    setMenuOpen(false)
+
+    shuffleTimerIds.current.forEach(clearTimeout)
+    shuffleTimerIds.current = []
+    restoreQueueRef.current = []
+    nextRestoreRef.current = 0
+    restoreIdxRef.current = 0
+
+    // If selecting same category again, deselect
+    if (activeCategoryRef.current === catId) {
+      setActiveCategory(null)
+      return
+    }
+
+    setActiveCategory(catId)
+
+    const getVisible = (id) => {
+      const body = bodyMap.current[id]
+      return body && !body.isStatic && !shufflingRef.current.has(id) && expandedRef.current !== id
+    }
+
+    const visibleNotInCat = JOKES.filter(({ id, categories }) => getVisible(id) && !categories.includes(catId))
+    const catJokes = JOKES.filter(j => j.categories.includes(catId))
+    const notVisibleInCat = catJokes.filter(({ id }) => !getVisible(id))
+
+    popVisible(visibleNotInCat, () => {
+      restoreIdxRef.current = 0
+      notVisibleInCat.forEach(({ id }) => {
+        handsOffRef.current.delete(id)
+        shufflingRef.current.delete(id)
+        restoreQueueRef.current.push(id)
+      })
+      nextRestoreRef.current = performance.now()
+    })
+  }, [popVisible])
 
   const collapse = useCallback((id) => {
     const body = bodyMap.current[id]
@@ -368,20 +466,23 @@ export default function PhysicsScene() {
       return
     }
 
-    // Anchor check: direct distance to centre — always wins, no physics query needed
-    if (dist <= R) {
-      handleShuffle()
+    if (menuOpenRef.current) {
+      setMenuOpen(false)
       return
     }
 
-    // Joke circle check via physics query
+    if (dist <= R) {
+      setMenuOpen(true)
+      return
+    }
+
     const bodies = Matter.Query.point(Matter.Composite.allBodies(worldRef.current), { x, y })
     const jokeBody = bodies.find(b => {
       const id = Number(b.label)
       return !isNaN(id) && b.label !== 'wall' && !shufflingRef.current.has(id)
     })
     if (jokeBody) handleTap(Number(jokeBody.label))
-  }, [collapse, handleTap, handleShuffle])
+  }, [collapse, handleTap])
 
   const handleMouseMove = useCallback((e) => {
     const rect = containerRef.current.getBoundingClientRect()
@@ -497,15 +598,89 @@ export default function PhysicsScene() {
         )
       })}
 
-      {/* Black shuffle anchor — outer div positions, inner div spins */}
-      <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 3,
-        pointerEvents: 'none',
-      }}>
+      {/* Radial category items — emerge from behind anchor, positions 1–5 */}
+      {CATEGORIES.map((cat, i) => {
+        const { dx, dy } = MENU_POS[i + 1]
+        const isActive = activeCategory === cat.id
+        return (
+          <div
+            key={cat.id}
+            onClick={(e) => { e.stopPropagation(); handleCategorySelect(cat.id) }}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              width: R * 2,
+              height: R * 2,
+              borderRadius: '50%',
+              background: cat.color,
+              cursor: 'pointer',
+              transform: menuOpen
+                ? `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`
+                : 'translate(-50%, -50%)',
+              opacity: menuOpen ? 1 : 0,
+              pointerEvents: menuOpen ? 'all' : 'none',
+              transition: `transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${(i + 1) * 60}ms, opacity 0.2s ease ${(i + 1) * 60}ms`,
+              zIndex: menuOpen ? 6 : 2,
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+            }}
+          >
+            <svg width={R * 2} height={R * 2} viewBox={`0 0 ${R * 2} ${R * 2}`} style={{ position: 'absolute', top: 0, left: 0 }}>
+              <defs>
+                <path id={`menu-path-${cat.id}`} d={`M ${R * 0.394},${R * 0.65} A ${R * 0.7},${R * 0.7} 0 1 0 ${R * 1.606},${R * 0.65}`}/>
+              </defs>
+              <text fill="white" fontSize={R * 0.44} fontFamily="'DynaPuff', cursive" fontWeight="700" letterSpacing={R * 0.1}>
+                <textPath href={`#menu-path-${cat.id}`} startOffset="50%" textAnchor="middle">{cat.label}</textPath>
+              </text>
+            </svg>
+          </div>
+        )
+      })}
+
+      {/* Close button — always at centre, revealed as anchor moves away */}
+      <div
+        onClick={(e) => { e.stopPropagation(); setMenuOpen(false) }}
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: R * 2,
+          height: R * 2,
+          borderRadius: '50%',
+          background: '#666',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? 'all' : 'none',
+          transition: 'opacity 0.2s ease 0.2s',
+          zIndex: menuOpen ? 6 : 2,
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+        }}
+      >
+        <span style={{ color: 'white', fontSize: R * 0.55, lineHeight: 1, fontFamily: 'system-ui, sans-serif', fontWeight: 300 }}>✕</span>
+      </div>
+
+      {/* Anchor — slides to bottom ring position on open, always shows EMOJOKES */}
+      <div
+        onClick={menuOpen ? (e) => { e.stopPropagation(); handleRefresh() } : undefined}
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: menuOpen
+            ? `translate(calc(-50% + ${MENU_POS[0].dx}px), calc(-50% + ${MENU_POS[0].dy}px))`
+            : 'translate(-50%, -50%)',
+          transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          zIndex: menuOpen ? 6 : 3,
+          pointerEvents: menuOpen ? 'all' : 'none',
+          cursor: menuOpen ? 'pointer' : 'default',
+        }}
+      >
         <div
           ref={anchorSpinnerRef}
           className="anchor-idle"
@@ -518,21 +693,10 @@ export default function PhysicsScene() {
             style={{ position: 'absolute', top: 0, left: 0 }}
           >
             <defs>
-              <path
-                id="emojokes-smile"
-                d={`M ${R * 0.394},${R * 0.65} A ${R * 0.7},${R * 0.7} 0 1 0 ${R * 1.606},${R * 0.65}`}
-              />
+              <path id="emojokes-smile" d={`M ${R * 0.394},${R * 0.65} A ${R * 0.7},${R * 0.7} 0 1 0 ${R * 1.606},${R * 0.65}`}/>
             </defs>
-            <text
-              fill="white"
-              fontSize={R * 0.44}
-              fontFamily="'DynaPuff', cursive"
-              fontWeight="700"
-              letterSpacing={R * 0.1}
-            >
-              <textPath href="#emojokes-smile" startOffset="50%" textAnchor="middle">
-                EMOJOKES
-              </textPath>
+            <text fill="white" fontSize={R * 0.44} fontFamily="'DynaPuff', cursive" fontWeight="700" letterSpacing={R * 0.1}>
+              <textPath href="#emojokes-smile" startOffset="50%" textAnchor="middle">EMOJOKES</textPath>
             </text>
           </svg>
         </div>
@@ -542,9 +706,9 @@ export default function PhysicsScene() {
         style={{
           position: 'absolute', inset: 0,
           background: 'rgba(255,255,255,0.6)',
-          opacity: scrimVisible ? 1 : 0,
-          backdropFilter: scrimVisible ? 'blur(6px)' : 'blur(0px)',
-          WebkitBackdropFilter: scrimVisible ? 'blur(6px)' : 'blur(0px)',
+          opacity: (scrimVisible || menuOpen) ? 1 : 0,
+          backdropFilter: (scrimVisible || menuOpen) ? 'blur(6px)' : 'blur(0px)',
+          WebkitBackdropFilter: (scrimVisible || menuOpen) ? 'blur(6px)' : 'blur(0px)',
           transition: 'opacity 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease',
           pointerEvents: expandedId !== null ? 'all' : 'none',
           zIndex: 5,
