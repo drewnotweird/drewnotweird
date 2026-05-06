@@ -164,8 +164,48 @@ export default function PintGlass({ onPhotoClick }) {
       spawnCluster(false, (e.clientX / window.innerWidth) * 100)
     })
 
+    // Swipe up: briefly accelerate all rising bubbles
+    let swipeStartY = null
+    let swipeStartTime = 0
+
+    function accelerateBubbles() {
+      const all = [...el.querySelectorAll('.bubble'), ...fgEl.querySelectorAll('.bubble')]
+      const toRestore = []
+      all.forEach(b => {
+        b.getAnimations().forEach(a => {
+          if (a.animationName === 'rise' || a.animationName === 'rise-micro') {
+            a.playbackRate = 3.5
+            toRestore.push(a)
+          }
+        })
+      })
+      // Burst of extra micro bubbles from a random point
+      for (let i = 0; i < 3; i++) spawnCluster(false, 10 + Math.random() * 80)
+      setTimeout(() => {
+        toRestore.forEach(a => { if (a.playState !== 'finished') a.playbackRate = 1 })
+      }, 800)
+    }
+
+    const handleSwipeStart = (e) => {
+      swipeStartY = e.touches[0].clientY
+      swipeStartTime = performance.now()
+    }
+    const handleSwipeEnd = (e) => {
+      if (swipeStartY === null) return
+      const dy = e.changedTouches[0].clientY - swipeStartY
+      const dt = performance.now() - swipeStartTime
+      swipeStartY = null
+      if (dy < -60 && dt < 400) accelerateBubbles()
+    }
+    el.addEventListener('touchstart', handleSwipeStart, { passive: true })
+    el.addEventListener('touchend', handleSwipeEnd)
+
     rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      el.removeEventListener('touchstart', handleSwipeStart)
+      el.removeEventListener('touchend', handleSwipeEnd)
+    }
   }, [])
 
 

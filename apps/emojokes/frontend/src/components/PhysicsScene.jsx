@@ -71,6 +71,8 @@ export default function PhysicsScene() {
   const nextDropIdxRef = useRef(BATCH_SIZE)
   const menuOpenRef = useRef(false)
   const activeCategoryRef = useRef(null)
+  const inWorldRef = useRef(new Set())
+  const restoringRef = useRef(new Set()) // circles currently falling in from restore queue
   const [expandedId, setExpandedId] = useState(null)
   const [scrimVisible, setScrimVisible] = useState(false)
   const [textVisibleId, setTextVisibleId] = useState(null)
@@ -153,6 +155,7 @@ export default function PhysicsScene() {
       staggerIds.push(setTimeout(() => {
         if (worldRef.current) {
           Matter.World.add(worldRef.current, bodyMap.current[joke.id])
+          inWorldRef.current.add(joke.id)
           const el = elMap.current[joke.id]
           if (el) el.style.opacity = '1'
         }
@@ -188,6 +191,8 @@ export default function PhysicsScene() {
           Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 2, y: 2 })
           Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
           Matter.World.add(worldRef.current, body)
+          inWorldRef.current.add(id)
+          restoringRef.current.add(id)
           el.style.transform = `translate(${rx - R}px, ${-cH - R}px)`
           el.style.opacity = '1'
           handsOffRef.current.delete(id)
@@ -212,6 +217,9 @@ export default function PhysicsScene() {
         const el = elMap.current[id]
         if (!el) return
         el.style.transform = `translate(${body.position.x - R}px, ${body.position.y - R}px) rotate(${body.angle}rad)`
+        if (restoringRef.current.has(id) && body.position.y > cH * 0.55) {
+          restoringRef.current.delete(id)
+        }
       })
     }
 
@@ -231,6 +239,12 @@ export default function PhysicsScene() {
         const body = bodyMap.current[id]
         const el = elMap.current[id]
         if (!body || !el) return
+        if (!inWorldRef.current.has(id)) return  // already gone, skip
+
+        // Remove from physics immediately so other bodies fill the space right away
+        Matter.World.remove(worldRef.current, body)
+        inWorldRef.current.delete(id)
+
         const tx = body.position.x - R
         const ty = body.position.y - R
         handsOffRef.current.add(id)
@@ -244,10 +258,11 @@ export default function PhysicsScene() {
         setTimeout(() => ring.remove(), 380)
         const innerTid = setTimeout(() => {
           if (!shufflingRef.current.has(id)) return
-          Matter.World.remove(worldRef.current, body)
           el.style.opacity = '0'
           el.style.animation = ''
           el.style.transition = ''
+          shufflingRef.current.delete(id)
+          handsOffRef.current.delete(id)
         }, 300)
         shuffleTimerIds.current.push(innerTid)
       }, i * POP_STAGGER)
@@ -260,13 +275,28 @@ export default function PhysicsScene() {
     }
   }, [])
 
+  // Silently remove circles that are still in transit from the restore queue.
+  // restoringRef tracks them until they pass mid-screen; cancel them cleanly on any category change.
+  const purgeArrivals = useCallback(() => {
+    restoringRef.current.forEach(id => {
+      if (!inWorldRef.current.has(id)) { restoringRef.current.delete(id); return }
+      const body = bodyMap.current[id]
+      if (!body) { restoringRef.current.delete(id); return }
+      Matter.World.remove(worldRef.current, body)
+      inWorldRef.current.delete(id)
+      restoringRef.current.delete(id)
+      const el = elMap.current[id]
+      if (el) el.style.opacity = '0'
+    })
+  }, [])
+
   const handleRefresh = useCallback(() => {
     setMenuOpen(false)
 
     ;[...shufflingRef.current].forEach(id => {
       if (id === expandedRef.current) return
       const el = elMap.current[id]
-      if (el) { el.style.animation = ''; el.style.transition = '' }
+      if (el) { el.style.animation = ''; el.style.transition = ''; el.style.opacity = '0' }
       shufflingRef.current.delete(id)
       handsOffRef.current.delete(id)
     })
@@ -275,13 +305,13 @@ export default function PhysicsScene() {
     restoreQueueRef.current = []
     nextRestoreRef.current = 0
     restoreIdxRef.current = 0
+    purgeArrivals()
 
     const cat = activeCategoryRef.current
 
-    const allVisible = JOKES.filter(({ id }) => {
-      const body = bodyMap.current[id]
-      return body && !body.isStatic && !shufflingRef.current.has(id) && expandedRef.current !== id
-    })
+    const allVisible = JOKES.filter(({ id }) =>
+      inWorldRef.current.has(id) && !shufflingRef.current.has(id) && expandedRef.current !== id
+    )
 
     if (cat) {
       // Exit category mode — pop up to 25, then fill screen back to BATCH_SIZE from full mix
@@ -342,7 +372,7 @@ export default function PhysicsScene() {
       el.classList.add('anchor-spinning')
       setTimeout(() => el.classList.remove('anchor-spinning'), 1200)
     }
-  }, [popVisible])
+  }, [popVisible, purgeArrivals])
 
   const handleCategorySelect = useCallback((catId) => {
     setMenuOpen(false)
@@ -350,7 +380,7 @@ export default function PhysicsScene() {
     ;[...shufflingRef.current].forEach(id => {
       if (id === expandedRef.current) return
       const el = elMap.current[id]
-      if (el) { el.style.animation = ''; el.style.transition = '' }
+      if (el) { el.style.animation = ''; el.style.transition = ''; el.style.opacity = '0' }
       shufflingRef.current.delete(id)
       handsOffRef.current.delete(id)
     })
@@ -359,6 +389,7 @@ export default function PhysicsScene() {
     restoreQueueRef.current = []
     nextRestoreRef.current = 0
     restoreIdxRef.current = 0
+    purgeArrivals()
 
     // If selecting same category again, deselect
     if (activeCategoryRef.current === catId) {
@@ -368,10 +399,8 @@ export default function PhysicsScene() {
 
     setActiveCategory(catId)
 
-    const getVisible = (id) => {
-      const body = bodyMap.current[id]
-      return body && !body.isStatic && !shufflingRef.current.has(id) && expandedRef.current !== id
-    }
+    const getVisible = (id) =>
+      inWorldRef.current.has(id) && !shufflingRef.current.has(id) && expandedRef.current !== id
 
     const visibleNotInCat = JOKES.filter(({ id, categories }) => getVisible(id) && !categories.includes(catId))
     const catJokes = JOKES.filter(j => j.categories.includes(catId))
@@ -386,7 +415,7 @@ export default function PhysicsScene() {
       })
       nextRestoreRef.current = performance.now()
     })
-  }, [popVisible])
+  }, [popVisible, purgeArrivals])
 
   const collapse = useCallback((id) => {
     const body = bodyMap.current[id]
@@ -420,6 +449,7 @@ export default function PhysicsScene() {
       if (body) {
         // Re-add to world (expand removed it)
         Matter.World.add(worldRef.current, body)
+        inWorldRef.current.add(id)
         Matter.Body.setStatic(body, false)
         Matter.Body.setPosition(body, { x: randomX, y: -R })
         Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
@@ -443,6 +473,7 @@ export default function PhysicsScene() {
 
     handsOffRef.current.add(id)
     Matter.World.remove(worldRef.current, body)
+    inWorldRef.current.delete(id)
 
     // Switch from transform-based positioning to left/top so CSS transition can animate
     el.style.transform = 'none'
