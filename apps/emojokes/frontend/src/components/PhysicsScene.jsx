@@ -22,7 +22,7 @@ const EXP_H = WIDE ? 400 : 360
 const REPEL_R = Math.round(R * 1.5)
 const REPEL_F = 0.0025
 const TRANSITION = 380
-const STAGGER = 180
+const STAGGER = 90
 const POP_STAGGER = 55
 const CAT_NORMAL = 0x0001
 
@@ -148,18 +148,19 @@ export default function PhysicsScene() {
       })
     })
 
-    // Stagger-drop only the initial batch
-    const staggerIds = []
+    // Drop all circles at once, scattered across a tall window above the viewport
     const initialBatch = MOBILE ? JOKES.slice(0, BATCH_SIZE) : JOKES
-    initialBatch.forEach((joke, i) => {
-      staggerIds.push(setTimeout(() => {
-        if (worldRef.current) {
-          Matter.World.add(worldRef.current, bodyMap.current[joke.id])
-          inWorldRef.current.add(joke.id)
-          const el = elMap.current[joke.id]
-          if (el) el.style.opacity = '1'
-        }
-      }, i * STAGGER))
+    initialBatch.forEach((joke) => {
+      const body = bodyMap.current[joke.id]
+      const rx = R + Math.random() * (W - R * 2)
+      const ry = -(R * 2 + Math.random() * H * 1.5)
+      Matter.Body.setPosition(body, { x: rx, y: ry })
+      Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 5, y: 3 + Math.random() * 4 })
+      Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.3)
+      Matter.World.add(worldRef.current, body)
+      inWorldRef.current.add(joke.id)
+      const el = elMap.current[joke.id]
+      if (el) { el.style.opacity = '1'; el.style.transform = `translate(${rx - R}px, ${ry - R}px)` }
     })
 
     const ro = new ResizeObserver(() => buildWalls())
@@ -177,28 +178,24 @@ export default function PhysicsScene() {
       const cH = container.clientHeight
       const cW = container.clientWidth
 
-      const now = performance.now()
-      if (restoreQueueRef.current.length > 0 && now >= nextRestoreRef.current) {
+      while (restoreQueueRef.current.length > 0) {
         const id = restoreQueueRef.current.shift()
         const body = bodyMap.current[id]
         const el = elMap.current[id]
         if (body && el) {
-          const cols = Math.max(1, Math.floor(cW / (R * 2.4)))
-          const col = restoreIdxRef.current % cols
-          const rx = R * 1.2 + col * (cW - R * 2.4) / Math.max(1, cols - 1 || 1)
-          restoreIdxRef.current++
-          Matter.Body.setPosition(body, { x: rx, y: -cH })
-          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 2, y: 2 })
-          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+          const rx = R + Math.random() * (cW - R * 2)
+          const ry = -(R * 2 + Math.random() * cH * 1.5)
+          Matter.Body.setPosition(body, { x: rx, y: ry })
+          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 5, y: 3 + Math.random() * 4 })
+          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.3)
           Matter.World.add(worldRef.current, body)
           inWorldRef.current.add(id)
           restoringRef.current.add(id)
-          el.style.transform = `translate(${rx - R}px, ${-cH - R}px)`
+          el.style.transform = `translate(${rx - R}px, ${ry - R}px)`
           el.style.opacity = '1'
           handsOffRef.current.delete(id)
           shufflingRef.current.delete(id)
         }
-        nextRestoreRef.current = now + STAGGER
       }
 
       JOKES.forEach(({ id }) => {
@@ -226,7 +223,6 @@ export default function PhysicsScene() {
     tick()
     return () => {
       cancelAnimationFrame(rafId)
-      staggerIds.forEach(clearTimeout)
       ro.disconnect()
       Matter.World.clear(world)
       Matter.Engine.clear(engine)
@@ -275,16 +271,17 @@ export default function PhysicsScene() {
     }
   }, [])
 
-  // Silently remove circles that are still in transit from the restore queue.
-  // restoringRef tracks them until they pass mid-screen; cancel them cleanly on any category change.
+  // Circles still above the viewport (y < 0) were never seen — remove silently.
+  // Circles already on screen are graduated out of restoringRef so getVisible picks them up
+  // and visibleNotInCat gives them a proper pop animation instead of an instant vanish.
   const purgeArrivals = useCallback(() => {
     restoringRef.current.forEach(id => {
-      if (!inWorldRef.current.has(id)) { restoringRef.current.delete(id); return }
+      restoringRef.current.delete(id)
       const body = bodyMap.current[id]
-      if (!body) { restoringRef.current.delete(id); return }
+      if (!body || !inWorldRef.current.has(id)) return
+      if (body.position.y >= 0) return  // visible — let normal pop flow handle it
       Matter.World.remove(worldRef.current, body)
       inWorldRef.current.delete(id)
-      restoringRef.current.delete(id)
       const el = elMap.current[id]
       if (el) el.style.opacity = '0'
     })
