@@ -182,6 +182,7 @@ export default function PhysicsScene() {
 
       while (restoreQueueRef.current.length > 0) {
         const id = restoreQueueRef.current.shift()
+        if (inWorldRef.current.has(id)) continue  // already in world, skip
         const body = bodyMap.current[id]
         const el = elMap.current[id]
         if (body && el) {
@@ -193,6 +194,8 @@ export default function PhysicsScene() {
           Matter.World.add(worldRef.current, body)
           inWorldRef.current.add(id)
           restoringRef.current.add(id)
+          el.style.animation = ''  // clear any in-flight pop animation before restoring
+          el.style.transition = ''
           el.style.transform = `translate(${rx - R}px, ${ry - R}px)`
           el.style.opacity = '1'
           handsOffRef.current.delete(id)
@@ -202,7 +205,8 @@ export default function PhysicsScene() {
 
       JOKES.forEach(({ id }) => {
         const body = bodyMap.current[id]
-        if (!body || body.isStatic) return
+        if (!body) return
+        if (!inWorldRef.current.has(id)) return  // body not in physics world
         if (handsOffRef.current.has(id)) return
 
         const dx = body.position.x - cx
