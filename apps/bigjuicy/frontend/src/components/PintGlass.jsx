@@ -139,14 +139,14 @@ export default function PintGlass({ onPhotoClick }) {
       }
     }
 
-    for (let i = 0; i < (isLowPerf ? 8 : 18); i++) spawnPhoto(true)
+    for (let i = 0; i < (isLowPerf ? 8 : 28); i++) spawnPhoto(true)
     if (!isLowPerf) for (let i = 0; i < 16; i++) spawnPlain(true)
     for (let i = 0; i < (isLowPerf ? 3 : 10); i++) spawnCluster(true)
 
     function tick(t) {
       if (t >= nextPhotoAt.current) {
         spawnPhoto()
-        nextPhotoAt.current = t + (isLowPerf ? 1800 : 900) + Math.random() * (isLowPerf ? 600 : 300)
+        nextPhotoAt.current = t + (isLowPerf ? 1800 : 600) + Math.random() * (isLowPerf ? 600 : 200)
       }
       if (!isLowPerf && t >= nextPlainAt.current) {
         spawnPlain()
@@ -181,9 +181,16 @@ export default function PintGlass({ onPhotoClick }) {
       })
       // Burst of extra micro bubbles from a random point
       for (let i = 0; i < 6; i++) spawnCluster(false, 5 + Math.random() * 90)
-      setTimeout(() => {
-        toRestore.forEach(a => { if (a.playState !== 'finished') a.playbackRate = 1 })
-      }, 1000)
+      // Ease rate back down from 8 → 1 over ~1.4s
+      const easeStart = performance.now()
+      const easeDur = 1400
+      function easeStep() {
+        const t = Math.min((performance.now() - easeStart) / easeDur, 1)
+        const rate = 8 - 7 * (1 - Math.pow(1 - t, 2)) // quadratic ease-out
+        toRestore.forEach(a => { if (a.playState !== 'finished') a.playbackRate = rate })
+        if (t < 1) requestAnimationFrame(easeStep)
+      }
+      requestAnimationFrame(easeStep)
     }
 
     const handleSwipeStart = (e) => {
