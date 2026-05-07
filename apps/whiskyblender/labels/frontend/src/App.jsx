@@ -658,18 +658,51 @@ function GenericOutput({ baseLabel, template, onBack }) {
   );
 }
 
+// ─── 50ml contact sheet ───────────────────────────────────────────────────────
+
+const CONTACT_COLS = 2;
+const CONTACT_ROWS = 5;
+const CONTACT_LABEL_W = 320;  // 85mm at 96dpi
+const CONTACT_LABEL_H = 188;  // 50mm at 96dpi
+const CONTACT_PAGE_W = 794;   // A4 portrait at 96dpi
+const CONTACT_PAGE_H = 1123;
+const CONTACT_GAP = 20;
+const CONTACT_MARGIN_X = Math.round((CONTACT_PAGE_W - CONTACT_COLS * CONTACT_LABEL_W - (CONTACT_COLS - 1) * CONTACT_GAP) / 2);
+const CONTACT_MARGIN_Y = Math.round((CONTACT_PAGE_H - CONTACT_ROWS * CONTACT_LABEL_H - (CONTACT_ROWS - 1) * CONTACT_GAP) / 2);
+
+function ContactSheetOutput({ formData, onBack }) {
+  return (
+    <OutputWrapper onBack={onBack}>
+      <div style={{ width: CONTACT_PAGE_W, height: CONTACT_PAGE_H, background: '#ffffff', position: 'relative' }}>
+        <div style={{
+          position: 'absolute',
+          top: CONTACT_MARGIN_Y,
+          left: CONTACT_MARGIN_X,
+          display: 'grid',
+          gridTemplateColumns: `repeat(${CONTACT_COLS}, ${CONTACT_LABEL_W}px)`,
+          gap: CONTACT_GAP,
+        }}>
+          {Array.from({ length: CONTACT_COLS * CONTACT_ROWS }).map((_, i) => (
+            <div key={i} style={{
+              width: CONTACT_LABEL_W,
+              height: CONTACT_LABEL_H,
+              backgroundImage: formData.image ? `url(${formData.image})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              outline: formData.image ? 'none' : '1px dashed #bbb',
+            }} />
+          ))}
+        </div>
+      </div>
+    </OutputWrapper>
+  );
+}
+
 // ─── Label output router ──────────────────────────────────────────────────────
 
 function LabelOutput({ baseLabel, template, formData, onBack }) {
-  if (baseLabel.size === '50ml') {
-    return (
-      <div className="output-shell">
-        <div className="output-unavailable">
-          <p>50ml contact sheet output is coming soon.</p>
-          <button className="back-btn" onClick={onBack}>← Back to form</button>
-        </div>
-      </div>
-    );
+  if (template.id === 'single-image-contact') {
+    return <ContactSheetOutput formData={formData} onBack={onBack} />;
   }
 
   if (template.id === 'tampa-whisky-club') {

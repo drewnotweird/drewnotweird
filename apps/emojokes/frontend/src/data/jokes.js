@@ -91,7 +91,7 @@ const ALL_JOKES = [
   { id: 89, categories: ['animals', 'quips'],              emoji: '🦩', setup: "My wife told me to stop acting like a flamingo.", punchline: "I had to put my foot down." },
   { id: 90, categories: ['people'],                           emoji: '🪂', setup: "Why don't blind people go skydiving?", punchline: "It scares the dog." },
   { id: 91, categories: ['animals', 'quips'],              emoji: '🦮', setup: "I went to a zoo and the only animal was a dog.", punchline: "It was a shih tzu." },
-  { id: 92, categories: ['people', 'quips'],                           emoji: '⛪', setup: "A priest, a rabbi and a vicar walk into a bar.", punchline: "The barman says \"Is this some kind of joke?\"" },
+  { id: 92, categories: ['people', 'quips', 'animals'],                           emoji: '⛪', setup: "A priest, a rabbi and a vicar walk into a bar.", punchline: "The barman says \"Is this some kind of joke?\"" },
   { id: 93, categories: ['people', 'quips'],               emoji: '💼', setup: "I tried to sue the airport for losing my luggage.", punchline: "I lost my case." },
   { id: 94, categories: ['people', 'quips'],                           emoji: '🎸', setup: "My wife told me to stop singing Wonderwall.", punchline: "I said maaybeee." },
   { id: 95, categories: ['people', 'quips'],                           emoji: '🏰', setup: "I have a lot of growing up to do.", punchline: "I realised that the other day inside my fort." },

@@ -174,16 +174,16 @@ export default function PintGlass({ onPhotoClick }) {
       all.forEach(b => {
         b.getAnimations().forEach(a => {
           if (a.animationName === 'rise' || a.animationName === 'rise-micro') {
-            a.playbackRate = 3.5
+            a.playbackRate = 8
             toRestore.push(a)
           }
         })
       })
       // Burst of extra micro bubbles from a random point
-      for (let i = 0; i < 3; i++) spawnCluster(false, 10 + Math.random() * 80)
+      for (let i = 0; i < 6; i++) spawnCluster(false, 5 + Math.random() * 90)
       setTimeout(() => {
         toRestore.forEach(a => { if (a.playState !== 'finished') a.playbackRate = 1 })
-      }, 800)
+      }, 1000)
     }
 
     const handleSwipeStart = (e) => {

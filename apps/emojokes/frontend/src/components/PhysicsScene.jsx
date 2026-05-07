@@ -60,6 +60,7 @@ export default function PhysicsScene() {
   const wallsRef = useRef([])
   const bodyMap = useRef({})
   const elMap = useRef({})
+  const innerElMap = useRef({})
   const cursorRef = useRef({ x: -999, y: -999 })
   const expandedRef = useRef(null)
   const handsOffRef = useRef(new Set())
@@ -446,6 +447,8 @@ export default function PhysicsScene() {
       el.style.height = `${R * 2}px`
       el.style.borderRadius = '50%'
       el.style.zIndex = '1'
+      const innerEl = innerElMap.current[id]
+      if (innerEl) { innerEl.style.transition = ''; innerEl.style.borderRadius = '50%' }
       el.style.boxShadow = 'none'
       el.style.left = '0'
       el.style.top = '0'
@@ -492,6 +495,11 @@ export default function PhysicsScene() {
     el.style.width = `${expW}px`
     el.style.height = `${EXP_H}px`
     el.style.borderRadius = '24px'
+    const innerEl = innerElMap.current[id]
+    if (innerEl) {
+      innerEl.style.transition = `border-radius ${TRANSITION}ms ease`
+      innerEl.style.borderRadius = '24px'
+    }
     el.style.left = `${W / 2 - expW / 2}px`
     el.style.top = `${H / 2 - EXP_H / 2}px`
     el.style.zIndex = '10'
@@ -562,6 +570,7 @@ export default function PhysicsScene() {
   return (
     <div
       ref={containerRef}
+      className={expandedId !== null ? 'joke-open' : ''}
       style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#fefdf9', overflow: 'hidden' }}
       onClick={handleContainerClick}
       onMouseMove={handleMouseMove}
@@ -578,27 +587,45 @@ export default function PhysicsScene() {
               width: R * 2,
               height: R * 2,
               borderRadius: '50%',
-              background: PASTEL(joke.id),
-              boxShadow: 'none',
               cursor: 'pointer',
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
-              overflow: 'hidden',
               zIndex: 1,
               opacity: 0,
               willChange: 'transform',
             }}
           >
+          <div
+            ref={(el) => { innerElMap.current[joke.id] = el }}
+            className="joke-disc"
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              '--disc-bg': PASTEL(joke.id),
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
+          >
             {/* Emoji — absolutely centred in the circle at all times */}
             <span style={{
               position: 'absolute',
-              top: isExpanded ? 20 : '50%',
+              top: isExpanded ? 24 : '50%',
               left: '50%',
               transform: isExpanded ? 'translateX(-50%)' : 'translate(-50%, -50%)',
-              fontSize: isExpanded ? 68 : R * 1.05,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: isExpanded ? 100 : R * 2,
+              height: isExpanded ? 100 : R * 2,
+              borderRadius: '50%',
+              background: isExpanded ? '#fff' : 'transparent',
+              border: isExpanded ? `7px solid ${PASTEL(joke.id)}` : '7px solid transparent',
+              boxSizing: 'border-box',
+              fontSize: isExpanded ? 52 : R * 1.05,
               lineHeight: 1,
-              transition: 'font-size 0.3s ease, top 0.3s ease, transform 0.3s ease',
-              filter: isExpanded ? 'drop-shadow(0 3px 6px rgba(0,0,0,0.18))' : 'none',
+              transition: 'font-size 0.3s ease, top 0.3s ease, transform 0.3s ease, width 0.3s ease, height 0.3s ease',
+              filter: 'none',
               pointerEvents: 'none',
               zIndex: 2,
             }}>
@@ -652,6 +679,7 @@ export default function PhysicsScene() {
               </div>
             )}
           </div>
+          </div>
         )
       })}
 
@@ -679,21 +707,22 @@ export default function PhysicsScene() {
               top: '50%',
               width: R * 2,
               height: R * 2,
-              borderRadius: '50%',
-              background: cat.color,
               cursor: 'pointer',
               transform: menuOpen
                 ? `translate(-50%, -50%) rotate(-180deg) translate(${-dx}px, ${-dy}px) rotate(190deg)`
                 : `translate(-50%, -50%) rotate(0deg) translate(0px, 0px) rotate(0deg)`,
               pointerEvents: menuOpen ? 'all' : (isActive ? 'all' : 'none'),
               transition: menuOpen
-                ? `transform 0.62s cubic-bezier(0.34, 1.5, 0.22, 1) ${delay}ms, filter 0.15s ease`
-                : 'transform 0.28s cubic-bezier(0.4, 0, 0.6, 1), filter 0.15s ease',
+                ? `transform 0.62s cubic-bezier(0.34, 1.5, 0.22, 1) ${delay}ms`
+                : 'transform 0.28s cubic-bezier(0.4, 0, 0.6, 1)',
               zIndex: menuOpen ? 14 - staggerPos : (isActive ? 4 : 2),
               userSelect: 'none',
               WebkitUserSelect: 'none',
             }}
+          >
+          <div
             className="menu-circle"
+            style={{ width: '100%', height: '100%', borderRadius: '50%', background: cat.color, position: 'relative' }}
           >
             <svg width={R * 2} height={R * 2} viewBox={`0 0 ${R * 2} ${R * 2}`} style={{ position: 'absolute', top: 0, left: 0 }}>
               <defs>
@@ -719,6 +748,7 @@ export default function PhysicsScene() {
               <span className="cat-emoji" style={{ display: 'block', fontSize: R * 1.2, lineHeight: 1 }}>{cat.emoji}</span>
             </span>
           </div>
+          </div>
         )
       })}
 
@@ -732,21 +762,19 @@ export default function PhysicsScene() {
           transform: 'translate(-50%, -50%)',
           width: R * 2,
           height: R * 2,
-          borderRadius: '50%',
-          background: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           cursor: 'pointer',
           pointerEvents: menuOpen ? 'all' : 'none',
-          transition: 'filter 0.15s ease',
           zIndex: menuOpen ? 6 : 1,
           userSelect: 'none',
           WebkitUserSelect: 'none',
         }}
-        className="menu-circle"
       >
-        <span style={{ color: '#111', fontSize: R * 0.55, lineHeight: 1, fontFamily: "'DynaPuff', cursive", fontWeight: 700 }}>X</span>
+        <div
+          className="menu-circle"
+          style={{ width: '100%', height: '100%', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <span style={{ color: '#111', fontSize: R * 0.55, lineHeight: 1, fontFamily: "'DynaPuff', cursive", fontWeight: 700 }}>X</span>
+        </div>
       </div>
 
       {/* Anchor — always EMOJOKES/black; sits behind active category when one is selected */}
@@ -791,7 +819,7 @@ export default function PhysicsScene() {
       <div
         style={{
           position: 'absolute', inset: 0,
-          background: 'rgba(255,255,255,0.6)',
+          background: 'rgba(255,255,255,0.82)',
           opacity: (scrimVisible || menuOpen) ? 1 : 0,
           backdropFilter: (scrimVisible || menuOpen) ? 'blur(6px)' : 'blur(0px)',
           WebkitBackdropFilter: (scrimVisible || menuOpen) ? 'blur(6px)' : 'blur(0px)',
