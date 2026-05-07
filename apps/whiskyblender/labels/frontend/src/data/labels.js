@@ -63,9 +63,15 @@ export const BASE_LABELS = [
     name: '50ml contact sheet',
     size: '50ml',
     extraTemplates: [],
-    websiteTemplate: 'website-options',
+    websiteTemplate: 'website-options-contact',
     singleImageTemplate: 'single-image-contact',
   },
+];
+
+const CONTACT_LABEL_STYLE_OPTIONS = [
+  { value: 'blank',    label: 'Blank' },
+  { value: 'wedding',  label: 'Wedding' },
+  { value: 'birthday', label: 'Birthday' },
 ];
 
 const PRINT_COLOR_OPTIONS = [
@@ -206,6 +212,24 @@ export const ALL_TEMPLATES = {
       { key: 'referenceOnDark', label: 'On dark',            type: 'checkbox-inline' },
       { key: 'fgColor',         label: 'Foreground colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#111111' },
       { key: 'bgColor',         label: 'Background colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#ffffff' },
+    ],
+  },
+
+  'website-options-contact': {
+    id: 'website-options-contact',
+    name: 'Website options',
+    sample: {
+      blendName: 'Restashore',
+      createdBy: 'Dr. Scott Taylor',
+      strength: '46',
+      labelStyle: 'blank',
+    },
+    fields: [
+      { key: 'blendName',  label: 'Whisky name',  type: 'text',     placeholder: 'Name of the whisky' },
+      { key: 'createdBy',  label: 'Created by',   type: 'text',     placeholder: 'Blender or distillery name' },
+      { key: 'strength',   label: 'Strength',     type: 'strength', default: '46' },
+      { key: 'reference',  label: 'Reference',    type: 'text',     placeholder: 'e.g. #3023' },
+      { key: 'labelStyle', label: 'Label style',  type: 'select',   options: CONTACT_LABEL_STYLE_OPTIONS, default: 'blank' },
     ],
   },
 

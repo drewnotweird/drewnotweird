@@ -658,15 +658,134 @@ function GenericOutput({ baseLabel, template, onBack }) {
   );
 }
 
+// ─── 50ml mini label (shared across contact sheet templates) ─────────────────
+
+const MINI_LABEL_STYLES = {
+  blank:    { barBg: '#111111', barFg: '#c8a050', barText: 'Blended Malt Scotch Whisky' },
+  wedding:  { barBg: '#111111', barFg: '#c8a050', barText: 'Wedding Edition' },
+  birthday: { barBg: '#111111', barFg: '#c8a050', barText: 'Happy Birthday' },
+};
+
+function MiniLabel({ blendName, createdBy, strength, reference, labelStyle = 'blank' }) {
+  const STRIP_W = 28;
+  const BAR_H = 38;
+  const style = MINI_LABEL_STYLES[labelStyle] ?? MINI_LABEL_STYLES.blank;
+
+  return (
+    <div style={{
+      width: CONTACT_LABEL_W, height: CONTACT_LABEL_H,
+      display: 'flex', flexDirection: 'column',
+      border: '0.5px solid #aaa', overflow: 'hidden', background: '#fff',
+      fontFamily: '"Raleway", sans-serif',
+    }}>
+      {/* Main row */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+
+        {/* Left strip — "Bottled by whiskyblender.com", bottom-to-top */}
+        <div style={{
+          width: STRIP_W, flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          borderRight: '0.5px solid #ddd',
+        }}>
+          <span style={{
+            writingMode: 'vertical-rl', transform: 'rotate(180deg)',
+            fontSize: 5.5, letterSpacing: '0.06em', whiteSpace: 'nowrap',
+            color: '#666',
+          }}>
+            Bottled by whiskyblender.com
+          </span>
+        </div>
+
+        {/* Centre — name + "By" + creator, inset gold frame */}
+        <div style={{
+          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '8px 6px',
+        }}>
+          <div style={{
+            width: '100%', height: '100%',
+            border: '1px solid #c8a050',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            padding: '6px', textAlign: 'center', gap: 3,
+            position: 'relative',
+          }}>
+            <div style={{ fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.15, color: '#111' }}>
+              {blendName || 'Whisky Name'}
+            </div>
+            <div style={{ fontSize: 7, color: '#555' }}>By</div>
+            <div style={{ fontSize: 8, fontWeight: 600, color: '#111', lineHeight: 1.2 }}>
+              {createdBy || '—'}
+            </div>
+            {reference && (
+              <div style={{
+                position: 'absolute', bottom: 3, right: 4,
+                fontSize: 5, color: '#aaa', fontFamily: '"Roboto Mono", monospace',
+                letterSpacing: '0.04em',
+              }}>
+                {reference}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right strip — strength + 50ml, top-to-bottom */}
+        <div style={{
+          width: STRIP_W, flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          borderLeft: '0.5px solid #ddd',
+        }}>
+          <span style={{
+            writingMode: 'vertical-rl',
+            fontSize: 5.5, letterSpacing: '0.06em', whiteSpace: 'nowrap',
+            color: '#666',
+          }}>
+            {strength || '46'}% abv.  ·  50ml
+          </span>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{
+        height: BAR_H, flexShrink: 0,
+        background: style.barBg, color: style.barFg,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 5.5, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase',
+      }}>
+        {style.barText}
+      </div>
+    </div>
+  );
+}
+
+function ContactSheetWebsiteOutput({ formData, onBack }) {
+  return (
+    <OutputWrapper onBack={onBack}>
+      <div style={{ width: CONTACT_PAGE_W, height: CONTACT_PAGE_H, background: '#ffffff', position: 'relative' }}>
+        <div style={{
+          position: 'absolute',
+          top: CONTACT_MARGIN_Y, left: CONTACT_MARGIN_X,
+          display: 'grid',
+          gridTemplateColumns: `repeat(${CONTACT_COLS}, ${CONTACT_LABEL_W}px)`,
+          gap: CONTACT_GAP,
+        }}>
+          {Array.from({ length: CONTACT_COLS * CONTACT_ROWS }).map((_, i) => (
+            <MiniLabel key={i} blendName={formData.blendName} createdBy={formData.createdBy} strength={formData.strength} reference={formData.reference} labelStyle={formData.labelStyle} />
+          ))}
+        </div>
+      </div>
+    </OutputWrapper>
+  );
+}
+
 // ─── 50ml contact sheet ───────────────────────────────────────────────────────
 
-const CONTACT_COLS = 2;
-const CONTACT_ROWS = 5;
-const CONTACT_LABEL_W = 320;  // 85mm at 96dpi
-const CONTACT_LABEL_H = 188;  // 50mm at 96dpi
+const CONTACT_COLS = 3;
+const CONTACT_ROWS = 4;
+const CONTACT_LABEL_W = 227;  // ~60mm at 96dpi
+const CONTACT_LABEL_H = 250;  // ~66mm at 96dpi
 const CONTACT_PAGE_W = 794;   // A4 portrait at 96dpi
 const CONTACT_PAGE_H = 1123;
-const CONTACT_GAP = 20;
+const CONTACT_GAP = 11;       // ~3mm between labels
 const CONTACT_MARGIN_X = Math.round((CONTACT_PAGE_W - CONTACT_COLS * CONTACT_LABEL_W - (CONTACT_COLS - 1) * CONTACT_GAP) / 2);
 const CONTACT_MARGIN_Y = Math.round((CONTACT_PAGE_H - CONTACT_ROWS * CONTACT_LABEL_H - (CONTACT_ROWS - 1) * CONTACT_GAP) / 2);
 
@@ -701,6 +820,10 @@ function ContactSheetOutput({ formData, onBack }) {
 // ─── Label output router ──────────────────────────────────────────────────────
 
 function LabelOutput({ baseLabel, template, formData, onBack }) {
+  if (template.id === 'website-options-contact') {
+    return <ContactSheetWebsiteOutput formData={formData} onBack={onBack} />;
+  }
+
   if (template.id === 'single-image-contact') {
     return <ContactSheetOutput formData={formData} onBack={onBack} />;
   }
