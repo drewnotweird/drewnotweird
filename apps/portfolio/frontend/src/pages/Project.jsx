@@ -14,6 +14,7 @@ const projectMap = {
   logos: lazy(() => import('../projects/logos.jsx')),
   vaguespace: lazy(() => import('../projects/vaguespace.jsx')),
   emojokes: lazy(() => import('../projects/emojokes.jsx')),
+  qikpic: lazy(() => import('../projects/qikpic.jsx')),
 }
 
 export default function Project() {
