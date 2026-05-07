@@ -13,6 +13,7 @@ const projectMap = {
   rumblender: lazy(() => import('../projects/rumblender.jsx')),
   logos: lazy(() => import('../projects/logos.jsx')),
   vaguespace: lazy(() => import('../projects/vaguespace.jsx')),
+  emojokes: lazy(() => import('../projects/emojokes.jsx')),
 }
 
 export default function Project() {

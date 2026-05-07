@@ -29,7 +29,7 @@ export default function Home() {
         </p>
       </header>
 
-      {projects.map((project) => (
+      {projects.filter(p => !p.hidden).map((project) => (
         <section className="work" key={project.slug}>
           <Link
             to={`/work/${project.slug}`}
