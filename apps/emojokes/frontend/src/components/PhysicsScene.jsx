@@ -21,18 +21,18 @@ const EXP_W = WIDE ? 460 : 340
 const EXP_H = WIDE ? 400 : 360
 const REPEL_R = Math.round(R * 1.5)
 const REPEL_F = 0.0025
-const TRANSITION = 380
+const TRANSITION = 300
 const STAGGER = 90
-const POP_STAGGER = 55
+const POP_STAGGER = 12
 const CAT_NORMAL = 0x0001
 
 const CATEGORIES = [
-  { id: 'animals',    label: 'ANIMALS',    color: '#3a8c4a' },
-  { id: 'puns',       label: 'PUNS',       color: '#2478b5' },
-  { id: 'people',     label: 'PEOPLE',     color: '#8e44b8' },
-  { id: 'science',    label: 'SCIENCE',    color: '#0d9488' },
-  { id: 'quips', label: 'QUIPS', color: '#c4294e' },
-  { id: 'food',       label: 'FOOD',       color: '#d4631e' },
+  { id: 'animals', label: 'ANIMALS', color: '#3a8c4a', emoji: '🐾' },
+  { id: 'puns',    label: 'PUNS',    color: '#2478b5', emoji: '😏' },
+  { id: 'people',  label: 'PEOPLE',  color: '#8e44b8', emoji: '👥' },
+  { id: 'science', label: 'SCIENCE', color: '#0d9488', emoji: '🔬' },
+  { id: 'quips',   label: 'QUIPS',   color: '#c4294e', emoji: '💥' },
+  { id: 'food',    label: 'FOOD',    color: '#d4631e', emoji: '🍕' },
 ]
 // Canonical stack order top→bottom: emojokes first, then categories in array order.
 // When a category is active it rotates to position 0; the rest follow from the next item, wrapping.
@@ -90,7 +90,7 @@ export default function PhysicsScene() {
   useEffect(() => {
     const container = containerRef.current
     const engine = Matter.Engine.create()
-    engine.gravity.y = 1.0
+    engine.gravity.y = 1.6
     const world = engine.world
     engineRef.current = engine
     worldRef.current = world
@@ -142,9 +142,9 @@ export default function PhysicsScene() {
       const x = R + 10 + col * (R * 2 + 10) + (row % 2) * R
       const y = -R * 2
       bodyMap.current[joke.id] = Matter.Bodies.circle(x, y, R, {
-        restitution: 0.35,
-        friction: 0.05,
-        frictionAir: 0.02,
+        restitution: 0.45,
+        friction: 0.04,
+        frictionAir: 0.015,
         label: String(joke.id),
         collisionFilter: { category: CAT_NORMAL, mask: CAT_NORMAL },
       })
@@ -155,9 +155,9 @@ export default function PhysicsScene() {
     initialBatch.forEach((joke) => {
       const body = bodyMap.current[joke.id]
       const rx = R + Math.random() * (W - R * 2)
-      const ry = -(R * 2 + Math.random() * H * 1.5)
+      const ry = -(R * 2 + Math.random() * H * 0.5)
       Matter.Body.setPosition(body, { x: rx, y: ry })
-      Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 5, y: 3 + Math.random() * 4 })
+      Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 6, y: 7 + Math.random() * 6 })
       Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.3)
       Matter.World.add(worldRef.current, body)
       inWorldRef.current.add(joke.id)
@@ -187,9 +187,9 @@ export default function PhysicsScene() {
         const el = elMap.current[id]
         if (body && el) {
           const rx = R + Math.random() * (cW - R * 2)
-          const ry = -(R * 2 + Math.random() * cH * 1.5)
+          const ry = -(R * 2 + Math.random() * cH * 0.5)
           Matter.Body.setPosition(body, { x: rx, y: ry })
-          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 5, y: 3 + Math.random() * 4 })
+          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 6, y: 7 + Math.random() * 6 })
           Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.3)
           Matter.World.add(worldRef.current, body)
           inWorldRef.current.add(id)
@@ -253,11 +253,11 @@ export default function PhysicsScene() {
         shufflingRef.current.add(id)
         el.style.setProperty('--pop-tx', `${tx}px`)
         el.style.setProperty('--pop-ty', `${ty}px`)
-        el.style.animation = 'bubble-pop 0.28s ease-in forwards'
+        el.style.animation = 'bubble-pop 0.15s ease-in forwards'
         const ring = document.createElement('div')
-        ring.style.cssText = `position:absolute;left:${tx + R}px;top:${ty + R}px;width:${R * 2}px;height:${R * 2}px;border-radius:50%;border:${WIDE ? 3 : 2}px solid rgba(0,0,0,0.25);pointer-events:none;z-index:2;animation:pop-ring-expand 0.32s ease-out forwards;`
+        ring.style.cssText = `position:absolute;left:${tx + R}px;top:${ty + R}px;width:${R * 2}px;height:${R * 2}px;border-radius:50%;border:${WIDE ? 3 : 2}px solid rgba(0,0,0,0.25);pointer-events:none;z-index:2;animation:pop-ring-expand 0.18s ease-out forwards;`
         containerRef.current.appendChild(ring)
-        setTimeout(() => ring.remove(), 380)
+        setTimeout(() => ring.remove(), 220)
         const innerTid = setTimeout(() => {
           if (!shufflingRef.current.has(id)) return
           el.style.opacity = '0'
@@ -265,14 +265,14 @@ export default function PhysicsScene() {
           el.style.transition = ''
           shufflingRef.current.delete(id)
           handsOffRef.current.delete(id)
-        }, 300)
+        }, 180)
         shuffleTimerIds.current.push(innerTid)
       }, i * POP_STAGGER)
       shuffleTimerIds.current.push(tid)
     })
     if (onDone) {
       const delay = customDelay != null ? customDelay
-        : jokesToPop.length > 0 ? 300 : 0
+        : jokesToPop.length > 0 ? 120 : 0
       const tid = setTimeout(onDone, delay)
       shuffleTimerIds.current.push(tid)
     }
@@ -660,7 +660,7 @@ export default function PhysicsScene() {
         const { dx, dy } = MENU_POS[i + 1]
         const isActive = activeCategory === cat.id
         const staggerPos = menuStaggerPos(cat.id, activeCategory)
-        const delay = staggerPos * 35
+        const delay = staggerPos * 45
         return (
           <div
             key={cat.id}
@@ -687,8 +687,8 @@ export default function PhysicsScene() {
                 : `translate(-50%, -50%) rotate(0deg) translate(0px, 0px) rotate(0deg)`,
               pointerEvents: menuOpen ? 'all' : (isActive ? 'all' : 'none'),
               transition: menuOpen
-                ? `transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}ms, filter 0.15s ease`
-                : 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1), filter 0.15s ease',
+                ? `transform 0.62s cubic-bezier(0.34, 1.5, 0.22, 1) ${delay}ms, filter 0.15s ease`
+                : 'transform 0.28s cubic-bezier(0.4, 0, 0.6, 1), filter 0.15s ease',
               zIndex: menuOpen ? 14 - staggerPos : (isActive ? 4 : 2),
               userSelect: 'none',
               WebkitUserSelect: 'none',
@@ -703,6 +703,21 @@ export default function PhysicsScene() {
                 <textPath href={`#menu-path-${cat.id}`} startOffset="50%" textAnchor="middle">{cat.label}</textPath>
               </text>
             </svg>
+            <span style={{
+              position: 'absolute',
+              left: '50%',
+              top: R * 0.32,
+              lineHeight: 1,
+              pointerEvents: 'none',
+              userSelect: 'none',
+              transform: (menuOpen || isActive) ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0)',
+              opacity: (menuOpen || isActive) ? 1 : 0,
+              transition: menuOpen
+                ? `opacity 0.2s ease ${delay + 480}ms, transform 0.25s cubic-bezier(0.34, 1.5, 0.22, 1) ${delay + 480}ms`
+                : 'opacity 0.1s ease, transform 0.1s ease',
+            }}>
+              <span className="cat-emoji" style={{ display: 'block', fontSize: R * 1.2, lineHeight: 1 }}>{cat.emoji}</span>
+            </span>
           </div>
         )
       })}
@@ -745,8 +760,8 @@ export default function PhysicsScene() {
             ? `translate(-50%, -50%) rotate(-180deg) translate(0px, ${-MENU_RING_R}px) rotate(190deg)`
             : `translate(-50%, -50%) rotate(0deg) translate(0px, 0px) rotate(0deg)`,
           transition: menuOpen
-            ? `transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${menuStaggerPos('emojokes', activeCategory) * 35}ms`
-            : 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)',
+            ? `transform 0.62s cubic-bezier(0.34, 1.5, 0.22, 1) ${menuStaggerPos('emojokes', activeCategory) * 22}ms`
+            : 'transform 0.28s cubic-bezier(0.4, 0, 0.6, 1)',
           zIndex: menuOpen ? 14 - menuStaggerPos('emojokes', activeCategory) : 3,
           pointerEvents: 'all',
           cursor: 'pointer',
