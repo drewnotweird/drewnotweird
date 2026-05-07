@@ -143,10 +143,12 @@ export default function PintGlass({ onPhotoClick }) {
     if (!isLowPerf) for (let i = 0; i < 16; i++) spawnPlain(true)
     for (let i = 0; i < (isLowPerf ? 3 : 10); i++) spawnCluster(true)
 
+    const targetPhotos = isLowPerf ? 12 : 25
+
     function tick(t) {
-      if (t >= nextPhotoAt.current) {
+      if (activeIndices.size < targetPhotos || t >= nextPhotoAt.current) {
         spawnPhoto()
-        nextPhotoAt.current = t + (isLowPerf ? 1800 : 600) + Math.random() * (isLowPerf ? 600 : 200)
+        nextPhotoAt.current = t + (isLowPerf ? 1200 : 600) + Math.random() * (isLowPerf ? 400 : 200)
       }
       if (!isLowPerf && t >= nextPlainAt.current) {
         spawnPlain()
